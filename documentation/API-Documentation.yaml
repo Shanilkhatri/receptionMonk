@@ -275,3 +275,6 @@ definitions:
         type: integer
         format: int64
         description: User ID for the user who has purchased this
+      status:
+        type: string
+        enum: ["unpaid", "paid", "cancelled"]
