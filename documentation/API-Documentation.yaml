@@ -1,0 +1,277 @@
+swagger: "2.0"
+info:
+  title: ReceptionMonk API Documentation
+  version: "0.1.0"
+
+securityDefinitions:
+  TokenAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+
+paths:
+  /users:
+    get:
+      summary: Fetch all users registered on the portal.
+      parameters:
+        - name: id
+          in: query
+          description: Fetch user based on the primary key / id.
+          type: string
+        - name: companyId
+          in: query
+          description: Fetch users based on the company they belong to.
+          type: string
+        - name: birthday
+          in: query
+          description: Returns people whose birthday is today, in ddmm format.
+          type: string
+      responses:
+        200:
+          description: Returns all matching users
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Users"
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+    post:
+      summary: Updates registered users on the portal.
+      parameters:
+        - in: body
+          name: payload
+          description: User objects
+          required: true
+          schema:
+            $ref: "#/definitions/Users"
+      responses:
+        200:
+          description: User updated successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+    put:
+      summary: Adds users to the portal.
+      parameters:
+        - in: body
+          name: payload
+          description: User objects
+          required: true
+          schema:
+            $ref: "#/definitions/Users"
+      responses:
+        200:
+          description: User added successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+    delete:
+      summary: Deletes users from the portal.
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: Delete user based on their id / primary key.
+          required: true
+      responses:
+        200:
+          description: User deleted successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+  /orders:
+    get:
+      summary: Fetch all orders placed.
+      parameters:
+        - name: id
+          in: query
+          description: Fetch order based on the primary key / id.
+          type: string
+        - name: companyId
+          in: query
+          description: Fetch orders based on the company they belong to.
+          type: string
+        - name: userId
+          in: query
+          description: Fetch orders based on the user they belong to.
+          type: string
+        - name: date
+          in: query
+          description: Returns orders placed between two epochs provided.
+          type: string
+      responses:
+        200:
+          description: Returns all matching orders
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Orders"
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+    post:
+      summary: Updates registered users on the portal.
+      parameters:
+        - in: body
+          name: payload
+          description: User objects
+          required: true
+          schema:
+            $ref: "#/definitions/Orders"
+      responses:
+        200:
+          description: Order updated successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+    put:
+      summary: Adds Orders to the portal.
+      parameters:
+        - in: body
+          name: payload
+          description: User objects
+          required: true
+          schema:
+            $ref: "#/definitions/Orders"
+      responses:
+        200:
+          description: Order added successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+    delete:
+      summary: Deletes order from the portal.
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: Delete order based on their id / primary key.
+          required: true
+      responses:
+        200:
+          description: Order deleted successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error, Any serious issues which cannot be recovered from.
+
+definitions:
+  Company:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      gstin:
+        type: string
+      address:
+        type: string
+        format: text
+        
+  Users:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      email:
+        type: string
+        format: email
+      passwordHash:
+        type: string
+      passwordSalt:
+        type: string
+      twoFactorKey:
+        type: string
+      twoFactorRecoveryCode:
+        type: string
+      dob:
+        type: string
+        format: date
+      authToken:
+        type: string
+      accountType:
+        type: string
+        enum: ["user","admin"]
+      companyId:
+        description: Will link to the company account id, in case a company has multiple users
+        type: integer
+        format: int64
+      status:
+        type: string
+        enum: ["active", "suspended", "deleted", "pendingVerification"]
+  
+  Products:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      price:
+        type: integer
+        format: int64
+      planValidity:
+        type: integer
+        format: int64
+      description:
+        type: string
+        description: Markdown description
+        format: text
+      status:
+        type: string
+        enum: ["active", "disabled"]
+
+  Orders:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      productId:
+        type: integer
+        format: int64
+      placedOn:
+        type: integer
+        format: int64
+        description: Epoch of when the order was placed on
+      expiry:
+        type: integer
+        format: int64
+        description: Epoch based on validity of the product calculated based on purchase
+      price:
+        type: integer
+        format: int64
+      buyer:
+        type: integer
+        format: int64
+        description: User ID for the user who has purchased this
