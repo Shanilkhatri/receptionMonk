@@ -3,6 +3,8 @@ package controllers
 import (
 	"reakgo/models"
 	"reakgo/utility"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type Env struct {
@@ -15,7 +17,8 @@ type Env struct {
 		All() ([]models.Data, error)
 	}
 	orders interface {
-		GetOrders(data models.Orders) (bool, error)
+		GetOrders(models.OrderDataCondition, *sqlx.Tx) ([]models.Orders, error)
+		GetParamsForFilterOrderData(models.OrderDataCondition) models.OrderDataCondition
 	}
 }
 
