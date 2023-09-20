@@ -26,9 +26,9 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 	// case "ajaxData":
 	// 	// utility.CheckACL(w, r, 1)
 	// 	controllers.AjaxData(w, r)
-	case "products":
+	case "orders":
 		// utility.CheckACL(w, r, 1)
-		controllers.PutProducts(w, r)
+		controllers.GetOrders(w, r)
 	}
 
 }

@@ -14,8 +14,8 @@ type Env struct {
 	data interface {
 		All() ([]models.Data, error)
 	}
-	products interface {
-		PutProducts(data models.Products) (bool, error)
+	orders interface {
+		GetOrders(data models.Orders) (bool, error)
 	}
 }
 
@@ -26,6 +26,6 @@ func init() {
 	Db = &Env{
 		authentication: models.AuthenticationModel{DB: utility.Db},
 		data:           models.DataModel{DB: utility.Db},
-		products:       models.ProductModel{DB: utility.Db},
+		orders:         models.OrdersModel{DB: utility.Db},
 	}
 }
