@@ -1,0 +1,19 @@
+// button_mixin
+
+@mixin btn-primary {    
+        border-radius: $border-radius-xl;
+        background-color: $primary;
+        padding: 0.5rem 3rem;
+        font-weight: bold;
+        border-color: $primary;
+        letter-spacing: $letter-space-sm;       
+        &:hover {
+            background-color: $black;
+            border-color: $black;
+            transition: all 0.3s ease-in-out;
+        }
+    }
+
+@mixin btn-secondary {
+    
+}

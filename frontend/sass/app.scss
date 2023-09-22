@@ -1,0 +1,21 @@
+// ################
+// Main CSS
+// ################
+
+// Import Pages Layout Source File
+@import "./layouts/layout";
+
+// Import Utilities
+@import "./utilities/utillities";
+
+// Import Navbar Source File
+@import "./components/navbar";
+
+// Import Bootstrap Icons 
+@import "./fonts/fonts";
+
+// Import Plugins file
+// @import "../styles/plugins.css";
+
+// Import Bootstrap Libs
+@import "./libs/bootstrap.scss";

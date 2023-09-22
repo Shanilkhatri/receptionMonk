@@ -1,0 +1,24 @@
+// breakpoint_mixin
+
+@mixin min-breakpoint-xxl {
+    @media (min-width: 1600px) {
+    }   
+}
+
+@mixin min-max-breakpoint-lg {
+    @media (min-width: 992px) and (max-width: 1199.99px) {
+      
+    }    
+}
+
+@mixin max-breakpoint-md {
+    @media (max-width: 991.98px) {
+       
+    }
+}
+
+@mixin max-breakpoint-sm {
+    @media (max-width: 575.98px) { 
+       
+     }
+}
