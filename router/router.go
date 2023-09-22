@@ -1,6 +1,7 @@
 package router
 
 import (
+	"log"
 	"net/http"
 	"reakgo/controllers"
 	"strings"
@@ -29,6 +30,12 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 	case "orders":
 		// utility.CheckACL(w, r, 1)
 		controllers.GetOrders(w, r)
+	case "users":
+		// utility.CheckACL(w, r, 1)
+		if r.Method == "PUT" {
+			log.Println("under controller put user")
+			controllers.PutUser(w, r)
+		}
 	}
 
 }

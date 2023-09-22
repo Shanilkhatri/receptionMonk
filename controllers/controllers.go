@@ -20,6 +20,10 @@ type Env struct {
 		GetOrders(models.OrderDataCondition, *sqlx.Tx) ([]models.Orders, error)
 		GetParamsForFilterOrderData(models.OrderDataCondition) models.OrderDataCondition
 	}
+	users interface {
+		PutUser(tablename string, structure models.Users) error
+		PostUser(tablename string, structure models.Users) error
+	}
 }
 
 var Db *Env
@@ -30,5 +34,6 @@ func init() {
 		authentication: models.AuthenticationModel{DB: utility.Db},
 		data:           models.DataModel{DB: utility.Db},
 		orders:         models.OrdersModel{DB: utility.Db},
+		users:          models.UserModel{DB: utility.Db},
 	}
 }

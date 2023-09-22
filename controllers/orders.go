@@ -16,7 +16,6 @@ func OrdersJsonDecoder(r *http.Request) (models.Orders, error) {
 
 func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-	log.Println(response)
 	tx := utility.Db.MustBegin()
 	// for handling any panic
 	defer func() {
