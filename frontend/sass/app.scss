@@ -1,5 +1,5 @@
 // ################
-// Main CSS
+// App CSS
 // ################
 
 // Import Pages Layout Source File
@@ -11,11 +11,12 @@
 // Import Navbar Source File
 @import "./components/navbar";
 
-// Import Bootstrap Icons 
+// Import Font Files 
 @import "./fonts/fonts";
-
-// Import Plugins file
-// @import "../styles/plugins.css";
 
 // Import Bootstrap Libs
 @import "./libs/bootstrap.scss";
+
+// Import Bootstrap Icons SCSS
+// @import "~bootstrap-icons/font/bootstrap-icons";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.scss"
