@@ -92,3 +92,46 @@ a {
         }
     }
 } 
+
+#contentSecond {
+    padding: 5% 0;
+
+    p {
+        color: $gray-500;
+    }
+
+    .contentTwo-top-title {
+        color: $gray-700;
+
+        .btn {
+            @include btn-primary;
+        }
+    }
+
+
+    .circle {
+        position: relative;
+
+        span {
+            background-color: $bg-circle-color;
+            border-radius: 50%;
+            color: $white;
+            padding: 1rem 1.5rem;
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            width: 5%;
+            height: 100%;
+            top:75px;
+            left: 50%;
+            background-color: $gray-400;
+            border-radius: 10px;
+            transform: translateX(-50%);
+          }   
+        
+    }
+}

@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import ContentOne from "../components/BlockContentOne";
+import ContentTwo from "../components/BlockContentTwo";
 
 function homePage() {
     return (
@@ -21,6 +22,9 @@ function homePage() {
 
                 {/* Content Block One Section */}
                 <ContentOne />
+
+                {/* Content Block Two Section */}
+                <ContentTwo />
 
             </div>         
 

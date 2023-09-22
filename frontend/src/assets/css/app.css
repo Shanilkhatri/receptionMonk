@@ -66,6 +66,43 @@ a {
     #contentfirst .services .serviceanim {
       padding: 2rem; }
 
+#contentSecond {
+  padding: 5% 0; }
+  #contentSecond p {
+    color: #7C8FAC; }
+  #contentSecond .contentTwo-top-title {
+    color: #3B3A3A; }
+    #contentSecond .contentTwo-top-title .btn {
+      border-radius: 0.7rem;
+      background-color: #C8400D;
+      padding: 0.5rem 3rem;
+      font-weight: bold;
+      border-color: #C8400D;
+      letter-spacing: 1px; }
+      #contentSecond .contentTwo-top-title .btn:hover {
+        background-color: #000;
+        border-color: #000;
+        transition: all 0.3s ease-in-out; }
+  #contentSecond .circle {
+    position: relative; }
+    #contentSecond .circle span {
+      background-color: #FF6057;
+      border-radius: 50%;
+      color: #fff;
+      padding: 1rem 1.5rem;
+      font-size: larger;
+      font-weight: bold; }
+    #contentSecond .circle::after {
+      content: "";
+      position: absolute;
+      width: 5%;
+      height: 100%;
+      top: 75px;
+      left: 50%;
+      background-color: #ced4da;
+      border-radius: 10px;
+      transform: translateX(-50%); }
+
 .text-primary {
   color: #C8400D !important; }
 

@@ -68,4 +68,5 @@ function  BlockContentOne() {
         </div>
     );
 }
+
 export default BlockContentOne;
