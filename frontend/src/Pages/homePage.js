@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import ContentOne from "../components/BlockContentOne";
 import ContentTwo from "../components/BlockContentTwo";
+import BlockPrice from "../components/PriceTable";
 
 function homePage() {
     return (
@@ -26,7 +27,14 @@ function homePage() {
                 {/* Content Block Two Section */}
                 <ContentTwo />
 
-            </div>         
+            </div>      
+
+            <div>
+
+                {/* Price Section */}
+                <BlockPrice />
+
+            </div>   
 
         </div>    
     );

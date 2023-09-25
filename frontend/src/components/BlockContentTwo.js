@@ -52,7 +52,7 @@ function BlockContentTwo() {
                 </div>
             </section>
         </div>
-    )
+    );
 }
 
 export default BlockContentTwo;

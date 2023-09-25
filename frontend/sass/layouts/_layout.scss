@@ -141,3 +141,92 @@ a {
         
     }
 }
+
+#pricetable {
+    .col {         
+        padding: 1.5rem 0;
+        .card {
+            border-radius: 0;
+            color: $white;
+            .card-header {
+                background: transparent;
+                padding: 0.5rem;
+                text-align: center;
+                & > h4 {
+                    background: $white;
+                    color: $primary;
+                    text-align: center;
+                    font-weight: 600;
+                    border-radius: $border-radius-xl;
+                    padding-top: 0.5rem;
+                    padding-bottom: 0.5rem;
+                    margin: 2rem;
+                }
+            }
+            .card-body {
+                .list-group {
+                    .list-group-item {
+                        background: transparent;
+                        border: none;
+                        color: $white;
+                        position: relative;
+                        line-height: 3;
+                        
+                        &.active > span {
+                            background: $white;
+                            border-radius: 50%;
+                            color: $black;
+                            padding: 3px;
+                            margin-right: 0.5rem;
+
+                            & > i {
+                                font-size: smaller;
+                            }
+                        }
+                       
+                        &.deactive {
+                            color: $gray-300;
+                            span {
+                                background: $gray-300;
+                                border-radius: 50%;
+                                color: $gray-400;
+                                padding: 3px;
+                                margin-right: 0.5rem;
+                                & > i {
+                                    color: transparent;
+                                }
+                            } 
+                        }
+                    
+                    }
+                }
+            }
+            .card-footer {
+                background: transparent;
+                .btn {
+                    color: $primary;
+
+                    &:hover {
+                        background: $black;
+                        color: $white;
+                        transition: all 0.2s ease-in-out;
+                    }
+                }
+                h4 {
+                    span {
+                        font-size: medium;
+                        font-weight: normal;
+                    }
+                }
+            }
+        }  
+    }
+
+    .priceLight {
+        background-color: $bg-price-light-color;
+    }
+    .priceDark {
+        background-color: $bg-price-dark-color;
+    }
+
+}
