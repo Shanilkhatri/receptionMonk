@@ -6,6 +6,7 @@
 @import "../mixins/buttons";
 
 .navbar {
+
     box-shadow: none;
     padding: 1rem 0;
 
@@ -31,16 +32,15 @@
                 }      
             }
         }
-    
-        // .nav-button {
-        //     .btn-primary {
-        //         @include btn-primary;
-        //     }      
-        // }
-    
+       
         .navbar-toggler {
-            font-size: $font-size-xl;
-            color: $gray-700;
+            font-size: $font-size-lg;
+            color: $gray-500;
+            border: none;
+
+            &:focus {
+                outline: 0;
+                box-shadow: none; }
         }
     }
 

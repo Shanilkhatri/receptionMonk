@@ -24,8 +24,12 @@
         border-color: #000;
         transition: all 0.3s ease-in-out; }
     .navbar .container .navbar-toggler {
-      font-size: 1.5rem;
-      color: #3B3A3A; }
+      font-size: 1.25rem;
+      color: #7C8FAC;
+      border: none; }
+      .navbar .container .navbar-toggler:focus {
+        outline: 0;
+        box-shadow: none; }
 
 #hero .hero-text p {
   font-size: 1.25rem; }
@@ -229,7 +233,7 @@ a {
   text-decoration: none !important; }
 
 .bg-anim-one {
-  background: #C8400D url("../../assets/images/bg_content_one_white.svg") top right no-repeat; }
+  background: #fff url("../../assets/images/bg_content_one_primary.svg") top right no-repeat; }
 
 .bg-anim-two {
   background: #fff url("../../assets/images/bg_content_two_primary.svg") no-repeat; }

@@ -1,19 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/images/logo_rm.svg";
 
 function Header() {
+
+    const [collapsed, setCollapsed] = useState(true);
+
+    const toggleNavbar = () => {
+        setCollapsed(!collapsed);
+      };
+
     return (
         <div>
             <div id="navbar">
-                <nav className="navbar navbar-expand-md navbar-white">
-                    <div className="container">                       
+                <nav className="navbar navbar-expand-lg navbar-white">
+                    <div className="container">                                         
                         <a className="navbar-brand" href="#">
                             <img src={logo} alt="logo"/>
-                        </a>
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                           
-                        </button>
-                        <div className="collapse navbar-collapse" id="navbarCollapse">
+                        </a>                        
+                        <button className="navbar-toggler" type="button" onClick={toggleNavbar}>
+                            <span className="navbar-toggler-icon"></span>
+                        </button>     
+                    
+                        <div className={`collapse navbar-collapse ${collapsed ? '' : 'show'}`} id="navbarCollapse">
                             <ul className="navbar-nav navbar-center mx-auto">
                                 <li className="nav-item">
                                     <a data-scroll href="#" className="nav-link">About</a>
@@ -35,7 +43,7 @@ function Header() {
                             {/* <div className="nav-button">
                                 <button className="btn btn-primary">Portal</button>
                             </div> */}
-                        </div>
+                        </div>                        
                     </div>
                 </nav>
             </div> 
