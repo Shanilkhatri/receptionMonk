@@ -223,11 +223,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
-@font-face {
-  body {
-    font-family: bootstrap-icons;
-    src: url("../fonts/bootstrap-icons.woff2?1bb88866b4085542c8ed5fb61b9393dd") format("woff2"), url("../fonts/bootstrap-icons.woff?1bb88866b4085542c8ed5fb61b9393dd") format("woff") !important; } }
-
 a {
   text-transform: capitalize;
   text-decoration: none !important; }
@@ -311,7 +306,7 @@ a {
 
 @font-face {
   font-family: bootstrap-icons;
-  src: url("../fonts/bootstrap-icons.woff2?1bb88866b4085542c8ed5fb61b9393dd") format("woff2"), url("../fonts/bootstrap-icons.woff?1bb88866b4085542c8ed5fb61b9393dd") format("woff"); }
+  src: url("./fonts/bootstrap-icons.woff2?1bb88866b4085542c8ed5fb61b9393dd") format("woff2"), url("./fonts/bootstrap-icons.woff?1bb88866b4085542c8ed5fb61b9393dd") format("woff"); }
 
 :root,
 [data-bs-theme="light"] {
