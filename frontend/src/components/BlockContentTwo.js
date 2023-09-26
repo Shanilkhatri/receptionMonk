@@ -38,7 +38,7 @@ function BlockContentTwo() {
                             </div>
                             <div className="row">
                                 <div className="col-md-3">
-                                    <div className="circle d-flex justify-content-center">
+                                    <div className="circle d-flex justify-content-center lastitems">
                                         <span>1</span>
                                     </div>
                                 </div>

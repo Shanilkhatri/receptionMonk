@@ -127,7 +127,7 @@ a {
             font-weight: bold;
         }
 
-        &::after {
+        &:not(.lastitems)::after {
             content: "";
             position: absolute;
             width: 5%;
@@ -143,6 +143,7 @@ a {
 }
 
 #pricetable {
+    padding-bottom: 5%;
     .col {         
         padding: 1.5rem 0;
         .card {
@@ -219,14 +220,62 @@ a {
                     }
                 }
             }
-        }  
-    }
+            
+            &.priceLight {
+                background-color: $bg-price-light-color;
+                border: 1px solid $bg-price-light-color;
+                &:hover {
+                    border: 1px solid $gray-900;
+                    transition: border 0.3s ease-in;
+                }
+            }
 
-    .priceLight {
-        background-color: $bg-price-light-color;
-    }
-    .priceDark {
-        background-color: $bg-price-dark-color;
-    }
+            &.priceDark {
+                background-color: $bg-price-dark-color;
+                border: 1px solid $bg-price-light-color;
+                &:hover {
+                    border: 1px solid $gray-900;
+                    transition: border 0.3s ease-in;
+                }
+            }
 
+            &.bg-primary {
+                border: 1px solid $primary;
+                &:hover {
+                    border: 1px solid $black;
+                    transition: border 0.4s ease-in;
+                }
+            }
+        }
+        
+    }
+}
+
+#footer {
+    padding: 3% 0 1%;
+    line-height: 2;
+    color: $white;
+
+    .social {
+        font-size: larger;
+
+        i:hover {
+            color: $black;
+            cursor: pointer;
+            transition: color 0.3s ease-in;
+        }
+    }
+    .list-group {
+        .list-group-item {
+            background: transparent;
+            border: none;
+            color: $white;
+
+            &:hover {
+                color: $black;
+                cursor: pointer;
+                transition: color 0.3s ease-in;
+            }
+        }
+    }
 }
