@@ -1,27 +1,31 @@
 @charset "UTF-8";
-body {
-  margin: 0;
-  font-family: sans-serif !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
-
-@font-face {
-  body {
-    font-family: bootstrap-icons;
-    src: url("../fonts/bootstrap-icons.woff2?1bb88866b4085542c8ed5fb61b9393dd") format("woff2"), url("../fonts/bootstrap-icons.woff?1bb88866b4085542c8ed5fb61b9393dd") format("woff") !important; } }
-
-a {
-  text-transform: capitalize;
-  text-decoration: none !important; }
-  a:hover {
-    margin-left: 0.2rem;
-    transition: margin-left 0.5s ease-in; }
-
-.bg-anim-one {
-  background: #C8400D url("../../assets/images/bg_content_one.svg") top right no-repeat; }
-
-.bg-anim-two {
-  background: #fff url("../../assets/images/bg_content_two.svg") no-repeat; }
+.navbar {
+  box-shadow: none;
+  padding: 1rem 0; }
+  .navbar .container {
+    max-width: 1660px; }
+    .navbar .container .navbar-nav .nav-item a {
+      color: #C8400D;
+      font-size: 1.25rem;
+      text-transform: capitalize;
+      padding: 1rem 0;
+      margin: 0 1.5rem; }
+      .navbar .container .navbar-nav .nav-item a:hover {
+        color: #000; }
+    .navbar .container .navbar-nav .nav-button .btn-primary {
+      border-radius: 0.7rem;
+      background-color: #C8400D;
+      padding: 0.5rem 3rem;
+      font-weight: bold;
+      border-color: #C8400D;
+      letter-spacing: 1px; }
+      .navbar .container .navbar-nav .nav-button .btn-primary:hover {
+        background-color: #000;
+        border-color: #000;
+        transition: all 0.3s ease-in-out; }
+    .navbar .container .navbar-toggler {
+      font-size: 1.5rem;
+      color: #3B3A3A; }
 
 #hero .hero-text p {
   font-size: 1.25rem; }
@@ -61,12 +65,20 @@ a {
       background-color: #fff;
       margin-bottom: 1rem;
       border-radius: 10px; }
+    #contentfirst .content-top-title .link:hover {
+      margin-left: 0.3rem;
+      transition: margin-left 0.2s ease-in; }
   #contentfirst .content-bottom-title h6, #contentfirst .content-bottom-title .h6 {
     font-weight: bolder;
     color: #0C2533;
     padding: 1rem 0; }
   #contentfirst .content-bottom-title a {
     color: #0C2533; }
+    #contentfirst .content-bottom-title a i {
+      font-size: larger; }
+    #contentfirst .content-bottom-title a:hover {
+      margin-left: 0.3rem;
+      transition: margin-left 0.2s ease-in; }
   #contentfirst .services {
     padding: 5% 0; }
     #contentfirst .services .serviceanim {
@@ -201,6 +213,27 @@ a {
       cursor: pointer;
       transition: color 0.3s ease-in; }
 
+body {
+  margin: 0;
+  font-family: sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+@font-face {
+  body {
+    font-family: bootstrap-icons;
+    src: url("../fonts/bootstrap-icons.woff2?1bb88866b4085542c8ed5fb61b9393dd") format("woff2"), url("../fonts/bootstrap-icons.woff?1bb88866b4085542c8ed5fb61b9393dd") format("woff") !important; } }
+
+a {
+  text-transform: capitalize;
+  text-decoration: none !important; }
+
+.bg-anim-one {
+  background: #C8400D url("../../assets/images/bg_content_one_white.svg") top right no-repeat; }
+
+.bg-anim-two {
+  background: #fff url("../../assets/images/bg_content_two_primary.svg") no-repeat; }
+
 .text-primary {
   color: #C8400D !important; }
 
@@ -271,34 +304,6 @@ a {
 .mx-10 {
   margin-left: 10rem;
   margin-right: 10rem; }
-
-.navbar {
-  box-shadow: none;
-  padding: 1rem 0; }
-  .navbar .container {
-    max-width: 1660px; }
-    .navbar .container .navbar-nav .nav-item a {
-      color: #C8400D;
-      font-size: 1.25rem;
-      text-transform: capitalize;
-      padding: 1rem 0;
-      margin: 0 1.5rem; }
-      .navbar .container .navbar-nav .nav-item a:hover {
-        color: #000; }
-    .navbar .container .navbar-nav .nav-button .btn-primary {
-      border-radius: 0.7rem;
-      background-color: #C8400D;
-      padding: 0.5rem 3rem;
-      font-weight: bold;
-      border-color: #C8400D;
-      letter-spacing: 1px; }
-      .navbar .container .navbar-nav .nav-button .btn-primary:hover {
-        background-color: #000;
-        border-color: #000;
-        transition: all 0.3s ease-in-out; }
-    .navbar .container .navbar-toggler {
-      font-size: 1.5rem;
-      color: #3B3A3A; }
 
 @font-face {
   font-family: bootstrap-icons;

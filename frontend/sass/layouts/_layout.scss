@@ -5,6 +5,13 @@
 @import "../variables/variables";
 @import "../mixins/buttons";
 @import "../mixins/breakpoints";
+@import "../components/navbar";
+@import "../components/hero";
+@import "../components/contentblockone";
+@import "../components/contentblocktwo";
+@import "../components/pricetable";
+@import "../components/footer";
+
 
 body {
     margin: 0;
@@ -21,261 +28,15 @@ body {
 
 a {
     text-transform: capitalize;
-    text-decoration: none !important; 
-    &:hover {
-        margin-left: 0.2rem;
-        transition: margin-left 0.5s ease-in;
-    }
+    text-decoration: none !important;    
 }
 
 .bg-anim-one {
-    background: $primary url('../../assets/images/bg_content_one.svg') top right no-repeat;
+    // background: $white url('../../assets/images/bg_content_one_primary.svg') top right no-repeat;
+    background: $primary url('../../assets/images/bg_content_one_white.svg') top right no-repeat;
 }
 
 .bg-anim-two {
-    background: $white url('../../assets/images/bg_content_two.svg') no-repeat;
-}
-
-#hero {
-    .hero-text {
-        p {
-            font-size: $font-size-lg;
-        }
-    }
-    .btn-primary {
-        @include btn-primary;
-        padding: 0.5rem 4rem;
-    }
-    .anim {
-        width: 100%;
-        max-height: 600px;
-        border: 1px solid $gray-500;
-    }
-    .sponcership {
-        padding: 5% 0 11%;
-
-        div {
-            min-height: 150px;
-        }
-    }
-    
-}
-
-#contentfirst {
-    padding: 5% 0;
-
-    .content-top-title {
-        color: $white;
-
-        h2::before {
-            content: "";
-            display: block;
-            width: 10%;
-            height: 5px;
-            background-color: $white; 
-            margin-bottom: 1rem; 
-            border-radius: 10px;
-          }      
-    }      
-
-    .content-bottom-title {
-        h6 {
-            font-weight: bolder;
-            color: $font-heading-color;
-            padding: 1rem 0;
-        }       
-
-        a {
-            color: $font-heading-color;
-        }
-    }
-
-    .services {
-        padding: 5% 0;
-
-        .serviceanim {
-            padding: 2rem;
-        }
-    }
-} 
-
-#contentSecond {
-    padding: 5% 0;
-
-    p {
-        color: $gray-500;
-    }
-
-    .contentTwo-top-title {
-        color: $gray-700;
-
-        .btn {
-            @include btn-primary;
-        }
-    }
-
-
-    .circle {
-        position: relative;
-
-        span {
-            background-color: $bg-circle-color;
-            border-radius: 50%;
-            color: $white;
-            padding: 1rem 1.5rem;
-            font-size: larger;
-            font-weight: bold;
-        }
-
-        &:not(.lastitems)::after {
-            content: "";
-            position: absolute;
-            width: 5%;
-            height: 100%;
-            top:75px;
-            left: 50%;
-            background-color: $gray-400;
-            border-radius: 10px;
-            transform: translateX(-50%);
-          }   
-        
-    }
-}
-
-#pricetable {
-    padding-bottom: 5%;
-    .col {         
-        padding: 1.5rem 0;
-        .card {
-            border-radius: 0;
-            color: $white;
-            .card-header {
-                background: transparent;
-                padding: 0.5rem;
-                text-align: center;
-                & > h4 {
-                    background: $white;
-                    color: $primary;
-                    text-align: center;
-                    font-weight: 600;
-                    border-radius: $border-radius-xl;
-                    padding-top: 0.5rem;
-                    padding-bottom: 0.5rem;
-                    margin: 2rem;
-                }
-            }
-            .card-body {
-                .list-group {
-                    .list-group-item {
-                        background: transparent;
-                        border: none;
-                        color: $white;
-                        position: relative;
-                        line-height: 3;
-                        
-                        &.active > span {
-                            background: $white;
-                            border-radius: 50%;
-                            color: $black;
-                            padding: 3px;
-                            margin-right: 0.5rem;
-
-                            & > i {
-                                font-size: smaller;
-                            }
-                        }
-                       
-                        &.deactive {
-                            color: $gray-300;
-                            span {
-                                background: $gray-300;
-                                border-radius: 50%;
-                                color: $gray-400;
-                                padding: 3px;
-                                margin-right: 0.5rem;
-                                & > i {
-                                    color: transparent;
-                                }
-                            } 
-                        }
-                    
-                    }
-                }
-            }
-            .card-footer {
-                background: transparent;
-                .btn {
-                    color: $primary;
-
-                    &:hover {
-                        background: $black;
-                        color: $white;
-                        transition: all 0.2s ease-in-out;
-                    }
-                }
-                h4 {
-                    span {
-                        font-size: medium;
-                        font-weight: normal;
-                    }
-                }
-            }
-            
-            &.priceLight {
-                background-color: $bg-price-light-color;
-                border: 1px solid $bg-price-light-color;
-                &:hover {
-                    border: 1px solid $gray-900;
-                    transition: border 0.3s ease-in;
-                }
-            }
-
-            &.priceDark {
-                background-color: $bg-price-dark-color;
-                border: 1px solid $bg-price-light-color;
-                &:hover {
-                    border: 1px solid $gray-900;
-                    transition: border 0.3s ease-in;
-                }
-            }
-
-            &.bg-primary {
-                border: 1px solid $primary;
-                &:hover {
-                    border: 1px solid $black;
-                    transition: border 0.4s ease-in;
-                }
-            }
-        }
-        
-    }
-}
-
-#footer {
-    padding: 3% 0 1%;
-    line-height: 2;
-    color: $white;
-
-    .social {
-        font-size: larger;
-
-        i:hover {
-            color: $black;
-            cursor: pointer;
-            transition: color 0.3s ease-in;
-        }
-    }
-    .list-group {
-        .list-group-item {
-            background: transparent;
-            border: none;
-            color: $white;
-
-            &:hover {
-                color: $black;
-                cursor: pointer;
-                transition: color 0.3s ease-in;
-            }
-        }
-    }
+    background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
+    // background: $primary url('../../assets/images/bg_content_two_white.svg') no-repeat;
 }

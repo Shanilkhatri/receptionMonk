@@ -1,0 +1,57 @@
+// ###################
+// Content Block First CSS
+// ###################
+
+#contentfirst {
+    padding: 5% 0;
+
+    .content-top-title {
+        color: $white;
+
+        h2::before {
+            content: "";
+            display: block;
+            width: 10%;
+            height: 5px;
+            background-color: $white; 
+            margin-bottom: 1rem; 
+            border-radius: 10px;
+          }    
+        
+        .link {
+            &:hover {
+                margin-left: 0.3rem;
+                transition: margin-left 0.2s ease-in;
+            }
+        }
+    }      
+
+    .content-bottom-title {
+        h6 {
+            font-weight: bolder;
+            color: $font-heading-color;
+            padding: 1rem 0;
+        }       
+
+        a {
+            color: $font-heading-color;
+
+            i {
+                font-size: larger;
+            }
+
+            &:hover {
+                margin-left: 0.3rem;
+                transition: margin-left 0.2s ease-in;
+            }
+        }
+    }
+
+    .services {
+        padding: 5% 0;
+
+        .serviceanim {
+            padding: 2rem;
+        }
+    }
+} 
