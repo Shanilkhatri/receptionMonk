@@ -18,12 +18,6 @@ body {
     font-family: sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    @font-face {
-        font-family: bootstrap-icons;     
-        src:  url("../fonts/bootstrap-icons.woff2?1bb88866b4085542c8ed5fb61b9393dd") format("woff2"),
-            url("../fonts/bootstrap-icons.woff?1bb88866b4085542c8ed5fb61b9393dd") format("woff") !important;
-    }
 }
 
 a {
@@ -32,11 +26,17 @@ a {
 }
 
 .bg-anim-one {
+    background: $white url('../../assets/images/bg_content_one_primary.svg') top right no-repeat;
+    background-position: top right;
     // background: $white url('../../assets/images/bg_content_one_primary.svg') top right no-repeat;
-    background: $primary url('../../assets/images/bg_content_one_white.svg') top right no-repeat;
+    // background: $primary url('../../assets/images/bg_content_one_white.svg') top right no-repeat;
 }
 
 .bg-anim-two {
     background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
+    background-position: top left;
+    // background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
     // background: $primary url('../../assets/images/bg_content_two_white.svg') no-repeat;
 }
+
+@include min-breakpoint-xxl

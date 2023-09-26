@@ -2,9 +2,23 @@
 
 @mixin min-breakpoint-xxl {
     @media (min-width: 1600px) {
+        .container {
+            max-width: 1660px;
+        }
+        .bg-anim-one {
+            background-position: top;
+        }
+        
+        .bg-anim-two {
+            background-position: top;
+        }
     }   
 }
-
+@mixin min-max-breakpoint-lg {
+    @media (min-width: 1200px) and (max-width: 1599.99px) {
+       
+    }    
+}
 @mixin min-max-breakpoint-lg {
     @media (min-width: 992px) and (max-width: 1199.99px) {
       

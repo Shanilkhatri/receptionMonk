@@ -4,6 +4,7 @@
 
 @import "../variables/variables";
 @import "../mixins/buttons";
+@import "../mixins/breakpoints";
 
 .navbar {
 
@@ -11,7 +12,6 @@
     padding: 1rem 0;
 
     .container {
-        max-width: 1660px;
         .navbar-nav {
 
             .nav-item a{
@@ -44,5 +44,6 @@
         }
     }
 
+    @include min-breakpoint-xxl;
     
 }
