@@ -77,6 +77,31 @@
                 font-size: 2rem;
             }
         }
+        #pricetable {
+            .list-group {
+                .list-group-item {
+                    padding: 0;
+                    &.active > span {
+                        padding: 2px !important;
+    
+                        & > i {
+                            font-size: small !important;
+                        }
+                    }
+                    &.deactive {
+                        span {
+                            padding: 2px !important;
+                            & > i {
+                                font-size: small !important;
+                            }
+                        } 
+                    }
+                }
+            }    
+            h4 {
+                margin: 1.5rem !important;
+            }
+        }
     }    
 }
 
@@ -108,7 +133,35 @@
                 font-size: smaller;
             }
             .display-6 {
-                font-size: 1.5rem;
+                font-size: 1.5rem !important;
+            }
+        }
+        #pricetable {
+            .list-group {
+                .list-group-item {
+                    padding: 0;
+                    line-height: 2.5 !important;
+                    font-size: small !important;
+
+                    &.active > span {
+                        padding: 1px !important;
+    
+                        & > i {
+                            font-size: small !important;
+                        }
+                    }
+                    &.deactive {
+                        span {
+                            padding: 1px !important;
+                            & > i {
+                                font-size: small !important;
+                            }
+                        } 
+                    }
+                }
+            }    
+            h4 {
+                margin: 2rem 0.5rem !important;
             }
         }
     }

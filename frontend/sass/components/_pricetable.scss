@@ -2,6 +2,8 @@
 // Price Table CSS
 // ###################
 
+@import "../mixins/breakpoints";
+
 #pricetable {
     padding-bottom: 5%;
     .col {         
@@ -110,3 +112,6 @@
         
     }
 }
+
+@include min-max-breakpoint-lg;
+@include max-breakpoint-md;

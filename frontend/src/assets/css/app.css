@@ -26,7 +26,19 @@
     .navbar .container .navbar-nav .hero-text p {
       font-size: medium; }
     .navbar .container .navbar-nav #contentSecond .display-6 {
-      font-size: 2rem; } }
+      font-size: 2rem; }
+    .navbar .container .navbar-nav #pricetable .list-group .list-group-item {
+      padding: 0; }
+      .navbar .container .navbar-nav #pricetable .list-group .list-group-item.active > span {
+        padding: 2px !important; }
+        .navbar .container .navbar-nav #pricetable .list-group .list-group-item.active > span > i {
+          font-size: small !important; }
+      .navbar .container .navbar-nav #pricetable .list-group .list-group-item.deactive span {
+        padding: 2px !important; }
+        .navbar .container .navbar-nav #pricetable .list-group .list-group-item.deactive span > i {
+          font-size: small !important; }
+    .navbar .container .navbar-nav #pricetable h4, .navbar .container .navbar-nav #pricetable .h4 {
+      margin: 1.5rem !important; } }
   .navbar .container .navbar-nav .nav-button .btn-primary {
     border-radius: 0.7rem;
     background-color: #C8400D;
@@ -112,7 +124,19 @@
   #hero .hero-text p {
     font-size: medium; }
   #hero #contentSecond .display-6 {
-    font-size: 2rem; } }
+    font-size: 2rem; }
+  #hero #pricetable .list-group .list-group-item {
+    padding: 0; }
+    #hero #pricetable .list-group .list-group-item.active > span {
+      padding: 2px !important; }
+      #hero #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #hero #pricetable .list-group .list-group-item.deactive span {
+      padding: 2px !important; }
+      #hero #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #hero #pricetable h4, #hero #pricetable .h4 {
+    margin: 1.5rem !important; } }
 
 @media (max-width: 991.98px) {
   #hero .hero-content {
@@ -131,7 +155,21 @@
   #hero #contentSecond p {
     font-size: smaller; }
   #hero #contentSecond .display-6 {
-    font-size: 1.5rem; } }
+    font-size: 1.5rem !important; }
+  #hero #pricetable .list-group .list-group-item {
+    padding: 0;
+    line-height: 2.5 !important;
+    font-size: small !important; }
+    #hero #pricetable .list-group .list-group-item.active > span {
+      padding: 1px !important; }
+      #hero #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #hero #pricetable .list-group .list-group-item.deactive span {
+      padding: 1px !important; }
+      #hero #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #hero #pricetable h4, #hero #pricetable .h4 {
+    margin: 2rem 0.5rem !important; } }
 
 #contentfirst {
   padding: 5% 0 3%; }
@@ -191,7 +229,21 @@
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
-    font-size: 1.5rem; } }
+    font-size: 1.5rem !important; }
+  #pricetable .list-group .list-group-item {
+    padding: 0;
+    line-height: 2.5 !important;
+    font-size: small !important; }
+    #pricetable .list-group .list-group-item.active > span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #pricetable .list-group .list-group-item.deactive span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #pricetable h4, #pricetable .h4 {
+    margin: 2rem 0.5rem !important; } }
 
 #contentSecond {
   padding: 5% 0; }
@@ -246,7 +298,19 @@
   .hero-text p {
     font-size: medium; }
   #contentSecond .display-6 {
-    font-size: 2rem; } }
+    font-size: 2rem; }
+  #pricetable .list-group .list-group-item {
+    padding: 0; }
+    #pricetable .list-group .list-group-item.active > span {
+      padding: 2px !important; }
+      #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #pricetable .list-group .list-group-item.deactive span {
+      padding: 2px !important; }
+      #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #pricetable h4, #pricetable .h4 {
+    margin: 1.5rem !important; } }
 
 @media (max-width: 991.98px) {
   .hero-content {
@@ -265,7 +329,21 @@
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
-    font-size: 1.5rem; } }
+    font-size: 1.5rem !important; }
+  #pricetable .list-group .list-group-item {
+    padding: 0;
+    line-height: 2.5 !important;
+    font-size: small !important; }
+    #pricetable .list-group .list-group-item.active > span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #pricetable .list-group .list-group-item.deactive span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #pricetable h4, #pricetable .h4 {
+    margin: 2rem 0.5rem !important; } }
 
 #pricetable {
   padding-bottom: 5%; }
@@ -340,8 +418,71 @@
           border: 1px solid #000;
           transition: border 0.4s ease-in; }
 
+@media (min-width: 992px) and (max-width: 1199.99px) {
+  .nav-item a {
+    font-size: 1rem;
+    margin: 0 1rem; }
+  .btn-primary {
+    padding: 0.5rem 2rem !important; }
+  .hero-content {
+    padding-top: 10%;
+    padding-bottom: 10%; }
+  .sponcership {
+    padding: 0 0 18.2%; }
+  .hero-text .display-3 {
+    font-size: 3rem; }
+  .hero-text p {
+    font-size: medium; }
+  #contentSecond .display-6 {
+    font-size: 2rem; }
+  #pricetable .list-group .list-group-item {
+    padding: 0; }
+    #pricetable .list-group .list-group-item.active > span {
+      padding: 2px !important; }
+      #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #pricetable .list-group .list-group-item.deactive span {
+      padding: 2px !important; }
+      #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #pricetable h4, #pricetable .h4 {
+    margin: 1.5rem !important; } }
+
+@media (max-width: 991.98px) {
+  .hero-content {
+    padding-top: 4%;
+    padding-bottom: 4%; }
+  .btn-primary {
+    padding: 0.5rem 2rem !important; }
+  .sponcership {
+    padding: 5% 0 8%; }
+  .hero-text .display-3 {
+    font-size: 2.2rem; }
+  .hero-text p {
+    font-size: 1rem; }
+  #contentfirst {
+    padding: 10% 0 5% !important; }
+  #contentSecond p {
+    font-size: smaller; }
+  #contentSecond .display-6 {
+    font-size: 1.5rem !important; }
+  #pricetable .list-group .list-group-item {
+    padding: 0;
+    line-height: 2.5 !important;
+    font-size: small !important; }
+    #pricetable .list-group .list-group-item.active > span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #pricetable .list-group .list-group-item.deactive span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #pricetable h4, #pricetable .h4 {
+    margin: 2rem 0.5rem !important; } }
+
 #footer {
-  padding: 3% 0 1%;
+  padding: 5% 0 3%;
   line-height: 2;
   color: #fff; }
   #footer .social {
