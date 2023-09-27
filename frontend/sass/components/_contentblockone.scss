@@ -2,8 +2,10 @@
 // Content Block First CSS
 // ###################
 
+@import "../mixins/breakpoints";
+
 #contentfirst {
-    padding: 5% 0;
+    padding: 5% 0 3%;
 
     .content-top-title {
         color: $white;
@@ -55,3 +57,6 @@
         }
     }
 } 
+
+@include min-max-breakpoint-exl;
+@include max-breakpoint-md;

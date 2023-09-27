@@ -5,22 +5,28 @@
         .container {
             max-width: 1660px;
         }
-        .bg-anim-one {
-            background-position: top;
-        }
+        // .bg-anim-one {
+        //     background-position: top;
+        // }
         
-        .bg-anim-two {
-            background-position: top;
-        }
+        // .bg-anim-two {
+        //     background-position: top;
+        // }
     }   
 }
 @mixin min-max-breakpoint-exl {
     @media (min-width: 1400px) and (max-width: 1599.99px) {
+        .bg-anim-two {
+            background-position: top;
+        }
         .hero-content {
             padding-top: 2%;
         }        
         .sponcership {
             padding: 5% 0 10.5%;
+        }
+        #contentfirst {
+            padding: 8% 0 5%;
         }
     }    
 }
@@ -63,20 +69,59 @@
                 font-size: 3rem;
             }         
             p {
-                font-size: $font-size-base;
+                font-size: medium;
             }
-        }   
+        } 
+        #contentSecond {
+            .display-6 {
+                font-size: 2rem;
+            }
+        }
     }    
 }
 
 @mixin max-breakpoint-md {
     @media (max-width: 991.98px) {
-       
+        .hero-content {
+            padding-top: 4%;
+            padding-bottom: 4%;
+        }  
+       .btn-primary {
+            padding: 0.5rem 2rem !important;
+        }
+        .sponcership {
+            padding: 5% 0 8%;
+        }
+        .hero-text {   
+            .display-3 {
+                font-size: 2.2rem;
+            }         
+            p {
+                font-size: $font-size-base;
+            }
+        }   
+        #contentfirst {
+            padding: 10% 0 5% !important; 
+        }  
+        #contentSecond {
+            p {
+                font-size: smaller;
+            }
+            .display-6 {
+                font-size: 1.5rem;
+            }
+        }
     }
 }
 
 @mixin max-breakpoint-sm {
     @media (max-width: 575.98px) { 
-       
+        .bg-anim-one {
+            background: none;
+        }
+        .bg-anim-two {
+            background: none;
+        }
+        
      }
 }

@@ -2,6 +2,8 @@
 // Content Block Two CSS
 // ###################
 
+@import "../mixins/breakpoints";
+
 #contentSecond {
     padding: 5% 0;
 
@@ -44,3 +46,6 @@
         
     }
 }
+
+@include min-max-breakpoint-lg;
+@include max-breakpoint-md;

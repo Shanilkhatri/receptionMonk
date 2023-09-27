@@ -10,11 +10,11 @@ function Hero() {
                     <div className="row align-items-center hero-content">
                         <div className="col-md-6">
                             <div className="hero-text text-primary">
-                                <h1 className="fw-bold mb-4 display-3">Take your Team to the next level</h1>
-                                <p className="my-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                <h1 className="fw-bold mb-3 mb-lg-4 display-3">Take your Team to the next level</h1>
+                                <p className="my-1 my-lg-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                             </div>
                             <div>
-                                <button className="btn btn-primary mt-5">CTA</button>
+                                <button className="btn btn-primary mt-3 mt-lg-5">CTA</button>
                             </div>
                         </div>
                         <div className="col-md-6">

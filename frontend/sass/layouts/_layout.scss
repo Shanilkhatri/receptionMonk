@@ -34,9 +34,10 @@ a {
 
 .bg-anim-two {
     background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
-    background-position: top left;
+    background-position: top;
     // background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
     // background: $primary url('../../assets/images/bg_content_two_white.svg') no-repeat;
 }
 
-@include min-breakpoint-xxl
+@include min-breakpoint-xxl;
+@include min-max-breakpoint-exl;
