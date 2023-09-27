@@ -39,5 +39,6 @@ a {
     // background: $primary url('../../assets/images/bg_content_two_white.svg') no-repeat;
 }
 
+@include min-breakpoint-3xl;
 @include min-breakpoint-xxl;
 @include min-max-breakpoint-exl;

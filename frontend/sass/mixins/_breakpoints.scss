@@ -1,5 +1,22 @@
 // breakpoint_mixin
-
+@mixin min-breakpoint-3xl {
+    @media (min-width: 3000px) {
+        .container {
+            max-width: 80% !important;
+        }
+        .bg-anim-one {
+                background-position: top right;
+                .navbar-brand {
+                    img {
+                        max-height: 600px;
+                    }
+                }
+        }
+        .bg-anim-two {
+            background-position: inherit;
+        }
+    }
+}
 @mixin min-breakpoint-xxl {
     @media (min-width: 1600px) {
         .container {
