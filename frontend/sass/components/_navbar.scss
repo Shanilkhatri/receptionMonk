@@ -25,6 +25,7 @@
                     color: $black;
                 }
             }
+            @include min-max-breakpoint-lg;
 
             .nav-button {
                 .btn-primary {

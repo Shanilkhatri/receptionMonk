@@ -35,7 +35,7 @@ function Header() {
                                 <li className="nav-item">
                                     <a data-scroll href="#" className="nav-link">Contact</a>
                                 </li>
-                                <li className="nav-button p-2 ms-5">
+                                <li className="nav-button p-2 ms-5 ms-lg-0 ms-xl-5">
                                     <button className="btn btn-primary">Portal</button>
                                 </li>
                             </ul>

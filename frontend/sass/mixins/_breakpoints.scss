@@ -14,14 +14,58 @@
         }
     }   
 }
-@mixin min-max-breakpoint-lg {
-    @media (min-width: 1200px) and (max-width: 1599.99px) {
-       
+@mixin min-max-breakpoint-exl {
+    @media (min-width: 1400px) and (max-width: 1599.99px) {
+        .hero-content {
+            padding-top: 2%;
+        }        
+        .sponcership {
+            padding: 5% 0 10.5%;
+        }
+    }    
+}
+@mixin min-max-breakpoint-xl {
+    @media (min-width: 1200px) and (max-width: 1399.99px) {
+        .hero-content {
+            padding-top: 1%;
+        }   
+        .sponcership {
+            padding: 8% 0 18%;
+        }
+        .hero-text {   
+            .display-3 {
+                font-size: 3.5rem;
+            }         
+            p {
+                font-size: $font-size-base;
+            }
+        }        
     }    
 }
 @mixin min-max-breakpoint-lg {
     @media (min-width: 992px) and (max-width: 1199.99px) {
-      
+        .nav-item a{
+            font-size: $font-size-base;
+            margin: 0 1rem;
+        }
+        .btn-primary {
+            padding: 0.5rem 2rem !important;
+        }
+        .hero-content {
+            padding-top: 10%;
+            padding-bottom: 10%;
+        }   
+        .sponcership {
+            padding: 0 0 18.2%;
+        }
+        .hero-text {   
+            .display-3 {
+                font-size: 3rem;
+            }         
+            p {
+                font-size: $font-size-base;
+            }
+        }   
     }    
 }
 

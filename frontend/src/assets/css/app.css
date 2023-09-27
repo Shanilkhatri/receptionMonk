@@ -10,6 +10,21 @@
     margin: 0 1.5rem; }
     .navbar .container .navbar-nav .nav-item a:hover {
       color: #000; }
+  @media (min-width: 992px) and (max-width: 1199.99px) {
+    .navbar .container .navbar-nav .nav-item a {
+      font-size: 1rem;
+      margin: 0 1rem; }
+    .navbar .container .navbar-nav .btn-primary {
+      padding: 0.5rem 2rem !important; }
+    .navbar .container .navbar-nav .hero-content {
+      padding-top: 10%;
+      padding-bottom: 10%; }
+    .navbar .container .navbar-nav .sponcership {
+      padding: 0 0 18.2%; }
+    .navbar .container .navbar-nav .hero-text .display-3 {
+      font-size: 3rem; }
+    .navbar .container .navbar-nav .hero-text p {
+      font-size: 1rem; } }
   .navbar .container .navbar-nav .nav-button .btn-primary {
     border-radius: 0.7rem;
     background-color: #C8400D;
@@ -30,11 +45,10 @@
       box-shadow: none; }
   @media (min-width: 1600px) {
     .navbar .container {
-      max-width: 1660px; }
-    .navbar .bg-anim-one {
-      background-position: top; }
-    .navbar .bg-anim-two {
-      background-position: top; } }
+      max-width: 1660px; } }
+
+#hero .hero-content {
+  padding-top: 3.2%; }
 
 #hero .hero-text p {
   font-size: 1.25rem; }
@@ -58,9 +72,39 @@
   border: 1px solid #7C8FAC; }
 
 #hero .sponcership {
-  padding: 5% 0 11%; }
-  #hero .sponcership div {
-    min-height: 150px; }
+  padding: 5% 0 15%; }
+
+@media (min-width: 1400px) and (max-width: 1599.99px) {
+  #hero .hero-content {
+    padding-top: 2%; }
+  #hero .sponcership {
+    padding: 5% 0 10.5%; } }
+
+@media (min-width: 1200px) and (max-width: 1399.99px) {
+  #hero .hero-content {
+    padding-top: 1%; }
+  #hero .sponcership {
+    padding: 8% 0 18%; }
+  #hero .hero-text .display-3 {
+    font-size: 3.5rem; }
+  #hero .hero-text p {
+    font-size: 1rem; } }
+
+@media (min-width: 992px) and (max-width: 1199.99px) {
+  #hero .nav-item a {
+    font-size: 1rem;
+    margin: 0 1rem; }
+  #hero .btn-primary {
+    padding: 0.5rem 2rem !important; }
+  #hero .hero-content {
+    padding-top: 10%;
+    padding-bottom: 10%; }
+  #hero .sponcership {
+    padding: 0 0 18.2%; }
+  #hero .hero-text .display-3 {
+    font-size: 3rem; }
+  #hero .hero-text p {
+    font-size: 1rem; } }
 
 #contentfirst {
   padding: 5% 0; }
@@ -242,11 +286,7 @@ a {
 
 @media (min-width: 1600px) {
   .container {
-    max-width: 1660px; }
-  .bg-anim-one {
-    background-position: top; }
-  .bg-anim-two {
-    background-position: top; } }
+    max-width: 1660px; } }
 
 .text-primary {
   color: #C8400D !important; }
@@ -892,12 +932,12 @@ progress {
       font-size: 3rem; } }
 
 .display-6 {
-  font-size: calc(1.375rem + 1.5vw);
+  font-size: calc(1.345rem + 1.14vw);
   font-weight: 500;
   line-height: 1.2; }
   @media (min-width: 1200px) {
     .display-6 {
-      font-size: 2.5rem; } }
+      font-size: 2.2rem; } }
 
 .list-unstyled {
   padding-left: 0;
