@@ -1,46 +1,28 @@
 // breakpoint_mixin
-@mixin min-breakpoint-3xl {
-    @media (min-width: 3000px) {
-        .container {
-            max-width: 80% !important;
-        }
-        .bg-anim-one {
-                background-position: top right;
-                .navbar-brand {
-                    img {
-                        max-height: 600px;
-                    }
-                }
-        }
-        .bg-anim-two {
-            background-position: inherit;
-        }
-    }
-}
+// @mixin min-breakpoint-3xl {
+//     @media (min-width: 3000px) {
+//         .container {
+//             max-width: 70% !important;
+//         }//        
+//     }
+// }
 @mixin min-breakpoint-xxl {
     @media (min-width: 1600px) {
         .container {
             max-width: 1660px;
-        }
-        // .bg-anim-one {
-        //     background-position: top;
-        // }
-        
-        // .bg-anim-two {
-        //     background-position: top;
-        // }
+        }       
     }   
 }
 @mixin min-max-breakpoint-exl {
-    @media (min-width: 1400px) and (max-width: 1599.99px) {
-        .bg-anim-two {
-            background-position: top;
-        }
-        .hero-content {
-            padding-top: 2%;
-        }        
+    @media (min-width: 1400px) and (max-width: 1599.99px) {     
+        #hero {
+            padding-top: 15%;
+        }  
+        // .hero-content {
+        //     padding-top: 2%;
+        // }        
         .sponcership {
-            padding: 5% 0 10.5%;
+            padding: 5% 0 18.5%;
         }
         #contentfirst {
             padding: 8% 0 5%;
@@ -49,9 +31,12 @@
 }
 @mixin min-max-breakpoint-xl {
     @media (min-width: 1200px) and (max-width: 1399.99px) {
-        .hero-content {
-            padding-top: 1%;
-        }   
+        #hero {
+            padding-top: 15%;
+        } 
+        // .hero-content {
+        //     padding-top: 1%;
+        // }   
         .sponcership {
             padding: 8% 0 18%;
         }
@@ -74,9 +59,9 @@
         .btn-primary {
             padding: 0.5rem 2rem !important;
         }
-        .hero-content {
-            padding-top: 10%;
-            padding-bottom: 10%;
+        #hero {
+            padding-top: 15%;
+            // padding-bottom: 10%;
         }   
         .sponcership {
             padding: 0 0 18.2%;
@@ -124,9 +109,25 @@
 
 @mixin max-breakpoint-md {
     @media (max-width: 991.98px) {
-        .hero-content {
-            padding-top: 4%;
-            padding-bottom: 4%;
+        .bg-xs {
+            background: $white url('../images/ipad_bg.svg') no-repeat;
+            background-position: top right;
+        }
+        .bg-anim-one {
+            background: none !important; 
+        }
+        .bg-anim-two {
+            background: none !important; 
+        }        
+        .navbar-collapse {       
+            background-color: $white;
+            overflow: hidden;
+            box-shadow: inset 0px -5px 10px -6px rgba(0,0,0,0.1);
+            transition: all 0.5s ease-in-out;
+        }
+        #hero{
+            padding-top: 17%;
+            // padding-bottom: 4%;
         }  
        .btn-primary {
             padding: 0.5rem 2rem !important;
@@ -136,7 +137,7 @@
         }
         .hero-text {   
             .display-3 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }         
             p {
                 font-size: $font-size-base;
@@ -144,6 +145,9 @@
         }   
         #contentfirst {
             padding: 10% 0 5% !important; 
+            p {
+                color: $gray-100;
+            }
         }  
         #contentSecond {
             p {
@@ -186,12 +190,64 @@
 
 @mixin max-breakpoint-sm {
     @media (max-width: 575.98px) { 
+        .bg-xs {
+            background: $white url('../images/combined_mobile_bg.svg') no-repeat;
+            background-position: top right;
+        }
         .bg-anim-one {
-            background: none;
+            background: none !important; 
         }
         .bg-anim-two {
-            background: none;
+            background: none !important; 
         }
-        
-     }
+        #hero {
+            padding-top: 130px;
+            // padding-bottom: 10%;
+            .anim {
+                margin-top: 2.5rem;
+            }
+        } 
+        #contentfirst {        
+            .content-top-title {
+                h2 {
+                    color: $primary;
+                    &::before {
+                        width: 15%;
+                        background-color: $primary;
+                    }
+                }
+            }
+            .content-bottom-title {
+                p {
+                    color: $gray-700;
+                }
+            }
+        }
+        #contentSecond {
+            p {
+                font-size: medium !important; 
+            }
+            .display-6 {
+                font-size: 1.6rem !important;
+            }
+        }
+        #pricetable {
+            .list-group {
+                .list-group-item {
+                    padding: 1rem !important;
+                    line-height: 1 !important;
+                    font-size: medium !important;     
+                }
+            }   
+            .col {         
+                padding: 1.5rem;
+                .card {
+                    color: $gray-700;
+                }
+            } 
+        }
+        #footer {
+            padding: 10% 0 5%;
+        }
+    }
 }

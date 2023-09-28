@@ -12,7 +12,7 @@ function Header() {
     return (
         <div>
             <div id="navbar">
-                <nav className="navbar navbar-expand-lg navbar-white">
+                <nav className="navbar fixed-top navbar-expand-lg">
                     <div className="container">                                         
                         <a className="navbar-brand" href="#">
                             <img src={logo} alt="logo"/>
@@ -39,10 +39,6 @@ function Header() {
                                     <button className="btn btn-primary">Portal</button>
                                 </li>
                             </ul>
-
-                            {/* <div className="nav-button">
-                                <button className="btn btn-primary">Portal</button>
-                            </div> */}
                         </div>                        
                     </div>
                 </nav>

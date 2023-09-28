@@ -10,7 +10,8 @@ function homePage() {
     return (
         <div>
             
-            <div className="bg-anim-one"> 
+            <div className="bg-xs">
+                <div className="bg-anim-one"> 
 
                 {/* Header Section */}
                 <Header />     
@@ -18,9 +19,9 @@ function homePage() {
                 {/* Hero Section */}
                 <Hero /> 
 
-            </div>
-            
-           <div className="bg-anim-two"> 
+                </div>
+
+                <div className="bg-anim-two"> 
 
                 {/* Content Block One Section */}
                 <ContentOne />
@@ -28,7 +29,10 @@ function homePage() {
                 {/* Content Block Two Section */}
                 <ContentTwo />
 
-            </div>      
+                </div>  
+            </div>
+               
+
 
             <div>
 

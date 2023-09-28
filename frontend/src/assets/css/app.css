@@ -1,7 +1,12 @@
 @charset "UTF-8";
 .navbar {
-  box-shadow: none;
+  position: fixed;
+  width: 100%;
+  height: auto;
+  z-index: 1;
   padding: 1rem 0; }
+  .navbar .navbar-brand {
+    z-index: 2; }
   .navbar .container .navbar-nav .nav-item a {
     color: #C8400D;
     font-size: 1.25rem;
@@ -16,9 +21,8 @@
       margin: 0 1rem; }
     .navbar .container .navbar-nav .btn-primary {
       padding: 0.5rem 2rem !important; }
-    .navbar .container .navbar-nav .hero-content {
-      padding-top: 10%;
-      padding-bottom: 10%; }
+    .navbar .container .navbar-nav #hero {
+      padding-top: 15%; }
     .navbar .container .navbar-nav .sponcership {
       padding: 0 0 18.2%; }
     .navbar .container .navbar-nav .hero-text .display-3 {
@@ -61,119 +65,121 @@
     .navbar .container {
       max-width: 1660px; } }
 
-#hero .hero-content {
-  padding-top: 3.2%; }
-
-#hero .hero-text p {
-  font-size: 1.25rem; }
-
-#hero .btn-primary {
-  border-radius: 0.7rem;
-  background-color: #C8400D;
-  padding: 0.5rem 3rem;
-  font-weight: bold;
-  border-color: #C8400D;
-  letter-spacing: 1px;
-  padding: 0.5rem 4rem; }
-  #hero .btn-primary:hover {
-    background-color: #000;
-    border-color: #000;
-    transition: all 0.3s ease-in-out; }
-
-#hero .anim {
-  width: 100%;
-  max-height: 600px;
-  border: 1px solid #7C8FAC; }
-
-#hero .sponcership {
-  padding: 5% 0 15%; }
-
-@media (min-width: 1400px) and (max-width: 1599.99px) {
-  #hero .bg-anim-two {
-    background-position: top; }
-  #hero .hero-content {
-    padding-top: 2%; }
-  #hero .sponcership {
-    padding: 5% 0 10.5%; }
-  #hero #contentfirst {
-    padding: 8% 0 5%; } }
-
-@media (min-width: 1200px) and (max-width: 1399.99px) {
-  #hero .hero-content {
-    padding-top: 1%; }
-  #hero .sponcership {
-    padding: 8% 0 18%; }
-  #hero .hero-text .display-3 {
-    font-size: 3.5rem; }
+#hero {
+  padding-top: 10%; }
   #hero .hero-text p {
-    font-size: 1rem; } }
-
-@media (min-width: 992px) and (max-width: 1199.99px) {
-  #hero .nav-item a {
-    font-size: 1rem;
-    margin: 0 1rem; }
+    font-size: 1.25rem; }
   #hero .btn-primary {
-    padding: 0.5rem 2rem !important; }
-  #hero .hero-content {
-    padding-top: 10%;
-    padding-bottom: 10%; }
+    border-radius: 0.7rem;
+    background-color: #C8400D;
+    padding: 0.5rem 3rem;
+    font-weight: bold;
+    border-color: #C8400D;
+    letter-spacing: 1px;
+    padding: 0.5rem 4rem; }
+    #hero .btn-primary:hover {
+      background-color: #000;
+      border-color: #000;
+      transition: all 0.3s ease-in-out; }
+  #hero .anim {
+    width: 100%;
+    max-height: 600px;
+    border: 1px solid #7C8FAC; }
   #hero .sponcership {
-    padding: 0 0 18.2%; }
-  #hero .hero-text .display-3 {
-    font-size: 3rem; }
-  #hero .hero-text p {
-    font-size: medium; }
-  #hero #contentSecond .display-6 {
-    font-size: 2rem; }
-  #hero #pricetable .list-group .list-group-item {
-    padding: 0; }
-    #hero #pricetable .list-group .list-group-item.active > span {
-      padding: 2px !important; }
-      #hero #pricetable .list-group .list-group-item.active > span > i {
-        font-size: small !important; }
-    #hero #pricetable .list-group .list-group-item.deactive span {
-      padding: 2px !important; }
-      #hero #pricetable .list-group .list-group-item.deactive span > i {
-        font-size: small !important; }
-  #hero #pricetable h4, #hero #pricetable .h4 {
-    margin: 1.5rem !important; } }
-
-@media (max-width: 991.98px) {
-  #hero .hero-content {
-    padding-top: 4%;
-    padding-bottom: 4%; }
-  #hero .btn-primary {
-    padding: 0.5rem 2rem !important; }
-  #hero .sponcership {
-    padding: 5% 0 8%; }
-  #hero .hero-text .display-3 {
-    font-size: 2.2rem; }
-  #hero .hero-text p {
-    font-size: 1rem; }
-  #hero #contentfirst {
-    padding: 10% 0 5% !important; }
-  #hero #contentSecond p {
-    font-size: smaller; }
-  #hero #contentSecond .display-6 {
-    font-size: 1.5rem !important; }
-  #hero #pricetable .list-group .list-group-item {
-    padding: 0;
-    line-height: 2.5 !important;
-    font-size: small !important; }
-    #hero #pricetable .list-group .list-group-item.active > span {
-      padding: 1px !important; }
-      #hero #pricetable .list-group .list-group-item.active > span > i {
-        font-size: small !important; }
-    #hero #pricetable .list-group .list-group-item.deactive span {
-      padding: 1px !important; }
-      #hero #pricetable .list-group .list-group-item.deactive span > i {
-        font-size: small !important; }
-  #hero #pricetable h4, #hero #pricetable .h4 {
-    margin: 2rem 0.5rem !important; } }
+    padding: 10% 0 15%; }
+  @media (min-width: 1400px) and (max-width: 1599.99px) {
+    #hero #hero {
+      padding-top: 15%; }
+    #hero .sponcership {
+      padding: 5% 0 10.5%; }
+    #hero #contentfirst {
+      padding: 8% 0 5%; } }
+  @media (min-width: 1200px) and (max-width: 1399.99px) {
+    #hero #hero {
+      padding-top: 15%; }
+    #hero .sponcership {
+      padding: 8% 0 18%; }
+    #hero .hero-text .display-3 {
+      font-size: 3.5rem; }
+    #hero .hero-text p {
+      font-size: 1rem; } }
+  @media (min-width: 992px) and (max-width: 1199.99px) {
+    #hero .nav-item a {
+      font-size: 1rem;
+      margin: 0 1rem; }
+    #hero .btn-primary {
+      padding: 0.5rem 2rem !important; }
+    #hero #hero {
+      padding-top: 15%; }
+    #hero .sponcership {
+      padding: 0 0 18.2%; }
+    #hero .hero-text .display-3 {
+      font-size: 3rem; }
+    #hero .hero-text p {
+      font-size: medium; }
+    #hero #contentSecond .display-6 {
+      font-size: 2rem; }
+    #hero #pricetable .list-group .list-group-item {
+      padding: 0; }
+      #hero #pricetable .list-group .list-group-item.active > span {
+        padding: 2px !important; }
+        #hero #pricetable .list-group .list-group-item.active > span > i {
+          font-size: small !important; }
+      #hero #pricetable .list-group .list-group-item.deactive span {
+        padding: 2px !important; }
+        #hero #pricetable .list-group .list-group-item.deactive span > i {
+          font-size: small !important; }
+    #hero #pricetable h4, #hero #pricetable .h4 {
+      margin: 1.5rem !important; } }
+  @media (max-width: 991.98px) {
+    #hero .bg-xs {
+      background: #fff url("../images/ipad_bg.svg") no-repeat;
+      background-position: top right; }
+    #hero .bg-anim-one {
+      background: none !important; }
+    #hero .bg-anim-two {
+      background: none !important; }
+    #hero .navbar-collapse {
+      background-color: #fff;
+      overflow: hidden;
+      box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s ease-in-out; }
+    #hero #hero {
+      padding-top: 17%; }
+    #hero .btn-primary {
+      padding: 0.5rem 2rem !important; }
+    #hero .sponcership {
+      padding: 5% 0 8%; }
+    #hero .hero-text .display-3 {
+      font-size: 2rem; }
+    #hero .hero-text p {
+      font-size: 1rem; }
+    #hero #contentfirst {
+      padding: 10% 0 5% !important; }
+      #hero #contentfirst p {
+        color: #F6F9FC; }
+    #hero #contentSecond p {
+      font-size: smaller; }
+    #hero #contentSecond .display-6 {
+      font-size: 1.5rem !important; }
+    #hero #pricetable .list-group .list-group-item {
+      padding: 0;
+      line-height: 2.5 !important;
+      font-size: small !important; }
+      #hero #pricetable .list-group .list-group-item.active > span {
+        padding: 1px !important; }
+        #hero #pricetable .list-group .list-group-item.active > span > i {
+          font-size: small !important; }
+      #hero #pricetable .list-group .list-group-item.deactive span {
+        padding: 1px !important; }
+        #hero #pricetable .list-group .list-group-item.deactive span > i {
+          font-size: small !important; }
+    #hero #pricetable h4, #hero #pricetable .h4 {
+      margin: 2rem 0.5rem !important; } }
 
 #contentfirst {
   padding: 5% 0 3%; }
-  #contentfirst .content-top-title {
+  #contentfirst .content-top-title h2, #contentfirst .content-top-title .h2 {
     color: #fff; }
     #contentfirst .content-top-title h2::before, #contentfirst .content-top-title .h2::before {
       content: "";
@@ -183,13 +189,17 @@
       background-color: #fff;
       margin-bottom: 1rem;
       border-radius: 10px; }
-    #contentfirst .content-top-title .link:hover {
-      margin-left: 0.3rem;
-      transition: margin-left 0.2s ease-in; }
+  #contentfirst .content-top-title p {
+    color: #3B3A3A; }
+  #contentfirst .content-top-title .link:hover {
+    margin-left: 0.3rem;
+    transition: margin-left 0.2s ease-in; }
   #contentfirst .content-bottom-title h6, #contentfirst .content-bottom-title .h6 {
     font-weight: bolder;
     color: #0C2533;
     padding: 1rem 0; }
+  #contentfirst .content-bottom-title p {
+    color: #B0B5BD; }
   #contentfirst .content-bottom-title a {
     color: #0C2533; }
     #contentfirst .content-bottom-title a i {
@@ -203,29 +213,40 @@
       padding: 2rem; }
 
 @media (min-width: 1400px) and (max-width: 1599.99px) {
-  .bg-anim-two {
-    background-position: top; }
-  .hero-content {
-    padding-top: 2%; }
+  #hero {
+    padding-top: 15%; }
   .sponcership {
     padding: 5% 0 10.5%; }
   #contentfirst {
     padding: 8% 0 5%; } }
 
 @media (max-width: 991.98px) {
-  .hero-content {
-    padding-top: 4%;
-    padding-bottom: 4%; }
+  .bg-xs {
+    background: #fff url("../images/ipad_bg.svg") no-repeat;
+    background-position: top right; }
+  .bg-anim-one {
+    background: none !important; }
+  .bg-anim-two {
+    background: none !important; }
+  .navbar-collapse {
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s ease-in-out; }
+  #hero {
+    padding-top: 17%; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
   .sponcership {
     padding: 5% 0 8%; }
   .hero-text .display-3 {
-    font-size: 2.2rem; }
+    font-size: 2rem; }
   .hero-text p {
     font-size: 1rem; }
   #contentfirst {
     padding: 10% 0 5% !important; }
+    #contentfirst p {
+      color: #F6F9FC; }
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
@@ -288,9 +309,8 @@
     margin: 0 1rem; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
-  .hero-content {
-    padding-top: 10%;
-    padding-bottom: 10%; }
+  #hero {
+    padding-top: 15%; }
   .sponcership {
     padding: 0 0 18.2%; }
   .hero-text .display-3 {
@@ -313,19 +333,32 @@
     margin: 1.5rem !important; } }
 
 @media (max-width: 991.98px) {
-  .hero-content {
-    padding-top: 4%;
-    padding-bottom: 4%; }
+  .bg-xs {
+    background: #fff url("../images/ipad_bg.svg") no-repeat;
+    background-position: top right; }
+  .bg-anim-one {
+    background: none !important; }
+  .bg-anim-two {
+    background: none !important; }
+  .navbar-collapse {
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s ease-in-out; }
+  #hero {
+    padding-top: 17%; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
   .sponcership {
     padding: 5% 0 8%; }
   .hero-text .display-3 {
-    font-size: 2.2rem; }
+    font-size: 2rem; }
   .hero-text p {
     font-size: 1rem; }
   #contentfirst {
     padding: 10% 0 5% !important; }
+    #contentfirst p {
+      color: #F6F9FC; }
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
@@ -368,7 +401,6 @@
       #pricetable .col .card .card-body .list-group .list-group-item {
         background: transparent;
         border: none;
-        color: #fff;
         position: relative;
         line-height: 3; }
         #pricetable .col .card .card-body .list-group .list-group-item.active > span {
@@ -424,9 +456,8 @@
     margin: 0 1rem; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
-  .hero-content {
-    padding-top: 10%;
-    padding-bottom: 10%; }
+  #hero {
+    padding-top: 15%; }
   .sponcership {
     padding: 0 0 18.2%; }
   .hero-text .display-3 {
@@ -449,19 +480,32 @@
     margin: 1.5rem !important; } }
 
 @media (max-width: 991.98px) {
-  .hero-content {
-    padding-top: 4%;
-    padding-bottom: 4%; }
+  .bg-xs {
+    background: #fff url("../images/ipad_bg.svg") no-repeat;
+    background-position: top right; }
+  .bg-anim-one {
+    background: none !important; }
+  .bg-anim-two {
+    background: none !important; }
+  .navbar-collapse {
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s ease-in-out; }
+  #hero {
+    padding-top: 17%; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
   .sponcership {
     padding: 5% 0 8%; }
   .hero-text .display-3 {
-    font-size: 2.2rem; }
+    font-size: 2rem; }
   .hero-text p {
     font-size: 1rem; }
   #contentfirst {
     padding: 10% 0 5% !important; }
+    #contentfirst p {
+      color: #F6F9FC; }
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
@@ -511,7 +555,7 @@ a {
   text-decoration: none !important; }
 
 .bg-anim-one {
-  background: #fff url("../../assets/images/bg_content_one_primary.svg") top right no-repeat;
+  background: #fff url("../../assets/images/bg_content_one_primary.svg") no-repeat;
   background-position: top right; }
 
 .bg-anim-two {
@@ -523,14 +567,92 @@ a {
     max-width: 1660px; } }
 
 @media (min-width: 1400px) and (max-width: 1599.99px) {
-  .bg-anim-two {
-    background-position: top; }
-  .hero-content {
-    padding-top: 2%; }
+  #hero {
+    padding-top: 15%; }
   .sponcership {
     padding: 5% 0 10.5%; }
   #contentfirst {
     padding: 8% 0 5%; } }
+
+@media (max-width: 991.98px) {
+  .bg-xs {
+    background: #fff url("../images/ipad_bg.svg") no-repeat;
+    background-position: top right; }
+  .bg-anim-one {
+    background: none !important; }
+  .bg-anim-two {
+    background: none !important; }
+  .navbar-collapse {
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s ease-in-out; }
+  #hero {
+    padding-top: 17%; }
+  .btn-primary {
+    padding: 0.5rem 2rem !important; }
+  .sponcership {
+    padding: 5% 0 8%; }
+  .hero-text .display-3 {
+    font-size: 2rem; }
+  .hero-text p {
+    font-size: 1rem; }
+  #contentfirst {
+    padding: 10% 0 5% !important; }
+    #contentfirst p {
+      color: #F6F9FC; }
+  #contentSecond p {
+    font-size: smaller; }
+  #contentSecond .display-6 {
+    font-size: 1.5rem !important; }
+  #pricetable .list-group .list-group-item {
+    padding: 0;
+    line-height: 2.5 !important;
+    font-size: small !important; }
+    #pricetable .list-group .list-group-item.active > span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.active > span > i {
+        font-size: small !important; }
+    #pricetable .list-group .list-group-item.deactive span {
+      padding: 1px !important; }
+      #pricetable .list-group .list-group-item.deactive span > i {
+        font-size: small !important; }
+  #pricetable h4, #pricetable .h4 {
+    margin: 2rem 0.5rem !important; } }
+
+@media (max-width: 575.98px) {
+  .bg-xs {
+    background: #fff url("../images/combined_mobile_bg.svg") no-repeat;
+    background-position: top right; }
+  .bg-anim-one {
+    background: none !important; }
+  .bg-anim-two {
+    background: none !important; }
+  #hero {
+    padding-top: 130px; }
+    #hero .anim {
+      margin-top: 2.5rem; }
+  #contentfirst .content-top-title h2, #contentfirst .content-top-title .h2 {
+    color: #C8400D; }
+    #contentfirst .content-top-title h2::before, #contentfirst .content-top-title .h2::before {
+      width: 15%;
+      background-color: #C8400D; }
+  #contentfirst .content-bottom-title p {
+    color: #3B3A3A; }
+  #contentSecond p {
+    font-size: medium !important; }
+  #contentSecond .display-6 {
+    font-size: 1.6rem !important; }
+  #pricetable .list-group .list-group-item {
+    padding: 1rem !important;
+    line-height: 1 !important;
+    font-size: medium !important; }
+  #pricetable .col {
+    padding: 1.5rem; }
+    #pricetable .col .card {
+      color: #3B3A3A; }
+  #footer {
+    padding: 10% 0 5%; } }
 
 .text-primary {
   color: #C8400D !important; }

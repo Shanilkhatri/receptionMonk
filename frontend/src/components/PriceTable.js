@@ -22,7 +22,7 @@ function PriceTable() {
                                         <li className="list-group-item deactive"><span><i className="bi bi-check2"></i></span>Plan Benefit 5</li>
                                     </ul>
                                 </div>
-                                <div className="card-footer text-center p-3">
+                                <div className="card-footer text-center p-md-3">
                                     <h4 className="fw-bold"><i className="bi bi-currency-rupee"></i> 999<span> / month</span></h4>
                                     <button className="btn btn-light fw-bold px-4 my-3">Choose</button>
                                 </div>
@@ -45,13 +45,13 @@ function PriceTable() {
                                         <li className="list-group-item deactive"><span><i className="bi bi-check2"></i></span>Plan Benefit 8</li>
                                     </ul>
                                 </div>
-                                <div className="card-footer text-center p-3">
+                                <div className="card-footer text-center p-md-3">
                                 <h4 className="fw-bold"><i className="bi bi-currency-rupee"></i> 999<span> / month</span></h4>
                                 <button className="btn btn-light fw-bold px-4 my-3">Choose</button>
                                 </div>
                             </div>
                         </div>
-                        <div className="col p-0">
+                        <div className="col p-md-0">
                             <div className="card bg-primary h-100">
                                 <div className="card-header">
                                     <h4 className="bg-white">Basic</h4>
@@ -68,9 +68,9 @@ function PriceTable() {
                                         <li className="list-group-item active"><span><i className="bi bi-check2"></i></span>Plan Benefit 6</li>
                                     </ul>
                                 </div>
-                                <div className="card-footer text-center p-3">
+                                <div className="card-footer text-center p-md-3">
                                     <h4 className="fw-bold"><i className="bi bi-currency-rupee"></i> 999<span> / month</span></h4>
-                                    <button className="btn btn-light fw-bold px-4 my-5">Choose</button>
+                                    <button className="btn btn-light fw-bold px-4 my-3 my-md-5">Choose</button>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@ function PriceTable() {
                                             <li className="list-group-item deactive"><span><i className="bi bi-check2"></i></span>Plan Benefit 8</li>
                                         </ul>
                                 </div>
-                                <div className="card-footer text-center p-3">
+                                <div className="card-footer text-center p-md-3">
                                     <h4 className="fw-bold"><i className="bi bi-currency-rupee"></i> 999<span> / month</span></h4>
                                     <button className="btn btn-light fw-bold px-4 my-3">Choose</button>
                                 </div>
@@ -114,7 +114,7 @@ function PriceTable() {
                                         <li className="list-group-item deactive"><span><i className="bi bi-check2"></i></span>Plan Benefit 8</li>
                                     </ul>
                                 </div>
-                                <div className="card-footer text-center p-3">
+                                <div className="card-footer text-center p-md-3">
                                     <h4 className="fw-bold"><i className="bi bi-currency-rupee"></i> 999<span> / month</span></h4>
                                     <button className="btn btn-light fw-bold px-4 my-3">Choose</button>
                                 </div>

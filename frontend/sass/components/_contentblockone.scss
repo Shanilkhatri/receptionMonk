@@ -8,17 +8,24 @@
     padding: 5% 0 3%;
 
     .content-top-title {
-        color: $white;
 
-        h2::before {
-            content: "";
-            display: block;
-            width: 10%;
-            height: 5px;
-            background-color: $white; 
-            margin-bottom: 1rem; 
-            border-radius: 10px;
-          }    
+        h2 {
+            color: $white;
+
+            &::before {
+                content: "";
+                display: block;
+                width: 10%;
+                height: 5px;
+                background-color: $white; 
+                margin-bottom: 1rem; 
+                border-radius: 10px;
+              }    
+        }
+
+          p {
+            color: $gray-700;
+          }
         
         .link {
             &:hover {
@@ -33,7 +40,11 @@
             font-weight: bolder;
             color: $font-heading-color;
             padding: 1rem 0;
-        }       
+        }     
+        
+        p {
+            color: $gray-300;
+        }
 
         a {
             color: $font-heading-color;

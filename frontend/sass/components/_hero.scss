@@ -5,9 +5,10 @@
 @import "../mixins/breakpoints";
 
 #hero {
-    .hero-content {
-        padding-top: 3.2%;
-    }
+    padding-top: 10%;
+    // .hero-content {
+    //     padding-top: 3.2%;
+    // }
     .hero-text {
         p {
             font-size: $font-size-lg;
@@ -23,7 +24,7 @@
         border: 1px solid $gray-500;
     }
     .sponcership {
-        padding: 5% 0 15%;
+        padding: 10% 0 15%;
     }
     
     @include min-max-breakpoint-exl;

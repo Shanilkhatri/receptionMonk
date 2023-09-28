@@ -1,5 +1,5 @@
 import React from "react";
-import anim from "../assets/images/scrnshot.png";
+import anim from "../assets/images/scrnshot.jpeg";
 import sponcer from "../assets/images/sponcer.svg";
 
 function Hero() {
@@ -14,7 +14,7 @@ function Hero() {
                                 <p className="my-1 my-lg-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                             </div>
                             <div>
-                                <button className="btn btn-primary mt-3 mt-lg-5">CTA</button>
+                                <button className="btn btn-primary mt-3 mt-lg-5 mb-4 mb-md-0">CTA</button>
                             </div>
                         </div>
                         <div className="col-md-6">
@@ -23,7 +23,7 @@ function Hero() {
                             </div>
                         </div>
                     </div>
-                    <div className="sponcership">
+                    <div className="sponcership d-none d-md-block">
                         <div className="row">
                             <div className="col-md-2">
                                 <img src={sponcer} alt="clients logo" className="img-fluid"></img>
