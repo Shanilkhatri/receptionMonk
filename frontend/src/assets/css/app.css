@@ -1,12 +1,14 @@
 @charset "UTF-8";
 .navbar {
-  position: fixed;
-  width: 100%;
-  height: auto;
-  z-index: 1;
   padding: 1rem 0; }
   .navbar .navbar-brand {
     z-index: 2; }
+  .navbar .navbar-collapse {
+    background-color: transparent;
+    transition: background-color 0.5s ease-in-out; }
+  .navbar .navbar-collapse.show {
+    background-color: #fff;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1); }
   .navbar .container .navbar-nav .nav-item a {
     color: #C8400D;
     font-size: 1.25rem;
@@ -91,7 +93,7 @@
     #hero #hero {
       padding-top: 15%; }
     #hero .sponcership {
-      padding: 5% 0 10.5%; }
+      padding: 5% 0 18.5%; }
     #hero #contentfirst {
       padding: 8% 0 5%; } }
   @media (min-width: 1200px) and (max-width: 1399.99px) {
@@ -139,11 +141,13 @@
       background: none !important; }
     #hero .bg-anim-two {
       background: none !important; }
-    #hero .navbar-collapse {
-      background-color: #fff;
-      overflow: hidden;
-      box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
-      transition: all 0.5s ease-in-out; }
+    #hero .navbar-collapse.show {
+      background-color: transparent;
+      box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem; }
+    #hero .navbar.scrolled .navbar-collapse.show {
+      box-shadow: none;
+      border-radius: 0; }
     #hero #hero {
       padding-top: 17%; }
     #hero .btn-primary {
@@ -216,7 +220,7 @@
   #hero {
     padding-top: 15%; }
   .sponcership {
-    padding: 5% 0 10.5%; }
+    padding: 5% 0 18.5%; }
   #contentfirst {
     padding: 8% 0 5%; } }
 
@@ -228,11 +232,13 @@
     background: none !important; }
   .bg-anim-two {
     background: none !important; }
-  .navbar-collapse {
-    background-color: #fff;
-    overflow: hidden;
-    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
-    transition: all 0.5s ease-in-out; }
+  .navbar-collapse.show {
+    background-color: transparent;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem; }
+  .navbar.scrolled .navbar-collapse.show {
+    box-shadow: none;
+    border-radius: 0; }
   #hero {
     padding-top: 17%; }
   .btn-primary {
@@ -340,11 +346,13 @@
     background: none !important; }
   .bg-anim-two {
     background: none !important; }
-  .navbar-collapse {
-    background-color: #fff;
-    overflow: hidden;
-    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
-    transition: all 0.5s ease-in-out; }
+  .navbar-collapse.show {
+    background-color: transparent;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem; }
+  .navbar.scrolled .navbar-collapse.show {
+    box-shadow: none;
+    border-radius: 0; }
   #hero {
     padding-top: 17%; }
   .btn-primary {
@@ -487,11 +495,13 @@
     background: none !important; }
   .bg-anim-two {
     background: none !important; }
-  .navbar-collapse {
-    background-color: #fff;
-    overflow: hidden;
-    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
-    transition: all 0.5s ease-in-out; }
+  .navbar-collapse.show {
+    background-color: transparent;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem; }
+  .navbar.scrolled .navbar-collapse.show {
+    box-shadow: none;
+    border-radius: 0; }
   #hero {
     padding-top: 17%; }
   .btn-primary {
@@ -570,7 +580,7 @@ a {
   #hero {
     padding-top: 15%; }
   .sponcership {
-    padding: 5% 0 10.5%; }
+    padding: 5% 0 18.5%; }
   #contentfirst {
     padding: 8% 0 5%; } }
 
@@ -582,11 +592,13 @@ a {
     background: none !important; }
   .bg-anim-two {
     background: none !important; }
-  .navbar-collapse {
-    background-color: #fff;
-    overflow: hidden;
-    box-shadow: inset 0px -5px 10px -6px rgba(0, 0, 0, 0.1);
-    transition: all 0.5s ease-in-out; }
+  .navbar-collapse.show {
+    background-color: transparent;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem; }
+  .navbar.scrolled .navbar-collapse.show {
+    box-shadow: none;
+    border-radius: 0; }
   #hero {
     padding-top: 17%; }
   .btn-primary {

@@ -24,9 +24,12 @@ a {
     text-transform: capitalize;
     text-decoration: none !important;    
 }
-
+// .bg-xs {
+//     background: $white url('../images/desktopbg_combined.svg') no-repeat;
+//     background-position: top center;
+// }
 .bg-anim-one {
-    background: $white url('../../assets/images/bg_content_one_primary.svg') top right no-repeat;
+    background: $white url('../../assets/images/bg_content_one_primary.svg') no-repeat;
     background-position: top right;
     // background: $white url('../../assets/images/bg_content_one_primary.svg') top right no-repeat;
     // background: $primary url('../../assets/images/bg_content_one_white.svg') top right no-repeat;
@@ -39,6 +42,8 @@ a {
     // background: $primary url('../../assets/images/bg_content_two_white.svg') no-repeat;
 }
 
-@include min-breakpoint-3xl;
+// @include min-breakpoint-3xl;
 @include min-breakpoint-xxl;
 @include min-max-breakpoint-exl;
+@include max-breakpoint-md;
+@include max-breakpoint-sm;
