@@ -1,10 +1,10 @@
 // breakpoint_mixin
 
 @mixin min-breakpoint-2xl {
-    /* Styles for screens with 2K resolution (2048x1080) or higher */
+    /* Styles for screens with 2K resolution or higher */
     @media (min-width: 2000px) {
-        .bg-xs {
-            background: $white url('../images/desktopbg_combined.svg') no-repeat !important;;
+        .bg-img {
+            background: $white url('../images/bg-1920.svg') no-repeat !important;;
             background-position: top center !important;
         }
         #hero {
@@ -17,9 +17,9 @@
         .container {
             max-width: 1660px;
         }
-        .bg-xs {
-            background: $white url('../images/desktopbg_combined.svg') no-repeat;
-    }
+        .bg-img {
+            background: $white url('../images/bg-1920.svg') no-repeat;
+        }
         #hero {
             padding-top: 10%;
         }
@@ -27,7 +27,7 @@
             height: 20rem;
         }
         #contentfirst {
-            padding: 10% 0 0;
+            padding: 13.5% 0 0;
         }
         #footer {
             padding: 3% 0 1%;
@@ -36,8 +36,8 @@
 }
 @mixin min-max-breakpoint-exl {
     @media (min-width: 1400px) and (max-width: 1599.99px) {             
-        .bg-xs {
-                background: $white url('../images/desktopbg_combined.svg') no-repeat;
+        .bg-img {
+                background: $white url('../images/bg-1920.svg') no-repeat;
         }
         #hero {
             padding-top: 15%;
@@ -82,7 +82,7 @@
 }
 @mixin min-max-breakpoint-lg {
     @media (min-width: 992px) and (max-width: 1199.99px) {
-        .bg-xs {
+        .bg-img {
                 background: $white url('../images/bg-xl.svg') no-repeat !important;
                 background-position: top right;
         }
@@ -146,8 +146,8 @@
 
 @mixin max-breakpoint-md {
     @media (max-width: 991.98px) {
-        .bg-xs {
-            background: $white url('../images/ipad_bg.svg') no-repeat !important;
+        .bg-img {
+            background: $white url('../images/bg-992.svg') no-repeat !important;
             background-position: top right !important;
         }  
         .navbar-collapse.show {
@@ -234,8 +234,8 @@
 
 @mixin max-breakpoint-sm {
     @media (max-width: 575.98px) { 
-        .bg-xs {
-            background: $white url('../images/combined_mobile_bg.svg') no-repeat;
+        .bg-img {
+            background: $white url('../images/bg-400.svg') no-repeat;
         }
         #hero {
             padding-top: 135px;

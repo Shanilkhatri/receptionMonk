@@ -22,22 +22,9 @@ a {
     text-transform: capitalize;
     text-decoration: none !important;    
 }
-.bg-xs {
-    background: $white url('../images/bg-xl.svg') no-repeat;
+.bg-img {
+    background: $white url('../images/bg-1920.svg') no-repeat;
     background-position: top right;
-}
-.bg-anim-one {
-    // background: $white url('../../assets/images/bg_content_one_primary.svg') no-repeat;
-    // background-position: top right;
-    // background: $white url('../../assets/images/bg_content_one_primary.svg') top right no-repeat;
-    // background: $primary url('../../assets/images/bg_content_one_white.svg') top right no-repeat;
-}
-
-.bg-anim-two {
-    // background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
-    // background-position: top;
-    // background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
-    // background: $primary url('../../assets/images/bg_content_two_white.svg') no-repeat;
 }
 }
 @include min-breakpoint-2xl;

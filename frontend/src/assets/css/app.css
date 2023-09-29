@@ -18,7 +18,7 @@
     .navbar .container .navbar-nav .nav-item a:hover {
       color: #000; }
   @media (min-width: 992px) and (max-width: 1199.99px) {
-    .navbar .container .navbar-nav .bg-xs {
+    .navbar .container .navbar-nav .bg-img {
       background: #fff url("../images/bg-xl.svg") no-repeat !important;
       background-position: top right; }
     .navbar .container .navbar-nav .nav-item a {
@@ -69,14 +69,14 @@
   @media (min-width: 1600px) and (max-width: 1999.99px) {
     .navbar .container {
       max-width: 1660px; }
-    .navbar .bg-xs {
-      background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
+    .navbar .bg-img {
+      background: #fff url("../images/bg-1920.svg") no-repeat; }
     .navbar #hero {
       padding-top: 10%; }
     .navbar .sponcership {
       height: 20rem; }
     .navbar #contentfirst {
-      padding: 10% 0 0; }
+      padding: 13.5% 0 0; }
     .navbar #footer {
       padding: 3% 0 1%; } }
 
@@ -103,8 +103,8 @@
   #hero .sponcership {
     height: 20rem; }
   @media (min-width: 1400px) and (max-width: 1599.99px) {
-    #hero .bg-xs {
-      background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
+    #hero .bg-img {
+      background: #fff url("../images/bg-1920.svg") no-repeat; }
     #hero #hero {
       padding-top: 15%; }
     #hero .sponcership {
@@ -121,7 +121,7 @@
     #hero .hero-text p {
       font-size: 1rem; } }
   @media (min-width: 992px) and (max-width: 1199.99px) {
-    #hero .bg-xs {
+    #hero .bg-img {
       background: #fff url("../images/bg-xl.svg") no-repeat !important;
       background-position: top right; }
     #hero .nav-item a {
@@ -152,8 +152,8 @@
     #hero #pricetable h4, #hero #pricetable .h4 {
       margin: 1.5rem !important; } }
   @media (max-width: 991.98px) {
-    #hero .bg-xs {
-      background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+    #hero .bg-img {
+      background: #fff url("../images/bg-992.svg") no-repeat !important;
       background-position: top right !important; }
     #hero .navbar-collapse.show {
       background-color: transparent;
@@ -234,8 +234,8 @@
       padding: 2rem; }
 
 @media (min-width: 1400px) and (max-width: 1599.99px) {
-  .bg-xs {
-    background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
+  .bg-img {
+    background: #fff url("../images/bg-1920.svg") no-repeat; }
   #hero {
     padding-top: 15%; }
   .sponcership {
@@ -244,8 +244,8 @@
     padding: 13% 0 0; } }
 
 @media (max-width: 991.98px) {
-  .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+  .bg-img {
+    background: #fff url("../images/bg-992.svg") no-repeat !important;
     background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
@@ -328,7 +328,7 @@
       transform: translateX(-50%); }
 
 @media (min-width: 992px) and (max-width: 1199.99px) {
-  .bg-xs {
+  .bg-img {
     background: #fff url("../images/bg-xl.svg") no-repeat !important;
     background-position: top right; }
   .nav-item a {
@@ -360,8 +360,8 @@
     margin: 1.5rem !important; } }
 
 @media (max-width: 991.98px) {
-  .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+  .bg-img {
+    background: #fff url("../images/bg-992.svg") no-repeat !important;
     background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
@@ -479,7 +479,7 @@
           transition: border 0.4s ease-in; }
 
 @media (min-width: 992px) and (max-width: 1199.99px) {
-  .bg-xs {
+  .bg-img {
     background: #fff url("../images/bg-xl.svg") no-repeat !important;
     background-position: top right; }
   .nav-item a {
@@ -511,8 +511,8 @@
     margin: 1.5rem !important; } }
 
 @media (max-width: 991.98px) {
-  .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+  .bg-img {
+    background: #fff url("../images/bg-992.svg") no-repeat !important;
     background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
@@ -584,14 +584,14 @@ body {
   body a {
     text-transform: capitalize;
     text-decoration: none !important; }
-  body .bg-xs {
-    background: #fff url("../images/bg-xl.svg") no-repeat;
+  body .bg-img {
+    background: #fff url("../images/bg-1920.svg") no-repeat;
     background-position: top right; }
 
-/* Styles for screens with 2K resolution (2048x1080) or higher */
+/* Styles for screens with 2K resolution or higher */
 @media (min-width: 2000px) {
-  .bg-xs {
-    background: #fff url("../images/desktopbg_combined.svg") no-repeat !important;
+  .bg-img {
+    background: #fff url("../images/bg-1920.svg") no-repeat !important;
     background-position: top center !important; }
   #hero {
     padding-top: 5%; } }
@@ -599,20 +599,20 @@ body {
 @media (min-width: 1600px) and (max-width: 1999.99px) {
   .container {
     max-width: 1660px; }
-  .bg-xs {
-    background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
+  .bg-img {
+    background: #fff url("../images/bg-1920.svg") no-repeat; }
   #hero {
     padding-top: 10%; }
   .sponcership {
     height: 20rem; }
   #contentfirst {
-    padding: 10% 0 0; }
+    padding: 13.5% 0 0; }
   #footer {
     padding: 3% 0 1%; } }
 
 @media (min-width: 1400px) and (max-width: 1599.99px) {
-  .bg-xs {
-    background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
+  .bg-img {
+    background: #fff url("../images/bg-1920.svg") no-repeat; }
   #hero {
     padding-top: 15%; }
   .sponcership {
@@ -621,8 +621,8 @@ body {
     padding: 13% 0 0; } }
 
 @media (max-width: 991.98px) {
-  .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+  .bg-img {
+    background: #fff url("../images/bg-992.svg") no-repeat !important;
     background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
@@ -668,8 +668,8 @@ body {
     margin: 2rem 0.5rem !important; } }
 
 @media (max-width: 575.98px) {
-  .bg-xs {
-    background: #fff url("../images/combined_mobile_bg.svg") no-repeat; }
+  .bg-img {
+    background: #fff url("../images/bg-400.svg") no-repeat; }
   #hero {
     padding-top: 135px; }
     #hero .hero-text {
