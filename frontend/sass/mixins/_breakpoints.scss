@@ -1,32 +1,59 @@
 // breakpoint_mixin
-// @mixin min-breakpoint-3xl {
-//     @media (min-width: 3000px) {
-//         .container {
-//             max-width: 70% !important;
-//         }//        
-//     }
-// }
+
+@mixin min-breakpoint-2xl {
+    /* Styles for screens with 2K resolution (2048x1080) or higher */
+    @media (min-width: 2000px) {
+        .bg-xs {
+            background: $white url('../images/desktopbg_combined.svg') no-repeat !important;;
+            background-position: top center !important;
+        }
+        #hero {
+            padding-top: 5%;
+        }
+    }
+}
 @mixin min-breakpoint-xxl {
-    @media (min-width: 1600px) {
+    @media (min-width: 1600px) and (max-width: 1999.99px) {
         .container {
             max-width: 1660px;
-        }       
+        }
+        .bg-xs {
+            background: $white url('../images/desktopbg_combined.svg') no-repeat;
+    }
+        #hero {
+            padding-top: 10%;
+        }
+        .sponcership {
+            height: 20rem;
+        }
+        #contentfirst {
+            padding: 10% 0 0;
+        }
+        #footer {
+            padding: 3% 0 1%;
+        }
     }   
 }
 @mixin min-max-breakpoint-exl {
-    @media (min-width: 1400px) and (max-width: 1599.99px) {     
+    @media (min-width: 1400px) and (max-width: 1599.99px) {             
+        .bg-xs {
+                background: $white url('../images/desktopbg_combined.svg') no-repeat;
+        }
         #hero {
             padding-top: 15%;
         }  
-        // .hero-content {
-        //     padding-top: 2%;
-        // }        
         .sponcership {
-            padding: 5% 0 18.5%;
-        }
+            height: 20rem;
+        }   
         #contentfirst {
-            padding: 8% 0 5%;
+            padding: 13% 0 0;
         }
+        // .sponcership {
+        //     padding: 5% 0 18.5%;
+        // }
+        // #contentfirst {
+        //     padding: 8% 0 5%;
+        // }
     }    
 }
 @mixin min-max-breakpoint-xl {
@@ -34,12 +61,15 @@
         #hero {
             padding-top: 15%;
         } 
+        .sponcership {
+            height: 20rem;
+        } 
         // .hero-content {
         //     padding-top: 1%;
         // }   
-        .sponcership {
-            padding: 8% 0 18%;
-        }
+        // .sponcership {
+        //     padding: 8% 0 18%;
+        // }
         .hero-text {   
             .display-3 {
                 font-size: 3.5rem;
@@ -52,6 +82,10 @@
 }
 @mixin min-max-breakpoint-lg {
     @media (min-width: 992px) and (max-width: 1199.99px) {
+        .bg-xs {
+                background: $white url('../images/bg-xl.svg') no-repeat !important;
+                background-position: top right;
+        }
         .nav-item a{
             font-size: $font-size-base;
             margin: 0 1rem;
@@ -64,8 +98,11 @@
             // padding-bottom: 10%;
         }   
         .sponcership {
-            padding: 0 0 18.2%;
-        }
+            height: 20rem;
+        } 
+        // .sponcership {
+        //     padding: 0 0 18.2%;
+        // }
         .hero-text {   
             .display-3 {
                 font-size: 3rem;
@@ -110,15 +147,9 @@
 @mixin max-breakpoint-md {
     @media (max-width: 991.98px) {
         .bg-xs {
-            background: $white url('../images/ipad_bg.svg') no-repeat;
-            background-position: top right;
-        }
-        .bg-anim-one {
-            background: none !important; 
-        }
-        .bg-anim-two {
-            background: none !important; 
-        }     
+            background: $white url('../images/ipad_bg.svg') no-repeat !important;
+            background-position: top right !important;
+        }  
         .navbar-collapse.show {
             background-color: transparent; 
             box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
@@ -131,25 +162,35 @@
         #hero{
             padding-top: 17%;
             // padding-bottom: 4%;
+            .hero-text {   
+                .display-3 {
+                    font-size: 2rem;
+                }         
+                p {
+                    font-size: $font-size-base;
+                }
+            } 
         }  
+        .sponcership {
+                height: 8rem;
+            }
        .btn-primary {
             padding: 0.5rem 2rem !important;
         }
-        .sponcership {
-            padding: 5% 0 8%;
-        }
-        .hero-text {   
-            .display-3 {
-                font-size: 2rem;
-            }         
-            p {
-                font-size: $font-size-base;
-            }
-        }   
+        // .sponcership {
+        //     padding: 5% 0 8%;
+        // }
+        
         #contentfirst {
-            padding: 10% 0 5% !important; 
+            padding: 10% 0 3% !important; 
             p {
-                color: $gray-100;
+                color: $gray-400 !important;
+            } 
+            .content-bottom-title {
+                p {
+                    color: $gray-600 !important;
+                    font-size: smaller;
+                }
             }
         }  
         #contentSecond {
@@ -195,17 +236,13 @@
     @media (max-width: 575.98px) { 
         .bg-xs {
             background: $white url('../images/combined_mobile_bg.svg') no-repeat;
-            background-position: top right;
-        }
-        .bg-anim-one {
-            background: none !important; 
-        }
-        .bg-anim-two {
-            background: none !important; 
         }
         #hero {
-            padding-top: 130px;
-            // padding-bottom: 10%;
+            padding-top: 135px;
+            // padding-bottom: 10%;              
+            .hero-text {
+                width: 80%;
+            }
             .anim {
                 margin-top: 2.5rem;
             }
@@ -219,12 +256,15 @@
                         background-color: $primary;
                     }
                 }
-            }
-            .content-bottom-title {
                 p {
-                    color: $gray-700;
+                    color: $gray-600 !important;
+                } 
+                .content-bottom-title {
+                    p {
+                        font-size: medium !important;
+                    }
                 }
-            }
+            }            
         }
         #contentSecond {
             p {

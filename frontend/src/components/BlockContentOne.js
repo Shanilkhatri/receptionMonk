@@ -20,7 +20,7 @@ function  BlockContentOne() {
                             </div>
                         </div>
                     </div>
-                    <div className="services text-center py-5">
+                    <div className="services text-center">
                         <div className="row">
                             <div className="col-md-3">   
                                 <div className="serviceanim">

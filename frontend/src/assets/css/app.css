@@ -18,6 +18,9 @@
     .navbar .container .navbar-nav .nav-item a:hover {
       color: #000; }
   @media (min-width: 992px) and (max-width: 1199.99px) {
+    .navbar .container .navbar-nav .bg-xs {
+      background: #fff url("../images/bg-xl.svg") no-repeat !important;
+      background-position: top right; }
     .navbar .container .navbar-nav .nav-item a {
       font-size: 1rem;
       margin: 0 1rem; }
@@ -26,7 +29,7 @@
     .navbar .container .navbar-nav #hero {
       padding-top: 15%; }
     .navbar .container .navbar-nav .sponcership {
-      padding: 0 0 18.2%; }
+      height: 20rem; }
     .navbar .container .navbar-nav .hero-text .display-3 {
       font-size: 3rem; }
     .navbar .container .navbar-nav .hero-text p {
@@ -63,9 +66,19 @@
     .navbar .container .navbar-toggler:focus {
       outline: 0;
       box-shadow: none; }
-  @media (min-width: 1600px) {
+  @media (min-width: 1600px) and (max-width: 1999.99px) {
     .navbar .container {
-      max-width: 1660px; } }
+      max-width: 1660px; }
+    .navbar .bg-xs {
+      background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
+    .navbar #hero {
+      padding-top: 10%; }
+    .navbar .sponcership {
+      height: 20rem; }
+    .navbar #contentfirst {
+      padding: 10% 0 0; }
+    .navbar #footer {
+      padding: 3% 0 1%; } }
 
 #hero {
   padding-top: 10%; }
@@ -88,24 +101,29 @@
     max-height: 600px;
     border: 1px solid #7C8FAC; }
   #hero .sponcership {
-    padding: 10% 0 15%; }
+    height: 20rem; }
   @media (min-width: 1400px) and (max-width: 1599.99px) {
+    #hero .bg-xs {
+      background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
     #hero #hero {
       padding-top: 15%; }
     #hero .sponcership {
-      padding: 5% 0 18.5%; }
+      height: 20rem; }
     #hero #contentfirst {
-      padding: 8% 0 5%; } }
+      padding: 13% 0 0; } }
   @media (min-width: 1200px) and (max-width: 1399.99px) {
     #hero #hero {
       padding-top: 15%; }
     #hero .sponcership {
-      padding: 8% 0 18%; }
+      height: 20rem; }
     #hero .hero-text .display-3 {
       font-size: 3.5rem; }
     #hero .hero-text p {
       font-size: 1rem; } }
   @media (min-width: 992px) and (max-width: 1199.99px) {
+    #hero .bg-xs {
+      background: #fff url("../images/bg-xl.svg") no-repeat !important;
+      background-position: top right; }
     #hero .nav-item a {
       font-size: 1rem;
       margin: 0 1rem; }
@@ -114,7 +132,7 @@
     #hero #hero {
       padding-top: 15%; }
     #hero .sponcership {
-      padding: 0 0 18.2%; }
+      height: 20rem; }
     #hero .hero-text .display-3 {
       font-size: 3rem; }
     #hero .hero-text p {
@@ -135,12 +153,8 @@
       margin: 1.5rem !important; } }
   @media (max-width: 991.98px) {
     #hero .bg-xs {
-      background: #fff url("../images/ipad_bg.svg") no-repeat;
-      background-position: top right; }
-    #hero .bg-anim-one {
-      background: none !important; }
-    #hero .bg-anim-two {
-      background: none !important; }
+      background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+      background-position: top right !important; }
     #hero .navbar-collapse.show {
       background-color: transparent;
       box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
@@ -150,18 +164,21 @@
       border-radius: 0; }
     #hero #hero {
       padding-top: 17%; }
+      #hero #hero .hero-text .display-3 {
+        font-size: 2rem; }
+      #hero #hero .hero-text p {
+        font-size: 1rem; }
+    #hero .sponcership {
+      height: 8rem; }
     #hero .btn-primary {
       padding: 0.5rem 2rem !important; }
-    #hero .sponcership {
-      padding: 5% 0 8%; }
-    #hero .hero-text .display-3 {
-      font-size: 2rem; }
-    #hero .hero-text p {
-      font-size: 1rem; }
     #hero #contentfirst {
-      padding: 10% 0 5% !important; }
+      padding: 10% 0 3% !important; }
       #hero #contentfirst p {
-        color: #F6F9FC; }
+        color: #ced4da !important; }
+      #hero #contentfirst .content-bottom-title p {
+        color: #6c757d !important;
+        font-size: smaller; }
     #hero #contentSecond p {
       font-size: smaller; }
     #hero #contentSecond .display-6 {
@@ -194,7 +211,7 @@
       margin-bottom: 1rem;
       border-radius: 10px; }
   #contentfirst .content-top-title p {
-    color: #3B3A3A; }
+    color: #F6F9FC; }
   #contentfirst .content-top-title .link:hover {
     margin-left: 0.3rem;
     transition: margin-left 0.2s ease-in; }
@@ -217,21 +234,19 @@
       padding: 2rem; }
 
 @media (min-width: 1400px) and (max-width: 1599.99px) {
+  .bg-xs {
+    background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
   #hero {
     padding-top: 15%; }
   .sponcership {
-    padding: 5% 0 18.5%; }
+    height: 20rem; }
   #contentfirst {
-    padding: 8% 0 5%; } }
+    padding: 13% 0 0; } }
 
 @media (max-width: 991.98px) {
   .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat;
-    background-position: top right; }
-  .bg-anim-one {
-    background: none !important; }
-  .bg-anim-two {
-    background: none !important; }
+    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+    background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
@@ -241,18 +256,21 @@
     border-radius: 0; }
   #hero {
     padding-top: 17%; }
+    #hero .hero-text .display-3 {
+      font-size: 2rem; }
+    #hero .hero-text p {
+      font-size: 1rem; }
+  .sponcership {
+    height: 8rem; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
-  .sponcership {
-    padding: 5% 0 8%; }
-  .hero-text .display-3 {
-    font-size: 2rem; }
-  .hero-text p {
-    font-size: 1rem; }
   #contentfirst {
-    padding: 10% 0 5% !important; }
+    padding: 10% 0 3% !important; }
     #contentfirst p {
-      color: #F6F9FC; }
+      color: #ced4da !important; }
+    #contentfirst .content-bottom-title p {
+      color: #6c757d !important;
+      font-size: smaller; }
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
@@ -275,7 +293,7 @@
 #contentSecond {
   padding: 5% 0; }
   #contentSecond p {
-    color: #7C8FAC; }
+    color: #6c757d; }
   #contentSecond .contentTwo-top-title {
     color: #3B3A3A; }
     #contentSecond .contentTwo-top-title .btn {
@@ -310,6 +328,9 @@
       transform: translateX(-50%); }
 
 @media (min-width: 992px) and (max-width: 1199.99px) {
+  .bg-xs {
+    background: #fff url("../images/bg-xl.svg") no-repeat !important;
+    background-position: top right; }
   .nav-item a {
     font-size: 1rem;
     margin: 0 1rem; }
@@ -318,7 +339,7 @@
   #hero {
     padding-top: 15%; }
   .sponcership {
-    padding: 0 0 18.2%; }
+    height: 20rem; }
   .hero-text .display-3 {
     font-size: 3rem; }
   .hero-text p {
@@ -340,12 +361,8 @@
 
 @media (max-width: 991.98px) {
   .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat;
-    background-position: top right; }
-  .bg-anim-one {
-    background: none !important; }
-  .bg-anim-two {
-    background: none !important; }
+    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+    background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
@@ -355,18 +372,21 @@
     border-radius: 0; }
   #hero {
     padding-top: 17%; }
+    #hero .hero-text .display-3 {
+      font-size: 2rem; }
+    #hero .hero-text p {
+      font-size: 1rem; }
+  .sponcership {
+    height: 8rem; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
-  .sponcership {
-    padding: 5% 0 8%; }
-  .hero-text .display-3 {
-    font-size: 2rem; }
-  .hero-text p {
-    font-size: 1rem; }
   #contentfirst {
-    padding: 10% 0 5% !important; }
+    padding: 10% 0 3% !important; }
     #contentfirst p {
-      color: #F6F9FC; }
+      color: #ced4da !important; }
+    #contentfirst .content-bottom-title p {
+      color: #6c757d !important;
+      font-size: smaller; }
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
@@ -420,9 +440,9 @@
           #pricetable .col .card .card-body .list-group .list-group-item.active > span > i {
             font-size: smaller; }
         #pricetable .col .card .card-body .list-group .list-group-item.deactive {
-          color: #B0B5BD; }
+          color: rgba(255, 255, 255, 0.5); }
           #pricetable .col .card .card-body .list-group .list-group-item.deactive span {
-            background: #B0B5BD;
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             color: #ced4da;
             padding: 3px;
@@ -459,6 +479,9 @@
           transition: border 0.4s ease-in; }
 
 @media (min-width: 992px) and (max-width: 1199.99px) {
+  .bg-xs {
+    background: #fff url("../images/bg-xl.svg") no-repeat !important;
+    background-position: top right; }
   .nav-item a {
     font-size: 1rem;
     margin: 0 1rem; }
@@ -467,7 +490,7 @@
   #hero {
     padding-top: 15%; }
   .sponcership {
-    padding: 0 0 18.2%; }
+    height: 20rem; }
   .hero-text .display-3 {
     font-size: 3rem; }
   .hero-text p {
@@ -489,12 +512,8 @@
 
 @media (max-width: 991.98px) {
   .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat;
-    background-position: top right; }
-  .bg-anim-one {
-    background: none !important; }
-  .bg-anim-two {
-    background: none !important; }
+    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+    background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
@@ -504,18 +523,21 @@
     border-radius: 0; }
   #hero {
     padding-top: 17%; }
+    #hero .hero-text .display-3 {
+      font-size: 2rem; }
+    #hero .hero-text p {
+      font-size: 1rem; }
+  .sponcership {
+    height: 8rem; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
-  .sponcership {
-    padding: 5% 0 8%; }
-  .hero-text .display-3 {
-    font-size: 2rem; }
-  .hero-text p {
-    font-size: 1rem; }
   #contentfirst {
-    padding: 10% 0 5% !important; }
+    padding: 10% 0 3% !important; }
     #contentfirst p {
-      color: #F6F9FC; }
+      color: #ced4da !important; }
+    #contentfirst .content-bottom-title p {
+      color: #6c757d !important;
+      font-size: smaller; }
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
@@ -559,39 +581,49 @@ body {
   font-family: sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
+  body a {
+    text-transform: capitalize;
+    text-decoration: none !important; }
+  body .bg-xs {
+    background: #fff url("../images/bg-xl.svg") no-repeat;
+    background-position: top right; }
 
-a {
-  text-transform: capitalize;
-  text-decoration: none !important; }
+/* Styles for screens with 2K resolution (2048x1080) or higher */
+@media (min-width: 2000px) {
+  .bg-xs {
+    background: #fff url("../images/desktopbg_combined.svg") no-repeat !important;
+    background-position: top center !important; }
+  #hero {
+    padding-top: 5%; } }
 
-.bg-anim-one {
-  background: #fff url("../../assets/images/bg_content_one_primary.svg") no-repeat;
-  background-position: top right; }
-
-.bg-anim-two {
-  background: #fff url("../../assets/images/bg_content_two_primary.svg") no-repeat;
-  background-position: top; }
-
-@media (min-width: 1600px) {
+@media (min-width: 1600px) and (max-width: 1999.99px) {
   .container {
-    max-width: 1660px; } }
+    max-width: 1660px; }
+  .bg-xs {
+    background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
+  #hero {
+    padding-top: 10%; }
+  .sponcership {
+    height: 20rem; }
+  #contentfirst {
+    padding: 10% 0 0; }
+  #footer {
+    padding: 3% 0 1%; } }
 
 @media (min-width: 1400px) and (max-width: 1599.99px) {
+  .bg-xs {
+    background: #fff url("../images/desktopbg_combined.svg") no-repeat; }
   #hero {
     padding-top: 15%; }
   .sponcership {
-    padding: 5% 0 18.5%; }
+    height: 20rem; }
   #contentfirst {
-    padding: 8% 0 5%; } }
+    padding: 13% 0 0; } }
 
 @media (max-width: 991.98px) {
   .bg-xs {
-    background: #fff url("../images/ipad_bg.svg") no-repeat;
-    background-position: top right; }
-  .bg-anim-one {
-    background: none !important; }
-  .bg-anim-two {
-    background: none !important; }
+    background: #fff url("../images/ipad_bg.svg") no-repeat !important;
+    background-position: top right !important; }
   .navbar-collapse.show {
     background-color: transparent;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
@@ -601,18 +633,21 @@ a {
     border-radius: 0; }
   #hero {
     padding-top: 17%; }
+    #hero .hero-text .display-3 {
+      font-size: 2rem; }
+    #hero .hero-text p {
+      font-size: 1rem; }
+  .sponcership {
+    height: 8rem; }
   .btn-primary {
     padding: 0.5rem 2rem !important; }
-  .sponcership {
-    padding: 5% 0 8%; }
-  .hero-text .display-3 {
-    font-size: 2rem; }
-  .hero-text p {
-    font-size: 1rem; }
   #contentfirst {
-    padding: 10% 0 5% !important; }
+    padding: 10% 0 3% !important; }
     #contentfirst p {
-      color: #F6F9FC; }
+      color: #ced4da !important; }
+    #contentfirst .content-bottom-title p {
+      color: #6c757d !important;
+      font-size: smaller; }
   #contentSecond p {
     font-size: smaller; }
   #contentSecond .display-6 {
@@ -634,14 +669,11 @@ a {
 
 @media (max-width: 575.98px) {
   .bg-xs {
-    background: #fff url("../images/combined_mobile_bg.svg") no-repeat;
-    background-position: top right; }
-  .bg-anim-one {
-    background: none !important; }
-  .bg-anim-two {
-    background: none !important; }
+    background: #fff url("../images/combined_mobile_bg.svg") no-repeat; }
   #hero {
-    padding-top: 130px; }
+    padding-top: 135px; }
+    #hero .hero-text {
+      width: 80%; }
     #hero .anim {
       margin-top: 2.5rem; }
   #contentfirst .content-top-title h2, #contentfirst .content-top-title .h2 {
@@ -649,8 +681,10 @@ a {
     #contentfirst .content-top-title h2::before, #contentfirst .content-top-title .h2::before {
       width: 15%;
       background-color: #C8400D; }
-  #contentfirst .content-bottom-title p {
-    color: #3B3A3A; }
+  #contentfirst .content-top-title p {
+    color: #6c757d !important; }
+  #contentfirst .content-top-title .content-bottom-title p {
+    font-size: medium !important; }
   #contentSecond p {
     font-size: medium !important; }
   #contentSecond .display-6 {

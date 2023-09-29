@@ -23,8 +23,11 @@
         max-height: 600px;
         border: 1px solid $gray-500;
     }
+    // .sponcership {
+    //     padding: 10% 0 15%;
+    // }
     .sponcership {
-        padding: 10% 0 15%;
+        height: 20rem;
     }
     
     @include min-max-breakpoint-exl;

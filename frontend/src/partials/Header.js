@@ -19,7 +19,7 @@ function Header() {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, {});
+    }, []);
 
     const [collapsed, setCollapsed] = useState(true);
 

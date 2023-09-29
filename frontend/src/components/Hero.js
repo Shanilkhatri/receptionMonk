@@ -23,23 +23,21 @@ function Hero() {
                             </div>
                         </div>
                     </div>
-                    <div className="sponcership d-none d-md-block">
-                        <div className="row">
-                            <div className="col-md-2">
-                                <img src={sponcer} alt="clients logo" className="img-fluid"></img>
-                            </div>
-                            <div className="col-md-2">
-                                <img src={sponcer} alt="clients logo" className="img-fluid"></img>
-                            </div>
-                            <div className="col-md-2">
-                                <img src={sponcer} alt="clients logo" className="img-fluid"></img>
-                            </div>
-                            <div className="col-md-2">
-                                <img src={sponcer} alt="clients logo" className="img-fluid"></img>
-                            </div>
-                            <div className="col-md-2">
-                                <img src={sponcer} alt="clients logo" className="img-fluid"></img>
-                            </div>
+                    <div className="row align-items-center d-none d-md-flex sponcership">                        
+                        <div className="col-md-2">
+                            <img src={sponcer} alt="clients logo" className="img-fluid"></img>
+                        </div>
+                        <div className="col-md-2">
+                            <img src={sponcer} alt="clients logo" className="img-fluid"></img>
+                        </div>
+                        <div className="col-md-2">
+                            <img src={sponcer} alt="clients logo" className="img-fluid"></img>
+                        </div>
+                        <div className="col-md-2">
+                            <img src={sponcer} alt="clients logo" className="img-fluid"></img>
+                        </div>
+                        <div className="col-md-2">
+                            <img src={sponcer} alt="clients logo" className="img-fluid"></img>
                         </div>
                     </div>                    
                 </div>

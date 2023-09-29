@@ -18,31 +18,29 @@ body {
     font-family: sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
 a {
     text-transform: capitalize;
     text-decoration: none !important;    
 }
-// .bg-xs {
-//     background: $white url('../images/desktopbg_combined.svg') no-repeat;
-//     background-position: top center;
-// }
-.bg-anim-one {
-    background: $white url('../../assets/images/bg_content_one_primary.svg') no-repeat;
+.bg-xs {
+    background: $white url('../images/bg-xl.svg') no-repeat;
     background-position: top right;
+}
+.bg-anim-one {
+    // background: $white url('../../assets/images/bg_content_one_primary.svg') no-repeat;
+    // background-position: top right;
     // background: $white url('../../assets/images/bg_content_one_primary.svg') top right no-repeat;
     // background: $primary url('../../assets/images/bg_content_one_white.svg') top right no-repeat;
 }
 
 .bg-anim-two {
-    background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
-    background-position: top;
+    // background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
+    // background-position: top;
     // background: $white url('../../assets/images/bg_content_two_primary.svg') no-repeat;
     // background: $primary url('../../assets/images/bg_content_two_white.svg') no-repeat;
 }
-
-// @include min-breakpoint-3xl;
+}
+@include min-breakpoint-2xl;
 @include min-breakpoint-xxl;
 @include min-max-breakpoint-exl;
 @include max-breakpoint-md;
