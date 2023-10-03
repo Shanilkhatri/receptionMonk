@@ -7,7 +7,7 @@ function Hero() {
         <div>
             <section id="hero">
                 <div className="container">
-                    <div className="row align-items-center hero-content">
+                    <div className="row align-items-center">
                         <div className="col-md-6">
                             <div className="hero-text text-primary">
                                 <h1 className="fw-bold mb-3 mb-lg-4 display-3">Take your Team to the next level</h1>

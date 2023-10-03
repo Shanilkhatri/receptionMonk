@@ -1,14 +1,19 @@
 // breakpoint_mixin
 
 @mixin min-breakpoint-2xl {
-    /* Styles for screens with 2K resolution or higher */
     @media (min-width: 2000px) {
         .bg-img {
-            background: $white url('../images/bg-1920.svg') no-repeat !important;;
+            background: $white url('../images/bg-xxl.svg') top center no-repeat !important;
             background-position: top center !important;
         }
         #hero {
-            padding-top: 5%;
+            padding-top: 7%;
+        }
+        #contentfirst {
+            padding: 6% 0 3%;
+        }
+        .sponcership {
+            height: 25rem !important;
         }
     }
 }
@@ -18,16 +23,16 @@
             max-width: 1660px;
         }
         .bg-img {
-            background: $white url('../images/bg-1920.svg') no-repeat;
+            background: $white url('../images/bg-xxl.svg') top right no-repeat !important;
         }
         #hero {
             padding-top: 10%;
         }
-        .sponcership {
-            height: 20rem;
-        }
         #contentfirst {
             padding: 13.5% 0 0;
+        }        
+        .sponcership {
+            height: 20rem;
         }
         #footer {
             padding: 3% 0 1%;
@@ -37,23 +42,17 @@
 @mixin min-max-breakpoint-exl {
     @media (min-width: 1400px) and (max-width: 1599.99px) {             
         .bg-img {
-                background: $white url('../images/bg-1920.svg') no-repeat;
+                background: $white url('../images/bg-xxl.svg') top right no-repeat !important;
         }
         #hero {
             padding-top: 15%;
         }  
-        .sponcership {
-            height: 15rem;
-        }   
         #contentfirst {
             padding: 13% 0 0;
         }
-        // .sponcership {
-        //     padding: 5% 0 18.5%;
-        // }
-        // #contentfirst {
-        //     padding: 8% 0 5%;
-        // }
+        .sponcership {
+            height: 15rem;
+        }   
     }    
 }
 @mixin min-max-breakpoint-xl {
@@ -62,14 +61,8 @@
             padding-top: 15%;
         } 
         .sponcership {
-            height: 20rem;
+            height: 13rem;
         } 
-        // .hero-content {
-        //     padding-top: 1%;
-        // }   
-        // .sponcership {
-        //     padding: 8% 0 18%;
-        // }
         .hero-text {   
             .display-3 {
                 font-size: 3.5rem;
@@ -83,7 +76,7 @@
 @mixin min-max-breakpoint-lg {
     @media (min-width: 992px) and (max-width: 1199.99px) {
         .bg-img {
-                background: $white url('../images/bg-1200new.svg') top right no-repeat !important;
+                background: $white url('../images/bg-lg.svg') top right no-repeat !important;
         }
         .nav-item a{
             font-size: $font-size-base;
@@ -94,17 +87,13 @@
         }
         #hero {
             padding-top: 15%;
-            // padding-bottom: 10%;
         }   
-        .sponcership {
-            height: 15rem;
-        } 
         #contentfirst {
             padding: 15% 0 3%;
         }
-        // .sponcership {
-        //     padding: 0 0 18.2%;
-        // }
+        .sponcership {
+            height: 15rem;
+        } 
         .hero-text {   
             .display-3 {
                 font-size: 3rem;
@@ -150,8 +139,7 @@
 @mixin max-breakpoint-md {
     @media (max-width: 991.98px) {
         .bg-img {
-            background: $white url('../images/bg-992.svg') no-repeat !important;
-            background-position: top right !important;
+            background: $white url('../images/bg-md.svg') top right no-repeat !important;
         }  
         .navbar-collapse.show {
             background-color: transparent; 
@@ -164,7 +152,6 @@
         }
         #hero{
             padding-top: 17%;
-            // padding-bottom: 4%;
             .hero-text {   
                 .display-3 {
                     font-size: 2rem;
@@ -180,12 +167,8 @@
        .btn-primary {
             padding: 0.5rem 2rem !important;
         }
-        // .sponcership {
-        //     padding: 5% 0 8%;
-        // }
-        
         #contentfirst {
-            padding: 10% 0 3% !important; 
+            padding: 12% 0 3% !important; 
             p {
                 color: $gray-400 !important;
             } 
@@ -238,11 +221,10 @@
 @mixin max-breakpoint-sm {
     @media (max-width: 575.98px) { 
         .bg-img {
-            background: $white url('../images/bg-400.svg') no-repeat;
+            background: $white url('../images/bg-xs.svg') top right no-repeat;
         }
         #hero {
-            padding-top: 135px;
-            // padding-bottom: 10%;              
+            padding-top: 135px;           
             .hero-text {
                 width: 80%;
             }
@@ -275,6 +257,12 @@
             }
             .display-6 {
                 font-size: 1.6rem !important;
+            }
+            .circle {
+                &:not(.lastitems)::after {
+                    width: 7%;
+                    left: 45%;
+                  }   
             }
         }
         #pricetable {

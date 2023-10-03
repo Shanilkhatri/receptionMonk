@@ -23,8 +23,7 @@ a {
     text-decoration: none !important;    
 }
 .bg-img {
-    background: $white url('../images/bg-1920.svg') no-repeat;
-    background-position: top right;
+    background: $white url('../images/bg-xl.svg') top right no-repeat;
 }
 }
 @include min-breakpoint-2xl;
