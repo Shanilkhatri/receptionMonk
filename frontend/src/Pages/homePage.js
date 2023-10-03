@@ -24,9 +24,7 @@ function homePage() {
                 {/* Content Block Two Section */}
                 <ContentTwo />
 
-            </div>
-               
-
+            </div>              
 
             <div>
 
