@@ -42,3 +42,6 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 ### `npm run compile-sass`
 
 This command compiles your Sass files from sass folder and outputs them to src/assets/css folder.
+
+### `npm run dev`
+This command run development code of portal app.

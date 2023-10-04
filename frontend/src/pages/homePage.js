@@ -1,10 +1,10 @@
 import React from "react";
-import Header from "../partials/Header";
-import Hero from "../components/Hero";
-import ContentOne from "../components/BlockContentOne";
-import ContentTwo from "../components/BlockContentTwo";
-import BlockPrice from "../components/PriceTable";
-import Footer from "../partials/Footer";
+// import Header from "../partials/Header";
+// import Hero from "../components/Hero";
+// import ContentOne from "../components/BlockContentOne";
+// import ContentTwo from "../components/BlockContentTwo";
+// import BlockPrice from "../components/PriceTable";
+// import Footer from "../partials/Footer";
 
 function homePage() {
     return (
@@ -13,30 +13,30 @@ function homePage() {
             <div className="bg-img">
 
                 {/* Header Section */}
-                <Header />     
+                {/* <Header />      */}
 
                 {/* Hero Section */}
-                <Hero /> 
+                {/* <Hero />  */}
 
                 {/* Content Block One Section */}
-                <ContentOne />
+                {/* <ContentOne /> */}
 
                 {/* Content Block Two Section */}
-                <ContentTwo />
+                {/* <ContentTwo /> */}
 
             </div>              
 
             <div>
 
                 {/* Price Section */}
-                <BlockPrice />
+                {/* <BlockPrice /> */}
 
             </div>   
 
             <div>
 
                 {/* Footer Section */}
-                <Footer />
+                {/* <Footer /> */}
             </div>
 
         </div>    
