@@ -9,12 +9,12 @@ import (
 type Extensions struct {
 	Id          int    `json:"id" db:"id" primarykey:"true"`
 	Extension   string `json:"extension" db:"extension"`
-	UserId      int    `json :"userid" db:"user_id"`
+	UserId      int    `json:"userid" db:"user_id"`
 	Department  int    `json:"department" db:"department"`
 	SipServer   string `json:"sipserver" db:"sip_server"`
-	SipUserName string `json :"sipusername" db:"sip_username"`
-	SipPassword string `json :"sippassword" db:"sip_password"`
-	SipPort     string `json :"sipport" db:"sip_port"`
+	SipUserName string `json:"sipusername" db:"sip_username"`
+	SipPassword string `json:"sippassword" db:"sip_password"`
+	SipPort     string `json:"sipport" db:"sip_port"`
 }
 
 func (extension Extensions) PostExtension(data Extensions, tx *sqlx.Tx) (bool, error) {
@@ -25,4 +25,17 @@ func (extension Extensions) PostExtension(data Extensions, tx *sqlx.Tx) (bool, e
 	}
 	rowUpdate, _ := row.RowsAffected()
 	return rowUpdate > 0, nil
+}
+
+type Users struct {
+	Id                    int    `json:"id" db:"id"`
+	Name                  string `json:"name" db:"name"`
+	Email                 string `json:"email" db:"email"`
+	PasswordHash          string `json:"passwordHash" db:"passwordHash"`
+	TwoFactorKey          string `json:"twoFactorKey" db:"twoFactorKey"`
+	TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
+	DOB                   string `json:"dob" db:"dob"`
+	AccountType           string `json:"accountType" db:"accountType"`
+	CompanyId             int    `json:"companyId" db:"companyId"`
+	Status                string `json:"status" db:"status"`
 }

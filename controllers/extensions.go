@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"reakgo/models"
@@ -10,9 +11,15 @@ import (
 func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponse{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
 
-	userDetails := r.Header.Get("tokenPayload")
+	userPayload, err := ReturnUserDetails(r)
+	if err != nil {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		utility.RenderJsonResponse(w, r, response)
+		return true
+	}
 
-	if userDetails.Id == 0 || userDetails.CompanyId == 0 {
+	if userPayload.Id == 0 || userPayload.CompanyId == 0 {
 		response.Status = "403"
 		response.Message = "Unauthorized access, UserId or companyId doesn't match."
 		utility.RenderJsonResponse(w, r, response)
@@ -20,22 +27,16 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	//check validation, if user accountType user and owner,update extension continue otherwise show error message.
-	if userDetails.AccountType != "owner" || userDetails.AccountType != "user" {
+	if userPayload.AccountType != "owner" || userPayload.AccountType != "user" {
 		response.Status = "403"
 		response.Message = "Unauthorized access, Account doesn't match."
 		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
-	var extensionStruct models.Extensions
-	// extensionStruct, err := ExtensionJsonDecoder(r)
-	// if err != nil {
-	// 	response.status = "400"
-	// 	response.Message = "Bad request, Incorrect payload or call."
-	// 	utility.RenderJsonResponse(w, r, "", response)
-	// 	return true
-	// }
 
-	err := utility.StrictParseDataFromJson(r, &extensionStruct)
+	var extensionStruct models.Extensions
+
+	err = utility.StrictParseDataFromJson(r, &extensionStruct)
 	if err != nil {
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
@@ -100,4 +101,11 @@ func ValidationCheck(extensionStruct models.Extensions) bool {
 	default:
 		return false
 	}
+}
+
+func ReturnUserDetails(r *http.Request) (models.Users, error) {
+	var user models.Users
+	userDetails := r.Header.Get("tokenPayload")
+	err := json.Unmarshal([]byte(userDetails), &user)
+	return user, err
 }
