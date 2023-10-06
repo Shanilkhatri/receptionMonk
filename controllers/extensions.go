@@ -43,7 +43,6 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
-	log.Println("extensionStruct", extensionStruct)
 
 	//check validation.
 	boolType := ValidationCheck(extensionStruct)
