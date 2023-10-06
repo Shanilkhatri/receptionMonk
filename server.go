@@ -72,6 +72,15 @@ func main() {
 	staticHandler := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
 	mux.PathPrefix("/assets/").Handler(staticHandler)
 
+	server := &http.Server{
+		Addr:           ":" + os.Getenv("WEB_PORT"),
+		Handler:        mux,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	log.Fatal(server.ListenAndServe())
+
 	if os.Getenv("APP_IS") == "monolith" {
 		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), utility.CSRF(mux)))
 	} else if os.Getenv("APP_IS") == "microservice" {

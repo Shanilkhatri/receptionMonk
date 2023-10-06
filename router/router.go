@@ -37,7 +37,7 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		controllers.CheckACL(w, r, []string{"admin", "user"})
 		controllers.VerifyTwoFa(w, r)
 	case "extension":
-		controllers.CheckACL(w, r, []string{"owner", "user"})
+		controllers.CheckACL(w, r, []string{"admin", "owner", "user"})
 		switch r.Method {
 		case "POST":
 			controllers.PostExtension(w, r)

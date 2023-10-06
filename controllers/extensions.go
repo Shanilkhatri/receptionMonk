@@ -26,14 +26,6 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 		return true
 	}
 
-	//check validation, if user accountType user and owner,update extension continue otherwise show error message.
-	if userPayload.AccountType != "owner" || userPayload.AccountType != "user" {
-		response.Status = "403"
-		response.Message = "Unauthorized access, Account doesn't match."
-		utility.RenderJsonResponse(w, r, response)
-		return true
-	}
-
 	var extensionStruct models.Extensions
 
 	err = utility.StrictParseDataFromJson(r, &extensionStruct)
