@@ -13,6 +13,7 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 
 	userPayload, err := ReturnUserDetails(r)
 	if err != nil {
+		log.Println(err)
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
 		utility.RenderJsonResponse(w, r, response)
@@ -30,6 +31,7 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 
 	err = utility.StrictParseDataFromJson(r, &extensionStruct)
 	if err != nil {
+		log.Println(err)
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
 		utility.RenderJsonResponse(w, r, response)
@@ -40,7 +42,7 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	boolType := ValidationCheck(extensionStruct)
 	if boolType {
 		response.Status = "400"
-		response.Message = "Bad request, Incorrect payload or call."
+		response.Message = "Bad 1request, Incorrect payload or call."
 		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
@@ -49,11 +51,19 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 
 	//Update data in table.
 	boolValue, err := models.Extensions{}.PostExtension(extensionStruct, tx)
-	if !boolValue || err != nil {
+
+	if err != nil {
 		log.Println(err)
 		tx.Rollback()
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		utility.RenderJsonResponse(w, r, response)
+		return true
+	}
+
+	if !boolValue {
+		response.Status = "200"
+		response.Message = "Extension updated successfully."
 		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
@@ -66,10 +76,10 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
 	} else {
 		response.Status = "200"
-		response.Message = "Extension updated successfully."
+		response.Message = "Extension 1updated successfully."
 	}
 
-	utility.RenderJsonResponse(w, r, nil)
+	utility.RenderJsonResponse(w, r, response)
 	return false
 }
 
