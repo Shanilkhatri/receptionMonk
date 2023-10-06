@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"reakgo/models"
@@ -11,7 +10,9 @@ import (
 func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponse{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
 
-	userPayload, err := ReturnUserDetails(r)
+	var userPayload models.Users
+
+	err := utility.ReturnUserDetails(r, &userPayload)
 	if err != nil {
 		log.Println(err)
 		response.Status = "400"
@@ -102,11 +103,4 @@ func ValidationCheck(extensionStruct models.Extensions) bool {
 	default:
 		return false
 	}
-}
-
-func ReturnUserDetails(r *http.Request) (models.Users, error) {
-	var user models.Users
-	userDetails := r.Header.Get("tokenPayload")
-	err := json.Unmarshal([]byte(userDetails), &user)
-	return user, err
 }

@@ -311,3 +311,9 @@ type AjaxRequest struct {
 	Payload map[string]string
 	Email   string
 }
+
+func ReturnUserDetails(r *http.Request, user interface{}) error {
+	userDetails := r.Header.Get("tokenPayload")
+	err := json.Unmarshal([]byte(userDetails), user)
+	return err
+}
