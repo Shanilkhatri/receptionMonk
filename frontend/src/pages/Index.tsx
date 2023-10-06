@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
@@ -6,6 +6,8 @@ import ReactApexChart from 'react-apexcharts';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Dropdown from '../components/Dropdown';
 import { setPageTitle } from '../store/themeConfigSlice';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 const Index = () => {
     const dispatch = useDispatch();
@@ -16,6 +18,83 @@ const Index = () => {
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
     const [loading] = useState(false);
+
+   
+    const [options, setOptions] = useState({
+        series: [75],
+        chart: {
+            height: 200,
+            type: 'radialBar',
+            toolbar: {
+                show: true
+            }
+        },
+        plotOptions: {
+            radialBar: {
+                startAngle: -135,
+                endAngle: 225,
+                hollow: {
+                    margin: 0,
+                    size: '60%',
+                    background: '#fff',
+                    image: undefined,
+                    imageOffsetX: 0,
+                    imageOffsetY: 0,
+                    position: 'front',
+                    dropShadow: {
+                        enabled: true,
+                        top: 3,
+                        left: 0,
+                        blur: 4,
+                        opacity: 0.24
+                    }
+                },
+                track: {
+                    background: '#fff',
+                    strokeWidth: '67%',
+                    margin: 0,
+                    dropShadow: {
+                        enabled: true,
+                        top: -3,
+                        left: 0,
+                        blur: 4,
+                        opacity: 0.35
+                    }
+                },
+
+                dataLabels: {
+                    show: true,
+                    name: {
+                        offsetY: -10,
+                        show: true,
+                        color: '#888',
+                        fontSize: '18px'
+                    },
+                    value: {
+                        formatter: function (val) {
+                            return parseInt(val);
+                        },
+                        color: '#000',
+                        fontSize: '22px',
+                        show: true,
+                    }
+                }
+            }
+        },
+        fill: {
+            type: 'solid',
+            colors: ['#1937cc'],
+        },
+        stroke: {
+            lineCap: 'round'
+        },
+        labels: ['Days Left'],
+    }
+    );
+
+        useEffect(() => {
+            // You can set options here if you want to dynamically update them.
+        }, []);
 
     //Revenue Chart
     const revenueChart: any = {
@@ -252,85 +331,85 @@ const Index = () => {
     };
 
     //Daily Sales
-    const dailySales: any = {
-        series: [
-            {
-                name: 'Sales',
-                data: [44, 55, 41, 67, 22, 43, 21],
-            },
-            {
-                name: 'Last Week',
-                data: [13, 23, 20, 8, 13, 27, 33],
-            },
-        ],
-        options: {
-            chart: {
-                height: 160,
-                type: 'bar',
-                fontFamily: 'Nunito, sans-serif',
-                toolbar: {
-                    show: false,
-                },
-                stacked: true,
-                stackType: '100%',
-            },
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                show: true,
-                width: 1,
-            },
-            colors: ['#e2a03f', '#e0e6ed'],
-            responsive: [
-                {
-                    breakpoint: 480,
-                    options: {
-                        legend: {
-                            position: 'bottom',
-                            offsetX: -10,
-                            offsetY: 0,
-                        },
-                    },
-                },
-            ],
-            xaxis: {
-                labels: {
-                    show: false,
-                },
-                categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
-            },
-            yaxis: {
-                show: false,
-            },
-            fill: {
-                opacity: 1,
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '25%',
-                },
-            },
-            legend: {
-                show: false,
-            },
-            grid: {
-                show: false,
-                xaxis: {
-                    lines: {
-                        show: false,
-                    },
-                },
-                padding: {
-                    top: 10,
-                    right: -20,
-                    bottom: -20,
-                    left: -20,
-                },
-            },
-        },
-    };
+    // const dailySales: any = {
+    //     series: [
+    //         {
+    //             name: 'Sales',
+    //             data: [44, 55, 41, 67, 22, 43, 21],
+    //         },
+    //         {
+    //             name: 'Last Week',
+    //             data: [13, 23, 20, 8, 13, 27, 33],
+    //         },
+    //     ],
+    //     options: {
+    //         chart: {
+    //             height: 160,
+    //             type: 'bar',
+    //             fontFamily: 'Nunito, sans-serif',
+    //             toolbar: {
+    //                 show: false,
+    //             },
+    //             stacked: true,
+    //             stackType: '100%',
+    //         },
+    //         dataLabels: {
+    //             enabled: false,
+    //         },
+    //         stroke: {
+    //             show: true,
+    //             width: 1,
+    //         },
+    //         colors: ['#e2a03f', '#e0e6ed'],
+    //         responsive: [
+    //             {
+    //                 breakpoint: 480,
+    //                 options: {
+    //                     legend: {
+    //                         position: 'bottom',
+    //                         offsetX: -10,
+    //                         offsetY: 0,
+    //                     },
+    //                 },
+    //             },
+    //         ],
+    //         xaxis: {
+    //             labels: {
+    //                 show: false,
+    //             },
+    //             categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+    //         },
+    //         yaxis: {
+    //             show: false,
+    //         },
+    //         fill: {
+    //             opacity: 1,
+    //         },
+    //         plotOptions: {
+    //             bar: {
+    //                 horizontal: false,
+    //                 columnWidth: '25%',
+    //             },
+    //         },
+    //         legend: {
+    //             show: false,
+    //         },
+    //         grid: {
+    //             show: false,
+    //             xaxis: {
+    //                 lines: {
+    //                     show: false,
+    //                 },
+    //             },
+    //             padding: {
+    //                 top: 10,
+    //                 right: -20,
+    //                 bottom: -20,
+    //                 left: -20,
+    //             },
+    //         },
+    //     },
+    // };
 
     //Total Orders
     const totalOrders: any = {
@@ -342,7 +421,7 @@ const Index = () => {
         ],
         options: {
             chart: {
-                height: 290,
+                height: 200,
                 type: 'area',
                 fontFamily: 'Nunito, sans-serif',
                 sparkline: {
@@ -387,6 +466,41 @@ const Index = () => {
         },
     };
 
+    // Basic plan
+    const donutChart: any = {
+        series: [70,30],
+        options: {
+            chart: {
+                height: 250,
+                type: 'donut',
+                zoom: {
+                    enabled: false,
+                },
+                toolbar: {
+                    show: false,
+                },
+            },
+            stroke: {
+                show: false,
+            },
+            // labels: ['27 Days Left'],
+            colors: ['#005bea', '#e6e6e6'],
+            responsive: [
+                {
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200,
+                        },
+                    },
+                },
+            ],
+            legend: {
+                position: 'bottom',
+            },
+        },
+    };
+
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -396,13 +510,117 @@ const Index = () => {
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                    <span>Sales</span>
+                    <span>Home</span>
                 </li>
             </ul>
 
             <div className="pt-5">
-                <div className="grid xl:grid-cols-3 gap-6 mb-6">
-                    <div className="panel h-full xl:col-span-2">
+                {/* <div className="grid xl:grid-cols-3 gap-6 mb-6">  */}
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mb-6">                   
+
+                    <div className="panel h-full" style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
+                        {/* <div className="flex items-center mb-5">
+                            <h5 className="font-semibold text-lg dark:text-white-light">Sales By Category</h5>
+                        </div>
+                        <div>
+                            <div className="bg-white dark:bg-black rounded-lg">
+                                {loading ? (
+                                    <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
+                                        <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
+                                    </div>
+                                ) : (
+                                    <ReactApexChart series={salesByCategory.series} options={salesByCategory.options} type="donut" height={460} />
+                                )}
+                            </div>
+                        </div> */}
+
+                        <div className="flex justify-between">   
+                            <div>
+                                <ReactApexChart options={options} series={options.series} type="radialBar" height={200} />
+                            </div>                         
+                            <div className='flex items-center'>
+                                <h5 className="font-semibold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> Plan Details</span></h5>
+                            </div>
+                            <div className='flex items-end mb-8'>
+                                <button type="button" className="btn bg-[#1937cc] rounded-full shadow-[0_0_1px_0_#bfc9d4] px-6 text-white text-base">
+                                    Upgrade Plan
+                                </button>
+                            </div>
+                            {/* <div className="mb-5">
+                                <ReactApexChart series={donutChart.series} options={donutChart.options} className="rounded-lg bg-white dark:bg-black" type="donut" height={250} />
+                            </div> */}
+                            
+                        </div>
+                    </div>
+                   
+                    {/* <div className="panel h-full p-0 border-0" style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
+                        <div className="p-6 bg-gradient-to-r from-[#4361ee] to-[#160f6b] min-h-[190px]">
+                            <div className="flex justify-between items-center mb-6">
+                                <div className="p-1 ltr:pr-3 rtl:pl-3 flex items-center text-xl text-white font-semibold">
+                                    Total Balance
+                                </div>                                
+                                <button type="button" className="ltr:ml-auto rtl:mr-auto flex items-center justify-between w-9 h-9 bg-black text-white rounded-md hover:opacity-80">
+                                    <svg className="w-6 h-6 m-auto" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="text-white flex justify-between items-center">
+                                <p className="text-xl">Total Balance</p>
+                                <h5 className="ltr:ml-auto rtl:mr-auto text-2xl">
+                                    <span className="text-white-light">$</span>41,585.52
+                                </h5>
+                            </div>
+                            <div>
+                                <div className="bg-white/50 rounded-full p-1 ltr:pr-3 rtl:pl-3 flex items-center text-white font-semibold">
+                                    45234523
+                                </div>
+                            </div>
+                        </div>
+                    </div> */}
+
+                    <div
+                        className="panel h-full overflow-hidden before:bg-[#1937cc] before:absolute before:-right-44 before:top-0 before:bottom-0 before:m-auto before:rounded-full before:w-96 before:h-96 grid grid-cols-1 content-between"
+                        style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
+                        <div className="flex items-start justify-between text-white-light mb-16 z-[7]">
+                            <h5 className="font-semibold text-3xl">Total Balance</h5>
+
+                            <div className="relative text-xl whitespace-nowrap">
+                                $ 41,741.42
+                                <span className="table text-[#d3d3d3] bg-[#4361ee] rounded p-1 text-xs mt-1 ltr:ml-auto rtl:mr-auto">+ 2453</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between z-10">
+                            <div className="flex items-center justify-between">
+                                <button type="button" className="shadow-[0_0_2px_0_#bfc9d4] rounded p-1 text-white-light hover:bg-[#1937cc] place-content-center ltr:mr-2 rtl:ml-2">
+                                    <svg className="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                                <button type="button" className="shadow-[0_0_2px_0_#bfc9d4] rounded p-1 text-white-light hover:bg-[#1937cc] grid place-content-center">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                        />
+                                        <path opacity="0.5" d="M10 16H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                        <path opacity="0.5" d="M14 16H12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                        <path opacity="0.5" d="M2 10L22 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <button type="button" className="btn btn-primary rounded-full shadow-[0_0_1px_0_#bfc9d4] rounded px-6 text-white text-base hover:bg-[#4361ee] z-10">
+                                Recharge
+                            </button>
+                        </div>
+                    </div>
+
+                    {/*                     
+                    // Revenue
+                    <div className="panel h-full xl:col-span-2 p-0 border-0">
                         <div className="flex items-center justify-between dark:text-white-light mb-5">
                             <h5 className="font-semibold text-lg">Revenue</h5>
                             <div className="dropdown">
@@ -445,8 +663,10 @@ const Index = () => {
                                 )}
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
+                    {/* 
+                    // Sales by category
                     <div className="panel h-full">
                         <div className="flex items-center mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">Sales By Category</h5>
@@ -462,10 +682,11 @@ const Index = () => {
                                 )}
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
+                {/* Daily Sales */}
+                {/* <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
                     <div className="panel h-full sm:col-span-2 xl:col-span-1">
                         <div className="flex items-center mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">
@@ -646,7 +867,7 @@ const Index = () => {
                             </h5>
                         </div>
                         <div className="bg-transparent rounded-lg">
-                            {/* loader */}
+                           
                             {loading ? (
                                 <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
                                     <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
@@ -656,8 +877,12 @@ const Index = () => {
                             )}
                         </div>
                     </div>
-                </div>
+                </div> */}
+
+                 {/* 
                 <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
+                                       
+                    //  Recent Activity *
                     <div className="panel h-full sm:col-span-2 xl:col-span-1 pb-0">
                         <h5 className="font-semibold text-lg dark:text-white-light mb-5">Recent Activities</h5>
                         <PerfectScrollbar className="relative h-[290px] pr-3 -mr-3 mb-4">
@@ -792,6 +1017,8 @@ const Index = () => {
                             </Link>
                         </div>
                     </div>
+
+                    // Transactions
                     <div className="panel h-full">
                         <div className="flex items-center justify-between dark:text-white-light mb-5">
                             <h5 className="font-semibold text-lg">Transactions</h5>
@@ -925,175 +1152,141 @@ const Index = () => {
                             </div>
                         </div>
                     </div>
-
-                    <div className="panel h-full p-0 border-0 overflow-hidden">
-                        <div className="p-6 bg-gradient-to-r from-[#4361ee] to-[#160f6b] min-h-[190px]">
-                            <div className="flex justify-between items-center mb-6">
-                                <div className="bg-black/50 rounded-full p-1 ltr:pr-3 rtl:pl-3 flex items-center text-white font-semibold">
-                                    <img className="w-8 h-8 rounded-full border-2 border-white/50 block object-cover ltr:mr-1 rtl:ml-1" src="/assets/images/profile-34.jpeg" alt="avatar" />
-                                    Alan Green
-                                </div>
-                                <button type="button" className="ltr:ml-auto rtl:mr-auto flex items-center justify-between w-9 h-9 bg-black text-white rounded-md hover:opacity-80">
-                                    <svg className="w-6 h-6 m-auto" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div className="text-white flex justify-between items-center">
-                                <p className="text-xl">Wallet Balance</p>
-                                <h5 className="ltr:ml-auto rtl:mr-auto text-2xl">
-                                    <span className="text-white-light">$</span>2953
-                                </h5>
-                            </div>
-                        </div>
-                        <div className="-mt-12 px-8 grid grid-cols-2 gap-2">
-                            <div className="bg-white rounded-md shadow px-4 py-2.5 dark:bg-[#060818]">
-                                <span className="flex justify-between items-center mb-4 dark:text-white">
-                                    Received
-                                    <svg className="w-4 h-4 text-success" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19 15L12 9L5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </span>
-                                <div className="btn w-full  py-1 text-base shadow-none border-0 bg-[#ebedf2] dark:bg-black text-[#515365] dark:text-[#bfc9d4]">$97.99</div>
-                            </div>
-                            <div className="bg-white rounded-md shadow px-4 py-2.5 dark:bg-[#060818]">
-                                <span className="flex justify-between items-center mb-4 dark:text-white">
-                                    Spent
-                                    <svg className="w-4 h-4 text-danger" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19 9L12 15L5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </span>
-                                <div className="btn w-full  py-1 text-base shadow-none border-0 bg-[#ebedf2] dark:bg-black text-[#515365] dark:text-[#bfc9d4]">$53.00</div>
-                            </div>
-                        </div>
-                        <div className="p-5">
-                            <div className="mb-5">
-                                <span className="bg-[#1b2e4b] text-white text-xs rounded-full px-4 py-1.5 before:bg-white before:w-1.5 before:h-1.5 before:rounded-full ltr:before:mr-2 rtl:before:ml-2 before:inline-block">
-                                    Pending
-                                </span>
-                            </div>
-                            <div className="mb-5 space-y-1">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-[#515365] font-semibold">Netflix</p>
-                                    <p className="text-base">
-                                        <span>$</span> <span className="font-semibold">13.85</span>
-                                    </p>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <p className="text-[#515365] font-semibold">BlueHost VPN</p>
-                                    <p className="text-base">
-                                        <span>$</span> <span className="font-semibold ">15.66</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="text-center px-2 flex justify-around">
-                                <button type="button" className="btn btn-secondary ltr:mr-2 rtl:ml-2">
-                                    View Details
-                                </button>
-                                <button type="button" className="btn btn-success">
-                                    Pay Now $29.51
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
+                */}
 
                 <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
+
+                    {/* Employee Management */}
                     <div className="panel h-full w-full">
                         <div className="flex items-center justify-between mb-5">
-                            <h5 className="font-semibold text-lg dark:text-white-light">Recent Orders</h5>
+                            <h5 className="font-semibold text-lg dark:text-white-light">Employee Management</h5>
                         </div>
                         <div className="table-responsive">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th className="ltr:rounded-l-md rtl:rounded-r-md">Customer</th>
-                                        <th>Product</th>
-                                        <th>Invoice</th>
-                                        <th>Price</th>
-                                        <th className="ltr:rounded-r-md rtl:rounded-l-md">Status</th>
+                                        <th className="ltr:rounded-l-md rtl:rounded-r-md">Employee Name</th>
+                                        <th>Department</th>
+                                        <th>Usage</th>
+                                        <th className="ltr:rounded-r-md rtl:rounded-l-md">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
                                         <td className="min-w-[150px] text-black dark:text-white">
                                             <div className="flex items-center">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-6.jpeg" alt="avatar" />
+                                                {/* <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-6.jpeg" alt="avatar" /> */}
                                                 <span className="whitespace-nowrap">Luke Ivory</span>
                                             </div>
                                         </td>
-                                        <td className="text-primary">Headphone</td>
+                                        <td className="text-primary">Sales</td>
                                         <td>
-                                            <Link to="/apps/invoice/preview">#46894</Link>
+                                            <span className="whitespace-nowrap">95 GB</span>
                                         </td>
-                                        <td>$56.07</td>
-                                        <td>
-                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Paid</span>
+                                        <td className="text-center">    
+                                            <Tippy trigger="mouseenter focus" content="Edit">
+                                                <a className="hover:text-info" data-trigger="mouseenter">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5">
+                                                        <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                        <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                        <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                                    </svg>
+                                                </a>
+                                            </Tippy>  
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
                                         <td className="text-black dark:text-white">
                                             <div className="flex items-center">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-7.jpeg" alt="avatar" />
+                                                {/* <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-7.jpeg" alt="avatar" /> */}
                                                 <span className="whitespace-nowrap">Andy King</span>
                                             </div>
                                         </td>
-                                        <td className="text-info">Nike Sport</td>
+                                        <td className="text-info">Marketing</td>
                                         <td>
-                                            <Link to="/apps/invoice/preview">#76894</Link>
+                                            <span className="whitespace-nowrap">60 GB</span>
                                         </td>
-                                        <td>$126.04</td>
                                         <td>
-                                            <span className="badge bg-secondary shadow-md dark:group-hover:bg-transparent">Shipped</span>
+                                            <Tippy trigger="mouseenter focus" content="Edit">
+                                                <a className="hover:text-info" data-trigger="mouseenter">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5">
+                                                        <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                        <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                        <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                                    </svg>
+                                                </a>
+                                            </Tippy> 
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
                                         <td className="text-black dark:text-white">
                                             <div className="flex items-center">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-8.jpeg" alt="avatar" />
+                                                {/* <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-8.jpeg" alt="avatar" /> */}
                                                 <span className="whitespace-nowrap">Laurie Fox</span>
                                             </div>
                                         </td>
-                                        <td className="text-warning">Sunglasses</td>
+                                        <td className="text-warning">Operations</td>
                                         <td>
-                                            <Link to="/apps/invoice/preview">#66894</Link>
+                                            <span className="whitespace-nowrap">84 GB</span>
                                         </td>
-                                        <td>$56.07</td>
                                         <td>
-                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Paid</span>
+                                            <Tippy trigger="mouseenter focus" content="Edit">
+                                                <a className="hover:text-info" data-trigger="mouseenter">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5">
+                                                        <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                        <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                        <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                                    </svg>
+                                                </a>
+                                            </Tippy> 
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
                                         <td className="text-black dark:text-white">
                                             <div className="flex items-center">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-9.jpeg" alt="avatar" />
+                                                {/* <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-9.jpeg" alt="avatar" /> */}
                                                 <span className="whitespace-nowrap">Ryan Collins</span>
                                             </div>
                                         </td>
-                                        <td className="text-danger">Sport</td>
+                                        <td className="text-danger">Sales</td>
                                         <td>
-                                            <Link to="/apps/invoice/preview">#75844</Link>
+                                        <span className="whitespace-nowrap">112 GB</span>
                                         </td>
-                                        <td>$110.00</td>
                                         <td>
-                                            <span className="badge bg-secondary shadow-md dark:group-hover:bg-transparent">Shipped</span>
+                                            <Tippy trigger="mouseenter focus" content="Edit">
+                                                <a className="hover:text-info" data-trigger="mouseenter">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5">
+                                                        <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                        <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                        <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                                    </svg>
+                                                </a>
+                                            </Tippy> 
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
                                         <td className="text-black dark:text-white">
                                             <div className="flex items-center">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-10.jpeg" alt="avatar" />
+                                                {/* <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/profile-10.jpeg" alt="avatar" /> */}
                                                 <span className="whitespace-nowrap">Irene Collins</span>
                                             </div>
                                         </td>
-                                        <td className="text-secondary">Speakers</td>
+                                        <td className="text-secondary">Marketing</td>
                                         <td>
-                                            <Link to="/apps/invoice/preview">#46894</Link>
+                                            <span className="whitespace-nowrap">52 GB</span>
                                         </td>
-                                        <td>$56.07</td>
                                         <td>
-                                            <span className="badge bg-success shadow-md dark:group-hover:bg-transparent">Paid</span>
+                                            <Tippy trigger="mouseenter focus" content="Edit">
+                                                <a className="hover:text-info" data-trigger="mouseenter">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5">
+                                                        <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                        <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                        <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                                    </svg>
+                                                </a>
+                                            </Tippy> 
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1101,35 +1294,30 @@ const Index = () => {
                         </div>
                     </div>
 
+                    {/* Call History */}
                     <div className="panel h-full w-full">
                         <div className="flex items-center justify-between mb-5">
-                            <h5 className="font-semibold text-lg dark:text-white-light">Top Selling Product</h5>
+                            <h5 className="font-semibold text-lg dark:text-white-light">Call History</h5>
                         </div>
                         <div className="table-responsive">
                             <table>
                                 <thead>
                                     <tr className="border-b-0">
-                                        <th className="ltr:rounded-l-md rtl:rounded-r-md">Product</th>
-                                        <th>Price</th>
-                                        <th>Discount</th>
-                                        <th>Sold</th>
-                                        <th className="ltr:rounded-r-md rtl:rounded-l-md">Source</th>
+                                        <th className="ltr:rounded-l-md rtl:rounded-r-md">Phone Number</th>
+                                        <th>Time</th>
+                                        <th>Answered By</th>
+                                        <th className="ltr:rounded-r-md rtl:rounded-l-md">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
-                                        <td className="min-w-[150px] text-black dark:text-white">
-                                            <div className="flex">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/product-headphones.jpg" alt="avatar" />
-                                                <p className="whitespace-nowrap">
-                                                    Headphone
-                                                    <span className="text-primary block text-xs">Digital</span>
-                                                </p>
-                                            </div>
+                                    <td className="text-black dark:text-white">                                            
+                                            <p className="whitespace-nowrap">
+                                                +91 707 555 0197
+                                            </p>                                            
                                         </td>
-                                        <td>$168.09</td>
-                                        <td>$60.09</td>
-                                        <td>170</td>
+                                        <td>03:26:22 AM</td>
+                                        <td>Luke Ivory</td>
                                         <td>
                                             <Link className="text-danger flex items-center" to="/">
                                                 <svg className="w-3.5 h-3.5 rtl:rotate-180 ltr:mr-1 rtl:ml-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1148,22 +1336,18 @@ const Index = () => {
                                                         strokeLinecap="round"
                                                     />
                                                 </svg>
-                                                Direct
+                                                Decline
                                             </Link>
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
-                                        <td className="text-black dark:text-white">
-                                            <div className="flex">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/product-shoes.jpg" alt="avatar" />
-                                                <p className="whitespace-nowrap">
-                                                    Shoes <span className="text-warning block text-xs">Faishon</span>
-                                                </p>
-                                            </div>
+                                        <td className="text-black dark:text-white">                                            
+                                            <p className="whitespace-nowrap">
+                                                +91 606 555 0197
+                                            </p>                                            
                                         </td>
-                                        <td>$126.04</td>
-                                        <td>$47.09</td>
-                                        <td>130</td>
+                                        <td>04:46:12 PM</td>
+                                        <td>Andy King</td>
                                         <td>
                                             <Link className="text-success flex items-center" to="/">
                                                 <svg className="w-3.5 h-3.5 rtl:rotate-180 ltr:mr-1 rtl:ml-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1182,22 +1366,18 @@ const Index = () => {
                                                         strokeLinecap="round"
                                                     />
                                                 </svg>
-                                                Google
+                                                Answered
                                             </Link>
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
-                                        <td className="text-black dark:text-white">
-                                            <div className="flex">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/product-watch.jpg" alt="avatar" />
-                                                <p className="whitespace-nowrap">
-                                                    Watch <span className="text-danger block text-xs">Accessories</span>
-                                                </p>
-                                            </div>
+                                        <td className="text-black dark:text-white">                                            
+                                            <p className="whitespace-nowrap">
+                                                +91 505 555 0197
+                                            </p>                                            
                                         </td>
-                                        <td>$56.07</td>
-                                        <td>$20.00</td>
-                                        <td>66</td>
+                                        <td>10:56:22 AM</td>
+                                        <td>Laurie Fox</td>
                                         <td>
                                             <Link className="text-warning flex items-center" to="/">
                                                 <svg className="w-3.5 h-3.5 rtl:rotate-180 ltr:mr-1 rtl:ml-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1216,24 +1396,20 @@ const Index = () => {
                                                         strokeLinecap="round"
                                                     />
                                                 </svg>
-                                                Ads
+                                                Missed
                                             </Link>
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
-                                        <td className="text-black dark:text-white">
-                                            <div className="flex">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/product-laptop.jpg" alt="avatar" />
-                                                <p className="whitespace-nowrap">
-                                                    Laptop <span className="text-primary block text-xs">Digital</span>
-                                                </p>
-                                            </div>
+                                        <td className="text-black dark:text-white">                                            
+                                            <p className="whitespace-nowrap">
+                                                +91 909 555 0197
+                                            </p>                                            
                                         </td>
-                                        <td>$110.00</td>
-                                        <td>$33.00</td>
-                                        <td>35</td>
+                                        <td>02:56:52 PM</td>
+                                        <td>Ryan Collins</td>
                                         <td>
-                                            <Link className="text-secondary flex items-center" to="/">
+                                            <Link className="text-danger flex items-center" to="/">
                                                 <svg className="w-3.5 h-3.5 rtl:rotate-180 ltr:mr-1 rtl:ml-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         d="M12.6644 5.47875L16.6367 9.00968C18.2053 10.404 18.9896 11.1012 18.9896 11.9993C18.9896 12.8975 18.2053 13.5946 16.6367 14.989L12.6644 18.5199C11.9484 19.1563 11.5903 19.4746 11.2952 19.342C11 19.2095 11 18.7305 11 17.7725V15.4279C7.4 15.4279 3.5 17.1422 2 19.9993C2 10.8565 7.33333 8.57075 11 8.57075V6.22616C11 5.26817 11 4.78917 11.2952 4.65662C11.5903 4.52407 11.9484 4.8423 12.6644 5.47875Z"
@@ -1250,24 +1426,20 @@ const Index = () => {
                                                         strokeLinecap="round"
                                                     />
                                                 </svg>
-                                                Email
+                                                Decline
                                             </Link>
                                         </td>
                                     </tr>
                                     <tr className="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
-                                        <td className="text-black dark:text-white">
-                                            <div className="flex">
-                                                <img className="w-8 h-8 rounded-md ltr:mr-3 rtl:ml-3 object-cover" src="/assets/images/product-camera.jpg" alt="avatar" />
-                                                <p className="whitespace-nowrap">
-                                                    Camera <span className="text-primary block text-xs">Digital</span>
-                                                </p>
-                                            </div>
+                                        <td className="text-black dark:text-white">                                            
+                                            <p className="whitespace-nowrap">
+                                                +91 808 555 0197
+                                            </p>                                            
                                         </td>
-                                        <td>$56.07</td>
-                                        <td>$26.04</td>
-                                        <td>30</td>
+                                        <td>12:56:52 AM</td>
+                                        <td>Irene Collins</td>
                                         <td>
-                                            <Link className="text-primary flex items-center" to="/">
+                                            <Link className="text-success flex items-center" to="/">
                                                 <svg className="w-3.5 h-3.5 rtl:rotate-180 ltr:mr-1 rtl:ml-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         d="M12.6644 5.47875L16.6367 9.00968C18.2053 10.404 18.9896 11.1012 18.9896 11.9993C18.9896 12.8975 18.2053 13.5946 16.6367 14.989L12.6644 18.5199C11.9484 19.1563 11.5903 19.4746 11.2952 19.342C11 19.2095 11 18.7305 11 17.7725V15.4279C7.4 15.4279 3.5 17.1422 2 19.9993C2 10.8565 7.33333 8.57075 11 8.57075V6.22616C11 5.26817 11 4.78917 11.2952 4.65662C11.5903 4.52407 11.9484 4.8423 12.6644 5.47875Z"
@@ -1284,7 +1456,7 @@ const Index = () => {
                                                         strokeLinecap="round"
                                                     />
                                                 </svg>
-                                                Referral
+                                                Answered
                                             </Link>
                                         </td>
                                     </tr>
@@ -1299,3 +1471,4 @@ const Index = () => {
 };
 
 export default Index;
+
