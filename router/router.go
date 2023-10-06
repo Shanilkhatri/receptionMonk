@@ -1,40 +1,63 @@
 package router
 
 import (
-	"log"
 	"net/http"
 	"reakgo/controllers"
 	"strings"
 )
 
 func Routes(w http.ResponseWriter, r *http.Request) {
-
 	// Trailing slash is a pain in the ass so we just drop it
 	route := strings.Trim(r.URL.Path, "/")
 	switch route {
-	// case "", "index", "login":
-	// 	//utility.CheckACL(w, r, 0)
-	// 	controllers.Login(w, r)
-	// case "forgotpassword":
-	// 	//utility.CheckACL(w, r, 0)
-	// 	controllers.ForgotPassword(w, r)
-	// case "changepassword":
-	// 	//utility.CheckACL(w, r, 0)
-	// 	controllers.ChangePassword(w, r)
-	// case "dashboard":
-	// 	// utility.CheckACL(w, r, 1)
-	// 	controllers.Dashboard(w, r)
-	// case "ajaxData":
-	// 	// utility.CheckACL(w, r, 1)
-	// 	controllers.AjaxData(w, r)
+	case "", "index":
+		check := controllers.CheckACL(w, r, []string{"guest", "admin", "user"})
+		if check {
+			controllers.BaseIndex(w, r)
+		}
+	case "login":
+		controllers.CheckACL(w, r, []string{"admin", "user"})
+		controllers.Login(w, r)
+	case "dashboard":
+		check := controllers.CheckACL(w, r, []string{"admin", "user"})
+		if check {
+			controllers.Dashboard(w, r)
+		}
+	case "addSimpleForm":
+		controllers.CheckACL(w, r, []string{"admin", "user"})
+		controllers.AddForm(w, r)
+	case "viewSimpleForm":
+		controllers.CheckACL(w, r, []string{"admin", "user"})
+		controllers.ViewForm(w, r)
+	case "register-2fa":
+		controllers.CheckACL(w, r, []string{"admin", "user"})
+		controllers.RegisterTwoFa(w, r)
+	case "verify-2fa":
+		controllers.CheckACL(w, r, []string{"admin", "user"})
+		controllers.VerifyTwoFa(w, r)
 	case "orders":
-		// utility.CheckACL(w, r, 1)
-		controllers.GetOrders(w, r)
+		if controllers.CheckACL(w, r, []string{"owner", "user", "super-admin"}) {
+			if r.Method == "GET" {
+				controllers.GetOrders(w, r)
+			}
+
+		}
 	case "users":
-		// utility.CheckACL(w, r, 1)
+		if controllers.CheckACL(w, r, []string{"owner", "user", "super-admin"}) {
+
+			if r.Method == "POST" {
+				controllers.PostUser(w, r)
+			}
+		}
 		if r.Method == "PUT" {
-			log.Println("under controller put user")
+
 			controllers.PutUser(w, r)
+		}
+	case "calllogs":
+		if controllers.CheckACL(w, r, []string{"owner", "user", "super-admin"}) {
+			if r.Method == "PUT" {
+				controllers.GetOrders(w, r)
+			}
 		}
 	}
 

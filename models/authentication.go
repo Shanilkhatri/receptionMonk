@@ -1,43 +1,52 @@
 package models
 
 import (
-	"crypto/rand"
+	"database/sql"
+	"fmt"
 	"log"
-	"math/big"
 	"reakgo/utility"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
 
+//	type Authentication struct {
+//		Id             int32
+//		Email          string
+//		Password       string
+//		Token          string
+//		TokenTimestamp int64 `db:"tokenTimestamp"`
+//	}
 type Authentication struct {
-	Id             int32
-	Email          string
-	Password       string
-	Token          string
-	TokenTimestamp int64
+	ID                    int    `json:"id" db:"id"`
+	Name                  string `json:"name" db:"name"`
+	Email                 string `json:"email" db:"email"`
+	PasswordHash          string `json:"passwordHash" db:"passwordHash"`
+	TwoFactorKey          string `json:"twoFactorKey" db:"twoFactorKey"`
+	TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
+	DOB                   string `json:"dob" db:"dob"`
+	AccountType           string `json:"accountType" db:"accountType"`
+	CompanyID             int    `json:"companyId" db:"companyId"`
+	Status                string `json:"status" db:"status"`
+	Token                 string
+	TokenTimestamp        int64 `db:"tokenTimestamp"`
 }
 
-type AuthenticationModel struct {
-	DB *sqlx.DB
+type TwoFactor struct {
+	UserId int32  `db:"userId"`
+	Secret string `db:"secret"`
 }
 
-func (auth AuthenticationModel) GetUserByEmail(email string) (Authentication, error) {
+func (auth Authentication) GetUserByEmail(email string) (Authentication, error) {
 	var selectedRow Authentication
 
-	rows := utility.Db.QueryRow("SELECT * FROM authentication WHERE email = ?", email)
-	err := rows.Scan(&selectedRow.Id, &selectedRow.Email, &selectedRow.Password, &selectedRow.Token, &selectedRow.TokenTimestamp)
-	if err != nil {
-		log.Println("Couldn't lookup user with email : " + email)
-		log.Println(err)
-	}
+	err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE email = ?", email)
 
 	return selectedRow, err
 }
 
-func (auth AuthenticationModel) ForgotPassword(id int32) (string, error) {
-	Token, err := GenerateRandomString(60)
+func (auth Authentication) ForgotPassword(id int32) (string, error) {
+	Token, err := utility.GenerateRandomString(60)
 	if err != nil {
 		log.Println("Random String Generator Failed")
 	}
@@ -55,31 +64,17 @@ func (auth AuthenticationModel) ForgotPassword(id int32) (string, error) {
 	return Token, err
 }
 
-func GenerateRandomString(n int) (string, error) {
-	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
-	ret := make([]byte, n)
-	for i := 0; i < n; i++ {
-		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
-		if err != nil {
-			return "", err
-		}
-		ret[i] = letters[num.Int64()]
-	}
-
-	return string(ret), nil
-}
-
-func (auth AuthenticationModel) TokenVerify(token string, newPassword string) (bool, error) {
+func (auth Authentication) TokenVerify(token string, newPassword string) (bool, error) {
 	var selectedRow Authentication
 
 	rows := utility.Db.QueryRow("SELECT * FROM authentication WHERE token = ?", token)
-	err := rows.Scan(&selectedRow.Id, &selectedRow.Email, &selectedRow.Password, &selectedRow.Token, &selectedRow.TokenTimestamp)
+	err := rows.Scan(&selectedRow.ID, &selectedRow.Email, &selectedRow.PasswordHash, &selectedRow.Token, &selectedRow.TokenTimestamp)
 	if err != nil {
 		log.Println(err)
 		return true, err
 	}
 	if (selectedRow.TokenTimestamp + 360000) > time.Now().Unix() {
-		_, err := auth.ChangePassword(newPassword, selectedRow.Id)
+		_, err := auth.ChangePassword(newPassword, int32(selectedRow.ID))
 		if err != nil {
 			return true, err
 		} else {
@@ -89,7 +84,7 @@ func (auth AuthenticationModel) TokenVerify(token string, newPassword string) (b
 	return false, err
 }
 
-func (auth AuthenticationModel) ChangePassword(newPassword string, id int32) (bool, error) {
+func (auth Authentication) ChangePassword(newPassword string, id int32) (bool, error) {
 	query, err := utility.Db.Prepare("UPDATE authentication SET password = ? WHERE id = ?")
 	if err != nil {
 		log.Println("MySQL Query Failed")
@@ -106,4 +101,52 @@ func (auth AuthenticationModel) ChangePassword(newPassword string, id int32) (bo
 	} else {
 		return false, err
 	}
+}
+
+func (auth Authentication) TwoFactorAuthAdd(secret string, userId int) (bool, error) {
+	_, err := utility.Db.NamedExec("INSERT INTO twoFactor (userId, secret) VALUES(:id, :2faSecret) ON DUPLICATE KEY UPDATE secret=:2faSecret", map[string]interface{}{"2faSecret": secret, "id": userId})
+	if err != nil {
+		return false, err
+	} else {
+		return true, err
+	}
+}
+
+func (auth Authentication) CheckTwoFactorRegistration(userId int32) string {
+	twoFactor := TwoFactor{}
+	utility.Db.Get(&twoFactor, "SELECT * FROM twoFactor WHERE userId = ?", userId)
+	return twoFactor.Secret
+}
+
+func (auth Authentication) GetAllAuthRecords() ([]Authentication, error) {
+	var allAuthenticationRows []Authentication
+
+	// SQL query to select all rows from the Abc table
+	query := "SELECT * FROM authentication"
+
+	// Execute the query and scan the results into the Abc slice
+	err := utility.Db.Select(&allAuthenticationRows, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return allAuthenticationRows, nil
+}
+
+func (auth Authentication) GetAuthenticationByToken(token string) (*Authentication, error) {
+
+	var authO Authentication
+
+	// SQL query to select a row by Token
+	query := "SELECT * FROM authentication WHERE Token = ? LIMIT 1"
+
+	// Execute the query and scan the result into the Authentication struct
+	err := utility.Db.Get(&authO, query, token)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("Authentication not found for Token: %s", token)
+		}
+		return nil, err
+	}
+	return &authO, nil
 }

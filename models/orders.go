@@ -28,11 +28,8 @@ type OrderDataCondition struct {
 	WhereCondition string
 	Orders
 }
-type OrdersModel struct {
-	DB *sqlx.DB
-}
 
-func (OrdersModel) GetOrders(filter OrderDataCondition, tx *sqlx.Tx) ([]Orders, error) {
+func (ord Orders) GetOrders(filter OrderDataCondition, tx *sqlx.Tx) ([]Orders, error) {
 	var ordersArr []Orders
 	query := "SELECT orders.id,orders.productId,orders.placedOn,orders.expiry,orders.price,orders.buyer,orders.status FROM `orders` INNER JOIN users on users.id=orders.buyer WHERE 1=1 " + filter.WhereCondition + "ORDER BY orders.id DESC;"
 	condtion := map[string]interface{}{
@@ -60,7 +57,7 @@ func (OrdersModel) GetOrders(filter OrderDataCondition, tx *sqlx.Tx) ([]Orders, 
 }
 
 // Building conditions for getting orders Data
-func (OrdersModel) GetParamsForFilterOrderData(params OrderDataCondition) OrderDataCondition {
+func (ord Orders) GetParamsForFilterOrderData(params OrderDataCondition) OrderDataCondition {
 
 	if params.Id != 0 {
 		params.WhereCondition += " AND orders.id = :id"
