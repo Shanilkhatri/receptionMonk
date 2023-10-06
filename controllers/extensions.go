@@ -7,10 +7,10 @@ import (
 	"reakgo/utility"
 )
 
-func PostExtension(w http.ResponseWriter, r *http.Request) bool {
+func PostExtension(w http.ResponseWriter, r *http.Request, userPayload models.Users) bool {
 	response := utility.AjaxResponse{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
 
-	var userPayload models.Users
+	// var userPayload models.Users
 
 	err := utility.ReturnUserDetails(r, &userPayload)
 	if err != nil {
@@ -43,7 +43,7 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	boolType := ValidationCheck(extensionStruct)
 	if boolType {
 		response.Status = "400"
-		response.Message = "Bad 1request, Incorrect payload or call."
+		response.Message = "Bad request, Incorrect payload or call."
 		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
