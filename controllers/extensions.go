@@ -7,10 +7,9 @@ import (
 	"reakgo/utility"
 )
 
-func PostExtension(w http.ResponseWriter, r *http.Request, userPayload models.Users) bool {
+func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponse{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
-
-	// var userPayload models.Users
+	var userPayload models.Users
 
 	err := utility.ReturnUserDetails(r, &userPayload)
 	if err != nil {
