@@ -9,32 +9,33 @@ import (
 
 func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponse{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+	var extensionStruct models.Extensions
 	var userPayload models.Users
 
-	err := utility.ReturnUserDetails(r, &userPayload)
+	err := Utility.ReturnUserDetails(r, &userPayload)
 	if err != nil {
+		log.Println("====================")
 		log.Println(err)
+		log.Println("====================")
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
-		utility.RenderJsonResponse(w, r, response)
+		Utility.RenderJsonResponse(w, r, response)
 		return true
 	}
 
 	if userPayload.Id == 0 || userPayload.CompanyId == 0 {
 		response.Status = "403"
 		response.Message = "Unauthorized access, UserId or companyId doesn't match."
-		utility.RenderJsonResponse(w, r, response)
+		Utility.RenderJsonResponse(w, r, response)
 		return true
 	}
 
-	var extensionStruct models.Extensions
-
-	err = utility.StrictParseDataFromJson(r, &extensionStruct)
+	err = Utility.StrictParseDataFromJson(r, &extensionStruct)
 	if err != nil {
 		log.Println(err)
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
-		utility.RenderJsonResponse(w, r, response)
+		Utility.RenderJsonResponse(w, r, response)
 		return true
 	}
 
@@ -43,7 +44,7 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	if boolType {
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
-		utility.RenderJsonResponse(w, r, response)
+		Utility.RenderJsonResponse(w, r, response)
 		return true
 	}
 
@@ -51,13 +52,14 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 
 	//Update data in table.
 	boolValue, err := models.Extensions{}.PostExtension(extensionStruct, tx)
+	log.Println(boolValue, err)
 
 	if !boolValue || err != nil {
 		log.Println(err)
 		tx.Rollback()
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-		utility.RenderJsonResponse(w, r, response)
+		Utility.RenderJsonResponse(w, r, response)
 		return true
 	}
 
@@ -72,7 +74,7 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 		response.Message = "Extension 1updated2 successfully."
 	}
 
-	utility.RenderJsonResponse(w, r, response)
+	Utility.RenderJsonResponse(w, r, response)
 	return false
 }
 
