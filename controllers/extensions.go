@@ -20,8 +20,6 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 		return true
 	}
 
-	log.Println(" userPayload.CompanyId", userPayload)
-	userPayload.CompanyId = 1
 	if userPayload.Id == 0 || userPayload.CompanyId == 0 {
 		response.Status = "403"
 		response.Message = "Unauthorized access, UserId or companyId doesn't match."
@@ -54,18 +52,11 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 	//Update data in table.
 	boolValue, err := models.Extensions{}.PostExtension(extensionStruct, tx)
 	log.Println("boolValue", boolValue, !boolValue)
-	if err != nil {
+	if !boolValue || err != nil {
 		log.Println(err)
 		tx.Rollback()
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-		utility.RenderJsonResponse(w, r, response)
-		return true
-	}
-
-	if boolValue {
-		response.Status = "200"
-		response.Message = "Extension updated1 successfully."
 		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
