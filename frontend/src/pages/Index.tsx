@@ -26,7 +26,7 @@ const Index = () => {
             height: 200,
             type: 'radialBar',
             toolbar: {
-                show: true
+                show: false,
             }
         },
         plotOptions: {
@@ -35,7 +35,7 @@ const Index = () => {
                 endAngle: 225,
                 hollow: {
                     margin: 0,
-                    size: '60%',
+                    size: '80%',
                     background: '#fff',
                     image: undefined,
                     imageOffsetX: 0,
@@ -51,7 +51,7 @@ const Index = () => {
                 },
                 track: {
                     background: '#fff',
-                    strokeWidth: '67%',
+                    strokeWidth: '100%',
                     margin: 0,
                     dropShadow: {
                         enabled: true,
@@ -67,8 +67,8 @@ const Index = () => {
                     name: {
                         offsetY: -10,
                         show: true,
-                        color: '#888',
-                        fontSize: '18px'
+                        color: '#444', 
+                        fontSize: '16px',
                     },
                     value: {
                         formatter: function (val) {
@@ -263,7 +263,7 @@ const Index = () => {
                 width: 25,
                 colors: isDark ? '#0e1726' : '#fff',
             },
-            colors: isDark ? ['#5c1ac3', '#e2a03f', '#e7515a', '#e2a03f'] : ['#e2a03f', '#5c1ac3', '#e7515a'],
+            colors: isDark ? ['#04DC8B', '#e2a03f', '#e7515a', '#e2a03f'] : ['#e2a03f', '#04DC8B', '#e7515a'],
             legend: {
                 position: 'bottom',
                 horizontalAlign: 'center',
@@ -312,7 +312,7 @@ const Index = () => {
                     },
                 },
             },
-            labels: ['Apparel', 'Sports', 'Others'],
+            labels: ['Answered', 'Missed', 'IVR'],
             states: {
                 hover: {
                     filter: {
@@ -515,11 +515,24 @@ const Index = () => {
             </ul>
 
             <div className="pt-5">
-                {/* <div className="grid xl:grid-cols-3 gap-6 mb-6">  */}
-                <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mb-6">                   
+                <div className="grid lg:grid-cols-3 gap-6 mb-6">                   
 
                     <div className="panel h-full" style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
-                        {/* <div className="flex items-center mb-5">
+                        <div className="flex">   
+                            <div>
+                                <ReactApexChart options={options} series={options.series} type="radialBar" height={200} />                                
+                            </div>                         
+                            <div className='flex items-center'>
+                                <h5 className="font-bold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> Plan Details</span></h5>
+                            </div>
+                            <div className='flex items-end'>
+                               
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div className="panel h-full">
+                        <div className="flex items-center mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">Sales By Category</h5>
                         </div>
                         <div>
@@ -532,54 +545,52 @@ const Index = () => {
                                     <ReactApexChart series={salesByCategory.series} options={salesByCategory.options} type="donut" height={460} />
                                 )}
                             </div>
-                        </div> */}
+                        </div>
+                    </div> 
 
-                        <div className="flex justify-between">   
+                    <div className="panel h-full p-0 border-0 overflow-hidden bg-gradient-to-r from-[#4361ee] to-[#160f6b]">
+                        <div className="p-6">        
                             <div>
-                                <ReactApexChart options={options} series={options.series} type="radialBar" height={200} />
+                                <p className="text-3xl font-bold text-white">Wallet Balance</p>
+                            </div>                    
+                            <div className="text-white flex justify-between items-center py-6 min-h-[190px]">
+                                <div>
+                                    <h5 className="ltr:ml-auto rtl:mr-auto text-4xl font-bold">
+                                        <span className="text-white-light">₹</span>2953
+                                    </h5>
+                                </div>     
+                                <div>
+                                    <button type="button" className="btn btn- btn-secondary px-8 py-4">
+                                        Recharge
+                                    </button>
+                                </div>   
+                            </div>
+                            <div>
+                                <p className='text-base font-semibold text-gray-300'>Last Wallet Recharge on 20th Septempber - ₹ 2000</p>
+                            </div>
+                        </div>      
+                    </div>
+                </div>
+                {/* ------------ */}
+
+
+
+                <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mb-6">                   
+
+                    <div className="panel h-full" style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
+                       <div className="flex">   
+                            <div>
+                                <ReactApexChart options={options} series={options.series} type="radialBar" height={200} />                                
                             </div>                         
                             <div className='flex items-center'>
-                                <h5 className="font-semibold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> Plan Details</span></h5>
+                                <h5 className="font-bold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> Plan Details</span></h5>
                             </div>
-                            <div className='flex items-end mb-8'>
-                                <button type="button" className="btn bg-[#1937cc] rounded-full shadow-[0_0_1px_0_#bfc9d4] px-6 text-white text-base">
-                                    Upgrade Plan
-                                </button>
-                            </div>
-                            {/* <div className="mb-5">
-                                <ReactApexChart series={donutChart.series} options={donutChart.options} className="rounded-lg bg-white dark:bg-black" type="donut" height={250} />
-                            </div> */}
-                            
+                            <div className='flex items-end'>
+                                
+                            </div>                            
                         </div>
                     </div>
                    
-                    {/* <div className="panel h-full p-0 border-0" style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
-                        <div className="p-6 bg-gradient-to-r from-[#4361ee] to-[#160f6b] min-h-[190px]">
-                            <div className="flex justify-between items-center mb-6">
-                                <div className="p-1 ltr:pr-3 rtl:pl-3 flex items-center text-xl text-white font-semibold">
-                                    Total Balance
-                                </div>                                
-                                <button type="button" className="ltr:ml-auto rtl:mr-auto flex items-center justify-between w-9 h-9 bg-black text-white rounded-md hover:opacity-80">
-                                    <svg className="w-6 h-6 m-auto" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div className="text-white flex justify-between items-center">
-                                <p className="text-xl">Total Balance</p>
-                                <h5 className="ltr:ml-auto rtl:mr-auto text-2xl">
-                                    <span className="text-white-light">$</span>41,585.52
-                                </h5>
-                            </div>
-                            <div>
-                                <div className="bg-white/50 rounded-full p-1 ltr:pr-3 rtl:pl-3 flex items-center text-white font-semibold">
-                                    45234523
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
-
                     <div
                         className="panel h-full overflow-hidden before:bg-[#1937cc] before:absolute before:-right-44 before:top-0 before:bottom-0 before:m-auto before:rounded-full before:w-96 before:h-96 grid grid-cols-1 content-between"
                         style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>

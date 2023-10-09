@@ -53,8 +53,8 @@ const Sidebar = () => {
                 <div className="bg-white dark:bg-black h-full">
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            <img className="w-8 ml-[5px] flex-none" src="/assets/images/logo.svg" alt="logo" />
-                            <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('VRISTO')}</span>
+                            <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo_header.svg" alt="logo" />
+                            {/* <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('RECEPTION MONK')}</span> */}
                         </NavLink>
 
                         <button
@@ -96,6 +96,9 @@ const Sidebar = () => {
 
                                 <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to={"/home"}>{t("home")}</NavLink>
+                                        </li>
                                         <li>
                                             <NavLink to="/">{t('sales')}</NavLink>
                                         </li>
