@@ -51,7 +51,7 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 
 	//Update data in table.
 	boolValue, err := models.Extensions{}.PostExtension(extensionStruct, tx)
-	log.Println("boolValue", boolValue, !boolValue)
+
 	if !boolValue || err != nil {
 		log.Println(err)
 		tx.Rollback()
