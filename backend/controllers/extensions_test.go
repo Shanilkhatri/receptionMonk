@@ -72,7 +72,9 @@ func TestExtensionAddWithCorrectData(t *testing.T) {
 	// Binding the DB Cursor to correct utility.Db
 	utility.Db = sqlxDB
 
-	Utility = MockHelper{}
+	Utility = MockHelper{
+		MockReturnUserDetailsResult: nil,
+	}
 
 	r := httptest.NewRequest("POST", "/extension/add", bytes.NewBuffer([]byte(jsonData)))
 
