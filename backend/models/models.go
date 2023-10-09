@@ -11,6 +11,20 @@ import (
 	"strings"
 )
 
+type Users struct {
+	Id                    int    `json:"id" db:"id"`
+	Name                  string `json:"name" db:"name"`
+	Email                 string `json:"email" db:"email"`
+	PasswordHash          string `json:"passwordHash" db:"passwordHash"`
+	TwoFactorKey          string `json:"twoFactorKey" db:"twoFactorKey"`
+	TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
+	DOB                   string `json:"dob" db:"dob"`
+	AccountType           string `json:"accountType" db:"accountType"`
+	CompanyId             int    `json:"companyId" db:"companyId"`
+	Status                string `json:"status" db:"status"`
+	Token                 string `json:"token" db:"token"`
+}
+
 var (
 	// ErrCode is a config or an internal error
 	ErrCode = errors.New("Case statement in code is not correct.")
