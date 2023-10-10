@@ -10,6 +10,7 @@ import (
 	"math/big"
 	"os"
 	"reflect"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -484,4 +485,40 @@ func CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails) {
 		return false, userDetails
 	}
 	return true, userDetails
+}
+
+func CheckDateFormat(dateString string) bool {
+	// regex for the yyyy-mm-dd, we'll add month !>12 ahead
+	pattern := `^\d{4}-\d{2}-\d{2}$`
+
+	// Compile the regular expression pattern.
+	regex := regexp.MustCompile(pattern)
+
+	// here we'll match date string woith the compiled regex
+	if !regex.MatchString(dateString) {
+		return false
+	}
+
+	// part where we check month isnt > 12
+	parts := regexp.MustCompile(`-`).Split(dateString, -1)
+
+	month, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return false
+	}
+
+	// complex way to write if month isn't b/w or = (1 to 12) return false
+	return month >= 1 && month <= 12
+}
+
+func CheckEmailFormat(emailString string) bool {
+	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+	// Compile the regular expression pattern.
+	regex := regexp.MustCompile(pattern)
+
+	// here we'll match date string woith the compiled regex
+	if !regex.MatchString(emailString) {
+		return false
+	}
+	return true
 }

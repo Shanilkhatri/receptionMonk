@@ -28,22 +28,44 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response)
 		return
 	}
+	// date format check
+	if !utility.CheckDateFormat(userStruct.DOB) {
+		// Utility.Logger(err)
+		response.Status = "403"
+		response.Message = "Date is not in format `yyyy-mm-dd`"
+		utility.RenderJsonResponse(w, r, response)
+		return
+	}
+	if !utility.CheckEmailFormat(userStruct.Email) {
+		// Utility.Logger(err)
+		response.Status = "403"
+		response.Message = "Please enter valid email address"
+		utility.RenderJsonResponse(w, r, response)
+		return
+	}
 	userType := Utility.SessionGet(r, "type")
 	if userType == nil {
 		userType = "guest"
 	}
-	if userType == "guest" && userStruct.AccountType == "user" {
+
+	if userType == "guest" && userStruct.AccountType != "owner" {
 		// Utility.Logger(err)
 		response.Status = "403"
-		response.Message = "User cannot register without owners invite"
+		response.Message = "You cannot register without owners invite"
 		utility.RenderJsonResponse(w, r, response)
 		return
 
+	} else if userType == "user" {
+		// Utility.Logger(err)
+		response.Status = "403"
+		response.Message = "You cannot register without owners invite"
+		utility.RenderJsonResponse(w, r, response)
+		return
 	} else {
 		// tokenPayload check
 		isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 		if isok {
-			if userStruct.AccountType == "owner" {
+			if userStruct.AccountType == "owner" && userDetails.AccountType == "owner" {
 				response.Status = "403"
 				response.Message = "You are already registered as an owner for this company! Kindly use your credentials and login"
 				utility.RenderJsonResponse(w, r, response)
