@@ -23,7 +23,7 @@ const Index = () => {
     const [options, setOptions] = useState({
         series: [75],
         chart: {
-            height: 200,
+            // height: 200,
             type: 'radialBar',
             toolbar: {
                 show: false,
@@ -513,11 +513,10 @@ const Index = () => {
                     <span>Home</span>
                 </li>
             </ul>
-
-            <div className='p-6'>
-            <div className="grid grid-cols-3 gap-4 ">
+            
+            {/* <div className="grid grid-cols-3 gap-4 ">
                 <div className="col-span-1 bg-danger">
-                   col - 1
+                col - 1
                 </div>
 
                 <div className="col-span-1 row-span-2 bg-primary">
@@ -536,28 +535,25 @@ const Index = () => {
                         col - 1 - 1.2
                     </div>
                 </div>
-
-                </div>
-
-            </div>
+            </div>         */}
 
             <div className="pt-5">
                 <div className="grid lg:grid-cols-3 gap-4 mb-6">                   
 
-                    <div className="panel col-span-1 h-full" style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
-                        <div className="flex">                                                     
+                    <div className="panel col-span-1 bg-gradient-to-r from-[#8b60db] to-[#b18af8]">
+                        <div className="grid grid-cols-2 gap-8">
                             <div className='flex items-center'>
-                                <h5 className="font-bold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> Plan Details</span></h5>
+                                <h5 className="font-bold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> +91 98562 52145</span></h5>
                             </div>
                             <div>
-                                <ReactApexChart options={options} series={options.series} type="radialBar" height={200} />                                
-                            </div>   
-                        </div>
+                                <ReactApexChart options={options} series={options.series} type="radialBar" height={250} /> 
+                            </div>
+                        </div>                        
                     </div>
                    
-                    <div className="panel h-full col-span-1 row-span-2">
+                    <div className="panel flex flex-col justify-between col-span-1 row-span-2">
                         <div className="flex items-center mb-5">
-                            <h5 className="font-semibold text-lg dark:text-white-light">Sales By Category</h5>
+                            <h5 className="font-semibold text-lg dark:text-white-light">Recent Calls</h5>
                         </div>
                         <div>
                             <div className="bg-white dark:bg-black rounded-lg">
@@ -572,9 +568,9 @@ const Index = () => {
                         </div>
                     </div> 
 
-                    <div className="panel h-full col-span-1 row-span-2 p-0 border-0 overflow-hidden bg-gradient-to-r from-[#4361ee] to-[#160f6b]">
-                        <div className="p-6">        
-                            <div>
+                    <div className="panel flex flex-col justify-between col-span-1 row-span-2 p-0 border-0 overflow-hidden bg-gradient-to-r from-[#4361ee] to-[#160f6b]">
+                        <div className="p-8">        
+                            <div className=''>
                                 <p className="text-3xl font-bold text-white">Wallet Balance</p>
                             </div>                    
                             <div className="text-white flex justify-between items-center py-6 min-h-[190px]">
@@ -590,40 +586,44 @@ const Index = () => {
                                 </div>   
                             </div>
                             <div>
-                                <p className='text-base font-semibold text-gray-300'>Last Wallet Recharge on 20th Septempber - ₹ 2000</p>
+                                <p className='text-lg font-semibold text-gray-300 py-8'>Last Wallet Recharge on 20th Septempber - ₹ 2000</p>
                             </div>
                         </div>      
                     </div>
 
-                    <div className="col-span-1 row-start-2 grid grid-cols-2 gap-4">
-                    <div className="col-span-1 bg-secondary">
-                        DEVICE REGISTRATION
+                    <div className="col-span-1 row-start-2 grid grid-cols-2 h-full gap-4 text-white font-bold">
+                        <div className="panel h-full grid col-span-1 bg-gradient-to-r from-[#009fb5] to-[#3be3f9]">
+                            <div>
+                                <p className='text-2xl'>
+                                    Device Registered
+                                </p>
+                            </div>
+                           
+                            <div className="grid content-end">
+                                <p className='text-2xl'>
+                                    2 /3
+                                </p>
+                            </div>                            
+                        </div>
+                        <div className="panel h-full grid col-span-1 col-span-1 bg-gradient-to-r from-[#009fb5] to-[#3be3f9]">
+                            <p className='text-2xl'>
+                                Extensitons
+                            </p>
+                            <div className="grid content-end">
+                                <p className='text-2xl'>
+                                    2 /3
+                                </p>
+                            </div>                           
+                        </div>
                     </div>
-                    <div className="col-span-1 bg-secondary">
-                        EXTENSTIONS
-                    </div>
-                </div>
                 </div>
                 {/* ------------ */}
 
 
 
-                <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mb-6">                   
-
-                    <div className="panel h-full" style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
-                       <div className="flex">   
-                            <div>
-                                <ReactApexChart options={options} series={options.series} type="radialBar" height={200} />                                
-                            </div>                         
-                            <div className='flex items-center'>
-                                <h5 className="font-bold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> Plan Details</span></h5>
-                            </div>
-                            <div className='flex items-end'>
-                                
-                            </div>                            
-                        </div>
-                    </div>
+                 {/* <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mb-6">        
                    
+                    // Total Balance Previous
                     <div
                         className="panel h-full overflow-hidden before:bg-[#1937cc] before:absolute before:-right-44 before:top-0 before:bottom-0 before:m-auto before:rounded-full before:w-96 before:h-96 grid grid-cols-1 content-between"
                         style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
@@ -662,7 +662,7 @@ const Index = () => {
                         </div>
                     </div>
 
-                    {/*                     
+                                       
                     // Revenue
                     <div className="panel h-full xl:col-span-2 p-0 border-0">
                         <div className="flex items-center justify-between dark:text-white-light mb-5">
@@ -726,8 +726,8 @@ const Index = () => {
                                 )}
                             </div>
                         </div>
-                    </div> */}
-                </div>
+                    </div> 
+                </div> */}
 
                 {/* Daily Sales */}
                 {/* <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
