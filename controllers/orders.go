@@ -16,14 +16,14 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 			log.Println("panic occured: ", recover)
 			tx.Rollback()
 			response.Message = "An internal error occurred, please try again"
-			utility.RenderTemplateData(w, r, "", response)
+			Utility.RenderJsonResponse(w, r, response)
 		}
 	}()
 
 	// var filter models.GetOrderFilter
 	//  get params from query
 	// get Prod Id from url
-	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 	log.Println(userDetails)
 	if isOk {
 		queryParams := r.URL.Query()
@@ -51,7 +51,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 		if userDetails.AccountType != "user" && userDetails.AccountType != "owner" && userDetails.AccountType != "super-admin" {
 			response.Status = "403"
 			response.Message = "You are not authorized for this request"
-			utility.RenderTemplateData(w, r, "", response)
+			Utility.RenderJsonResponse(w, r, response)
 			return response
 		}
 		// when user tries to access some other account
@@ -59,7 +59,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 			if paramMap["userId"] != 0 && userDetails.ID != int(paramMap["userId"]) {
 				response.Status = "403"
 				response.Message = "You are not authorized for this request"
-				utility.RenderTemplateData(w, r, "", response)
+				Utility.RenderJsonResponse(w, r, response)
 				return response
 			} else {
 				// id given from token data
@@ -96,13 +96,13 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 			response.Status = "200"
 			response.Message = "Results found successfully"
 			response.Payload = result
-			utility.RenderTemplateData(w, r, "", response)
+			Utility.RenderJsonResponse(w, r, response)
 			tx.Commit()
 			return response
 		}
 	}
 	tx.Rollback()
 	response.Message = "Failed to authorize at the moment. Please Login again and try!"
-	utility.RenderTemplateData(w, r, "", response)
+	Utility.RenderJsonResponse(w, r, response)
 	return response
 }

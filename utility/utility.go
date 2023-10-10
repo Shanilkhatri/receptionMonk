@@ -73,6 +73,25 @@ type UserDetails struct {
 	Status                string `json:"status" db:"status"`
 }
 
+type Helper interface {
+	GenerateRandomString(n int) (string, error)
+	RedirectTo(w http.ResponseWriter, r *http.Request, path string)
+	SessionGet(r *http.Request, key string) interface{}
+	SessionSet(w http.ResponseWriter, r *http.Request, data Session)
+	AddFlash(flavour string, message string, w http.ResponseWriter, r *http.Request)
+	ViewFlash(w http.ResponseWriter, r *http.Request) interface{}
+	RenderTemplate(w http.ResponseWriter, r *http.Request, template string, data interface{})
+	ParseDataFromPostRequestToMap(r *http.Request) (map[string]interface{}, error)
+	ParseDataFromJsonToMap(r *http.Request) (map[string]interface{}, error)
+	// StrictParseDataFromJson(r *http.Request, structure interface{}) error
+	StrictParseDataFromPostRequest(r *http.Request, structure interface{}) error
+	RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{})
+	RenderTemplateData(w http.ResponseWriter, r *http.Request, template string, data interface{})
+	StringInArray(target string, arr []string) bool
+	ReturnUserDetails(r *http.Request, user interface{}) error
+	CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails)
+}
+
 func GenerateRandomString(n int) (string, error) {
 	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
 	ret := make([]byte, n)
@@ -105,6 +124,9 @@ func SessionSet(w http.ResponseWriter, r *http.Request, data Session) {
 func SessionGet(r *http.Request, key string) interface{} {
 	session, _ := Store.Get(r, os.Getenv("SESSION_NAME"))
 	// Set some session values.
+	if session == nil {
+		return nil
+	}
 	return session.Values[key]
 }
 
@@ -127,7 +149,7 @@ func AddFlash(flavour string, message string, w http.ResponseWriter, r *http.Req
 	}
 }
 
-func viewFlash(w http.ResponseWriter, r *http.Request) interface{} {
+func ViewFlash(w http.ResponseWriter, r *http.Request) interface{} {
 	session, err := Store.Get(r, os.Getenv("SESSION_NAME"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -144,7 +166,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, template string, dat
 	session, _ := Store.Get(r, os.Getenv("SESSION_NAME"))
 	tmplData := make(map[string]interface{})
 	tmplData["data"] = data
-	tmplData["flash"] = viewFlash(w, r)
+	tmplData["flash"] = ViewFlash(w, r)
 	tmplData["session"] = session.Values["email"]
 	tmplData["csrf"] = csrf.TemplateField(r)
 	View.ExecuteTemplate(w, template, tmplData)
@@ -310,7 +332,7 @@ func RenderTemplateData(w http.ResponseWriter, r *http.Request, template string,
 	session, _ := Store.Get(r, os.Getenv("SESSION_NAME"))
 	tmplData := make(map[string]interface{})
 	tmplData["data"] = data
-	tmplData["flash"] = viewFlash(w, r)
+	tmplData["flash"] = ViewFlash(w, r)
 	tmplData["session"] = session.Values["email"]
 	tmplData["csrf"] = csrf.TemplateField(r)
 	View.ExecuteTemplate(w, template, tmplData)

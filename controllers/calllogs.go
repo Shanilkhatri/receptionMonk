@@ -17,11 +17,11 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		utility.RenderTemplate(w, r, "", response)
+		Utility.RenderTemplate(w, r, "", response)
 		return
 	}
 	// tokenPayload check
-	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 	// only owner can enter call logs
 	if isok && userDetails.AccountType == "owner" {
 		if callLogsStruct.CallDuration != "" && callLogsStruct.CallExtension != "" && callLogsStruct.CallFrom != "" && callLogsStruct.CallPlacedAt != "" && callLogsStruct.CallTo != "" {
@@ -41,5 +41,5 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 			response.Message = "CallLog created successfully."
 		}
 	}
-	utility.RenderTemplate(w, r, "", response)
+	Utility.RenderTemplate(w, r, "", response)
 }

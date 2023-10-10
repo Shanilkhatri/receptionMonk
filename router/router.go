@@ -43,15 +43,15 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 
 		}
 	case "users":
-		if controllers.CheckACL(w, r, []string{"owner", "user", "super-admin"}) {
-
-			if r.Method == "POST" {
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "user", "super-admin"}) {
 				controllers.PostUser(w, r)
 			}
 		}
 		if r.Method == "PUT" {
-
-			controllers.PutUser(w, r)
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "guest"}) {
+				controllers.PutUser(w, r)
+			}
 		}
 	case "calllogs":
 		if controllers.CheckACL(w, r, []string{"owner", "user", "super-admin"}) {

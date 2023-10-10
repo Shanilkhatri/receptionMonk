@@ -19,22 +19,34 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	//decode json (new decoder)
 	var userStruct models.Users
 	err := utility.StrictParseDataFromJson(r, &userStruct)
+	log.Println("userStruct: ", userStruct)
 	if err != nil {
 		utility.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		utility.RenderTemplate(w, r, "", response)
+		utility.RenderJsonResponse(w, r, response)
 		return
 	}
-	if CheckACL(w, r, []string{"user", "owner", "super-admin"}) {
+	userType := Utility.SessionGet(r, "type")
+	if userType == nil {
+		userType = "guest"
+	}
+	if userType == "guest" && userStruct.AccountType == "user" {
+		// Utility.Logger(err)
+		response.Status = "403"
+		response.Message = "User cannot register without owners invite"
+		utility.RenderJsonResponse(w, r, response)
+		return
+
+	} else {
 		// tokenPayload check
-		isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+		isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 		if isok {
 			if userStruct.AccountType == "owner" {
 				response.Status = "403"
 				response.Message = "You are already registered as an owner for this company! Kindly use your credentials and login"
-				utility.RenderTemplate(w, r, "", response)
+				utility.RenderJsonResponse(w, r, response)
 				return
 			}
 			// register as a user
@@ -65,7 +77,8 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 			utility.Logger(err)
 			response.Status = "400"
 			response.Message = "Unable to create user at the moment! Please try again."
-
+			utility.RenderJsonResponse(w, r, response)
+			return
 		}
 		// mixing salt with hashed pass
 		pswdConcatWithSalt := userStruct.PasswordHash + os.Getenv("CONS_SALT")
@@ -77,13 +90,15 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 			utility.Logger(err)
 			response.Status = "400"
 			response.Message = "Unable to create user at the moment! Please try again."
+			utility.RenderJsonResponse(w, r, response)
+			return
 		}
 		// only for now random twofactorkey and recovery code (to be deleted when integrated with ORM)
-		userStruct.TwoFactorRecoveryCode, err = utility.GenerateRandomString(16)
+		userStruct.TwoFactorRecoveryCode, err = Utility.GenerateRandomString(16)
 		if err != nil {
 			log.Println("error in generating random string for TwoFactorRecoveryCode")
 		}
-		userStruct.TwoFactorKey, err = utility.GenerateRandomString(16)
+		userStruct.TwoFactorKey, err = Utility.GenerateRandomString(16)
 		if err != nil {
 			log.Println("error in generating random string for TwoFactorKey")
 		}
@@ -101,13 +116,19 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 			}
 			tx.Rollback()
 			utility.Logger(err)
-			utility.RenderTemplate(w, r, "", response)
+			utility.RenderJsonResponse(w, r, response)
+			return
+		}
+		// Commit the transaction
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
 			return
 		}
 		response.Status = "200"
 		response.Message = "User created successfully."
 	}
-	utility.RenderTemplate(w, r, "", response)
+	utility.RenderJsonResponse(w, r, response)
 }
 
 func PostUser(w http.ResponseWriter, r *http.Request) {
@@ -123,18 +144,18 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 
 	}
 	// integrate token check and return if mismatch found with status 400
-	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 	if isok {
 		if userStruct.ID == 0 {
 			response.Status = "400"
 			response.Message = "Bad request! Cannot update data because of missing unique identifier"
-			utility.RenderTemplate(w, r, "", response)
+			Utility.RenderJsonResponse(w, r, response)
 			return
 		}
 		if userDetails.ID != userStruct.ID {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not allowed to make this request"
-			utility.RenderTemplate(w, r, "", response)
+			Utility.RenderJsonResponse(w, r, response)
 			return
 		}
 
@@ -158,5 +179,6 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	utility.RenderTemplate(w, r, "", response)
+
+	Utility.RenderJsonResponse(w, r, response)
 }
