@@ -527,3 +527,75 @@ func CheckEmailFormat(emailString string) bool {
 	}
 	return true
 }
+
+func SaltPlainPassWord(passW string) (string, error) {
+	// making hash of pass #1
+	hashedPassW, err := NewPasswordHash(passW)
+	if err != nil {
+		return "", err
+	}
+	// mixing salt with hashed pass
+	pswdConcatWithSalt := hashedPassW + os.Getenv("CONS_SALT")
+
+	// making hash of (salted+hashed) pass #2
+	hashedPassW, err = NewPasswordHash(pswdConcatWithSalt)
+	if err != nil {
+		return "", err
+	}
+	return hashedPassW, nil
+}
+
+// func for post user to not change empty fields in user struct
+// -> src is basically the struct we get from tokenPayload with all filled fields from DB or cache
+// -> dest is the userStruct that will come through json and which will also be our final struct
+// -> we have used reflection here to first check that they are valid structs or not
+// -> if they are (valid) are they of same type
+// -> we return a bool value indicating whether the run was successfull or not
+
+func FillEmptyFieldsForPostUser(src, dest interface{}) bool {
+	srcValue := reflect.ValueOf(src)
+	destValue := reflect.ValueOf(dest).Elem() // Use Elem to get the underlying struct Value.
+
+	if srcValue.Kind() != reflect.Struct || destValue.Kind() != reflect.Struct {
+		log.Println("Both src and dest should be structs")
+		return false
+	}
+
+	if srcValue.Type() != destValue.Type() {
+		log.Println("src and dest should have the same struct type")
+		return false
+	}
+
+	for i := 0; i < srcValue.NumField(); i++ {
+		srcField := srcValue.Field(i)
+		destField := destValue.Field(i)
+		if destField.IsZero() {
+			// If empty, fill it with the value from src
+			destField.Set(srcField)
+		}
+
+	}
+	return true
+}
+
+// This function copys values between different structs if they have same reflects and fields types
+func CopyFieldsBetweenDiffStructType(src, dest interface{}) bool {
+	srcValue := reflect.ValueOf(src)
+	destValue := reflect.ValueOf(dest).Elem() // Use Elem to get the underlying struct Value.
+
+	if srcValue.Kind() != reflect.Struct || destValue.Kind() != reflect.Struct {
+		fmt.Println("Both src and dest should be structs")
+		return false
+	}
+
+	for i := 0; i < srcValue.NumField(); i++ {
+		srcField := srcValue.Field(i)
+		destField := destValue.Field(i)
+
+		// Check if the field in dest is assignable from the field in src
+		if destField.Type().AssignableTo(srcField.Type()) {
+			destField.Set(srcField)
+		}
+	}
+	return true
+}

@@ -3,17 +3,17 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"os"
 	"reakgo/models"
 	"reakgo/utility"
 )
 
 func IsValidUserStruct(userStruct models.Users) bool {
-	if userStruct.Name != "" && userStruct.Email != "" && userStruct.PasswordHash != "" && userStruct.DOB != "" && userStruct.CompanyID != 0 && userStruct.AccountType != "" && userStruct.TwoFactorKey != "" && userStruct.TwoFactorRecoveryCode != "" && userStruct.Status != "" && userStruct.ID == 0 {
+	if userStruct.Name != "" && userStruct.Email != "" && userStruct.PasswordHash != "" && userStruct.DOB != "" && userStruct.CompanyID != 0 && userStruct.AccountType != "" && userStruct.TwoFactorKey != "" && userStruct.TwoFactorRecoveryCode != "" && userStruct.Status != "" {
 		return true
 	}
 	return false
 }
+
 func PutUser(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	//decode json (new decoder)
@@ -100,25 +100,11 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// hashing password(plain text) #1
-	userStruct.PasswordHash, err = utility.NewPasswordHash(userStruct.PasswordHash)
+	userStruct.PasswordHash, err = utility.SaltPlainPassWord(userStruct.PasswordHash)
 	if err != nil {
-		// handle the error
 		utility.Logger(err)
 		response.Status = "400"
-		response.Message = "Unable to create user at the moment! Please try again."
-		utility.RenderJsonResponse(w, r, response, 400)
-		return
-	}
-	// mixing salt with hashed pass
-	pswdConcatWithSalt := userStruct.PasswordHash + os.Getenv("CONS_SALT")
-
-	// making hash of (salted+hashed) pass #2
-	userStruct.PasswordHash, err = utility.NewPasswordHash(pswdConcatWithSalt)
-	if err != nil {
-		// handle the error
-		utility.Logger(err)
-		response.Status = "400"
-		response.Message = "Unable to create user at the moment! Please try again."
+		response.Message = "Unable to create a strong encryption for you password at the moment! Please try again."
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
@@ -175,44 +161,107 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		response.Message = "Please check all fields correctly and try again."
 
 	}
+	var userDetails models.Users
 	// integrate token check and return if mismatch found with status 400
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
-	if isok {
-		if userStruct.ID == 0 {
+	isok, userDetailsType := Utility.CheckTokenPayloadAndReturnUser(r)
+	flag := utility.CopyFieldsBetweenDiffStructType(userDetailsType, &userDetails)
+	if !flag {
+		log.Println("error during copy data at: CopyFieldsBetweenDiffStructType")
+		response.Status = "400"
+		response.Message = "Unable to process data at the moment! Please try again."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	if !isok {
+		response.Status = "403"
+		response.Message = "Unauthorized access! You are not allowed to make this request"
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	if userStruct.ID == 0 {
+		response.Status = "400"
+		response.Message = "Bad request! Cannot update data because of missing unique identifier"
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	// added a company id check too
+	if userDetails.ID != userStruct.ID && userDetails.AccountType == "user" || userDetails.CompanyID != userStruct.CompanyID && userDetails.AccountType != "super-admin" {
+		response.Status = "403"
+		response.Message = "Unauthorized access! You are not allowed to make this request"
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	// check for passwordHash if empty
+	if userStruct.PasswordHash == "" {
+		userStruct.PasswordHash = userDetails.PasswordHash
+	} else {
+		// run salting rounds on userStruct.PasswordHash
+		// hashing password(plain text) #1
+		userStruct.PasswordHash, err = utility.SaltPlainPassWord(userStruct.PasswordHash)
+		if err != nil {
+			utility.Logger(err)
 			response.Status = "400"
-			response.Message = "Bad request! Cannot update data because of missing unique identifier"
+			response.Message = "Unable to create a strong encryption for your password at the moment! Please try again."
 			utility.RenderJsonResponse(w, r, response, 400)
 			return
 		}
-		// added a company id check too
-		if userDetails.ID != userStruct.ID || userDetails.CompanyID != userStruct.CompanyID {
-			response.Status = "403"
-			response.Message = "Unauthorized access! You are not allowed to make this request"
-			utility.RenderJsonResponse(w, r, response, 403)
-			return
+	}
+	// check for twoFactory key/recoverCode
+	if userStruct.TwoFactorKey == "" && userStruct.TwoFactorRecoveryCode == "" {
+		// only for now random twofactorkey and recovery code (to be deleted when integrated with ORM)
+		userStruct.TwoFactorRecoveryCode, err = Utility.GenerateRandomString(16)
+		if err != nil {
+			log.Println("error in generating random string for TwoFactorRecoveryCode")
 		}
-		// fill it with updated data
-		if userStruct.Name != "" && userStruct.Email != "" && userStruct.PasswordHash != "" && userStruct.DOB != "" && userStruct.CompanyID != 0 && userStruct.AccountType != "" && userStruct.TwoFactorKey != "" && userStruct.TwoFactorRecoveryCode != "" && userStruct.Status != "" && userStruct.ID != 0 {
-			// call the ORM update function to update the user details
-			log.Println("Begin post User...")
-			//Backend data update and pass payload map
-			updateRow, err := models.Users{}.PostUser(userStruct)
-			if err != nil {
-				response.Message = utility.GetSqlErrorString(err)
-				if !updateRow {
-					response.Message = "400"
-					response.Message = "Record couldn't be updated"
-					response.Payload = []interface{}{}
-					utility.RenderJsonResponse(w, r, response, 400)
-					return
-				}
-			} else {
-				response.Status = "200"
-				response.Message = "Record successfully updated"
-				response.Payload = []interface{}{userStruct}
-			}
+		userStruct.TwoFactorKey, err = Utility.GenerateRandomString(16)
+		if err != nil {
+			log.Println("error in generating random string for TwoFactorKey")
 		}
 	}
+	// flipping values from userDetails(from token) to userStruct(from req) which are empty in userStruct
+	flag = utility.FillEmptyFieldsForPostUser(userDetails, &userStruct)
+	if !flag {
+		utility.Logger(err)
+		log.Println("error during flipping data at: FillEmptyFieldsForPostUser")
+		response.Status = "400"
+		response.Message = "Unable to process data at the moment! Please try again."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	// fill it with updated data
+	if IsValidUserStruct(userStruct) {
+		// call the ORM update function to update the user details
+		log.Println("Begin post User...")
+		tx := utility.Db.MustBegin()
+		updateRow, err := models.Users{}.PostUser(userStruct)
+		if err != nil {
+			response.Status = "400"
+			log.Println("under err")
+			response.Message = utility.GetSqlErrorString(err)
+			log.Println("after sql err")
+			if !updateRow {
+				response.Message = "Record couldn't be updated"
+			}
+			tx.Rollback()
+			response.Payload = []interface{}{}
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			tx.Rollback()
+			response.Status = "400"
+			response.Message = "Unable to update user at the moment! Please try again."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
 
-	utility.RenderJsonResponse(w, r, response, 200)
+		}
+		response.Status = "200"
+		response.Message = "Record successfully updated"
+		response.Payload = []interface{}{userStruct}
+		utility.RenderJsonResponse(w, r, response, 200)
+		return
+	}
+
 }
