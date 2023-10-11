@@ -360,6 +360,8 @@ func TestUserPutWithOwnersToken(t *testing.T) {
 	}
 
 	// mocking token payload with userDetails as owner
+	// well generally there would be all the details in this struct
+	// but for conducting tests I have just populated the needful feilds
 	var userdetails utility.UserDetails
 	userdetails.ID = 1
 	userdetails.AccountType = "owner"
@@ -417,3 +419,5 @@ func TestUserPutWithOwnersToken(t *testing.T) {
 		t.Errorf("Expected status code %d, got %s", http.StatusOK, data.Status)
 	}
 }
+
+// -------------------USER POST TESTS---------------------
