@@ -75,7 +75,7 @@ func (m MockHelper) StrictParseDataFromPostRequest(r *http.Request, structure in
 	return m.MockStrictParseDataFromPostRequestResult
 }
 
-func (m MockHelper) RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}) {
+func (m MockHelper) RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, statusCode int) {
 
 }
 

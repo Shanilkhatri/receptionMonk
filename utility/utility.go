@@ -86,7 +86,7 @@ type Helper interface {
 	ParseDataFromJsonToMap(r *http.Request) (map[string]interface{}, error)
 	// StrictParseDataFromJson(r *http.Request, structure interface{}) error
 	StrictParseDataFromPostRequest(r *http.Request, structure interface{}) error
-	RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{})
+	RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, statusCode int)
 	RenderTemplateData(w http.ResponseWriter, r *http.Request, template string, data interface{})
 	StringInArray(target string, arr []string) bool
 	ReturnUserDetails(r *http.Request, user interface{}) error
@@ -317,7 +317,7 @@ func StrictParseDataFromPostRequest(r *http.Request, structure interface{}) erro
 	return err
 
 }
-func RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}) {
+func RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, statusCode int) {
 	jsonresponce, err := json.Marshal(data)
 	if err != nil {
 		log.Println(err)
@@ -326,6 +326,18 @@ func RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+	// we take the statusCode as an arguement and send it as a http response
+	log.Println("statusCode: ", statusCode)
+	switch statusCode {
+	case 403:
+		w.WriteHeader(http.StatusForbidden)
+	case 400:
+		w.WriteHeader(http.StatusBadRequest)
+	case 500:
+		w.WriteHeader(http.StatusInternalServerError)
+	case 200:
+		w.WriteHeader(http.StatusOK)
+	}
 	w.Write([]byte(jsonresponce))
 }
 

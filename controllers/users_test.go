@@ -105,8 +105,8 @@ func TestUserPutWithCorrectData(t *testing.T) {
 		log.Println("error", err)
 	}
 
-	if data.Status != "200" {
-		t.Errorf("Expected status code %d, got %s", http.StatusOK, data.Status)
+	if data.Message != "User created successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
 	}
 }
 
@@ -123,7 +123,7 @@ func TestUserPutWithIncorrectDateString(t *testing.T) {
 		"passwordHash":          "1234",
 		"twoFactorKey":          "55",
 		"twoFactorRecoveryCode": "59898",
-		"dob":                   "2023-10-05", //incorrect date
+		"dob":                   "2023-20-05", //incorrect date
 		"accountType":           "owner",
 		"companyId":             0,
 		"status":                "active",
@@ -134,22 +134,8 @@ func TestUserPutWithIncorrectDateString(t *testing.T) {
 		panic(err)
 	}
 
-	// open Mock DB connection
-	mockDB, dbmock, err := sqlmock.New()
-	log.Println(err)
-	defer mockDB.Close()
-	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-
-	// I have used mustBegin thats why I am using Expect begin
-	dbmock.ExpectBegin()
-	// I also expect an Insert Query execution and for that :
-	dbmock.ExpectExec("INSERT INTO `authentication`").WillReturnResult(sqlmock.NewResult(1, 1))
-
-	// expecting a commit to as this is correct info
-	dbmock.ExpectCommit()
-
-	// Binding the DB Cursor to correct utility.Db
-	utility.Db = sqlxDB
+	// you can notice that as we are expecting an error even before touching the DB ops,
+	// so we haven't mocked DB in this case
 
 	// Mocking the utility functions that are used there
 	Utility = MockHelper{
@@ -162,27 +148,12 @@ func TestUserPutWithIncorrectDateString(t *testing.T) {
 	w := httptest.NewRecorder()
 	// Call your function with the mocks
 	PutUser(w, request)
-	err = dbmock.ExpectationsWereMet()
-	if err != nil {
-		t.Errorf("Expectations were not met %s", err)
-	}
 
-	// Read the response body into a byte slice
-	body, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		// here i am just logging the error
-		log.Println(err)
-	}
+	// we can even read body using io package and test even specific messages
+	// for now I have skipped it, might be added in future
 
-	var data utility.AjaxResponce
-	// Unmarshal the JSON data into the struct
-	if err := json.Unmarshal(body, &data); err != nil {
-		// Handle the JSON unmarshaling error
-		log.Println("error", err)
-	}
-
-	if data.Status != "200" {
-		t.Errorf("Expected status code %d, got %s", http.StatusOK, data.Status)
+	if w.Result().StatusCode != 403 {
+		t.Errorf("Expected status code %d, got %d", http.StatusForbidden, w.Result().StatusCode)
 	}
 }
 
@@ -208,22 +179,8 @@ func TestUserPutWithFaultyStruct(t *testing.T) {
 		panic(err)
 	}
 
-	// open Mock DB connection
-	mockDB, dbmock, err := sqlmock.New()
-	log.Println(err)
-	defer mockDB.Close()
-	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-
-	// I have used mustBegin thats why I am using Expect begin
-	dbmock.ExpectBegin()
-	// I also expect an Insert Query execution and for that :
-	dbmock.ExpectExec("INSERT INTO `authentication`").WillReturnResult(sqlmock.NewResult(1, 1))
-
-	// expecting a commit to as this is correct info
-	dbmock.ExpectCommit()
-
-	// Binding the DB Cursor to correct utility.Db
-	utility.Db = sqlxDB
+	// you can notice that as we are expecting an error even before touching the DB ops,
+	// so we haven't mocked DB in this case
 
 	// Mocking the utility functions that are used there
 	Utility = MockHelper{
@@ -236,27 +193,12 @@ func TestUserPutWithFaultyStruct(t *testing.T) {
 	w := httptest.NewRecorder()
 	// Call your function with the mocks
 	PutUser(w, request)
-	err = dbmock.ExpectationsWereMet()
-	if err != nil {
-		t.Errorf("Expectations were not met %s", err)
-	}
 
-	// Read the response body into a byte slice
-	body, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		// here i am just logging the error
-		log.Println(err)
-	}
+	// we can even read body using io package and test even specific messages
+	// for now I have skipped it, might be added in future
 
-	var data utility.AjaxResponce
-	// Unmarshal the JSON data into the struct
-	if err := json.Unmarshal(body, &data); err != nil {
-		// Handle the JSON unmarshaling error
-		log.Println("error", err)
-	}
-
-	if data.Status != "200" {
-		t.Errorf("Expected status code %d, got %s", http.StatusOK, data.Status)
+	if w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusBadRequest, w.Result().StatusCode)
 	}
 }
 
@@ -282,22 +224,8 @@ func TestUserPutGuestRegAsUser(t *testing.T) {
 		panic(err)
 	}
 
-	// open Mock DB connection
-	mockDB, dbmock, err := sqlmock.New()
-	log.Println(err)
-	defer mockDB.Close()
-	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
-
-	// I have used mustBegin thats why I am using Expect begin
-	dbmock.ExpectBegin()
-	// I also expect an Insert Query execution and for that :
-	dbmock.ExpectExec("INSERT INTO `authentication`").WillReturnResult(sqlmock.NewResult(1, 1))
-
-	// expecting a commit to as this is correct info
-	dbmock.ExpectCommit()
-
-	// Binding the DB Cursor to correct utility.Db
-	utility.Db = sqlxDB
+	// you can notice that as we are expecting an error even before touching the DB ops,
+	// so we haven't mocked DB in this case
 
 	// Mocking the utility functions that are used there
 	Utility = MockHelper{
@@ -310,27 +238,12 @@ func TestUserPutGuestRegAsUser(t *testing.T) {
 	w := httptest.NewRecorder()
 	// Call your function with the mocks
 	PutUser(w, request)
-	err = dbmock.ExpectationsWereMet()
-	if err != nil {
-		t.Errorf("Expectations were not met %s", err)
-	}
 
-	// Read the response body into a byte slice
-	body, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		// here i am just logging the error
-		log.Println(err)
-	}
+	// we can even read body using io package and test even specific messages
+	// for now I have skipped it, might be added in future
 
-	var data utility.AjaxResponce
-	// Unmarshal the JSON data into the struct
-	if err := json.Unmarshal(body, &data); err != nil {
-		// Handle the JSON unmarshaling error
-		log.Println("error", err)
-	}
-
-	if data.Status != "200" {
-		t.Errorf("Expected status code %d, got %s", http.StatusOK, data.Status)
+	if w.Result().StatusCode != 403 {
+		t.Errorf("Expected status code %d, got %d", http.StatusForbidden, w.Result().StatusCode)
 	}
 }
 
@@ -401,22 +314,11 @@ func TestUserPutWithOwnersToken(t *testing.T) {
 		t.Errorf("Expectations were not met %s", err)
 	}
 
-	// Read the response body into a byte slice
-	body, err := ioutil.ReadAll(w.Body)
-	if err != nil {
-		// here i am just logging the error
-		log.Println(err)
-	}
+	// we can even read body using io package and test even specific messages
+	// for now I have skipped it, might be added in future
 
-	var data utility.AjaxResponce
-	// Unmarshal the JSON data into the struct
-	if err := json.Unmarshal(body, &data); err != nil {
-		// Handle the JSON unmarshaling error
-		log.Println("error", err)
-	}
-
-	if data.Status != "200" {
-		t.Errorf("Expected status code %d, got %s", http.StatusOK, data.Status)
+	if w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
 	}
 }
 

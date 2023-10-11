@@ -16,7 +16,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 			log.Println("panic occured: ", recover)
 			tx.Rollback()
 			response.Message = "An internal error occurred, please try again"
-			Utility.RenderJsonResponse(w, r, response)
+			Utility.RenderJsonResponse(w, r, response, 500)
 		}
 	}()
 
@@ -51,7 +51,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 		if userDetails.AccountType != "user" && userDetails.AccountType != "owner" && userDetails.AccountType != "super-admin" {
 			response.Status = "403"
 			response.Message = "You are not authorized for this request"
-			Utility.RenderJsonResponse(w, r, response)
+			Utility.RenderJsonResponse(w, r, response, 403)
 			return response
 		}
 		// when user tries to access some other account
@@ -59,7 +59,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 			if paramMap["userId"] != 0 && userDetails.ID != int(paramMap["userId"]) {
 				response.Status = "403"
 				response.Message = "You are not authorized for this request"
-				Utility.RenderJsonResponse(w, r, response)
+				Utility.RenderJsonResponse(w, r, response, 403)
 				return response
 			} else {
 				// id given from token data
@@ -92,17 +92,17 @@ func GetOrders(w http.ResponseWriter, r *http.Request) utility.AjaxResponce {
 		} else if len(result) == 0 {
 			response.Status = "404"
 			response.Message = "No data were found for this search! Please try with valid values"
+			Utility.RenderJsonResponse(w, r, response, 404)
+			return response
 		} else {
 			response.Status = "200"
 			response.Message = "Results found successfully"
 			response.Payload = result
-			Utility.RenderJsonResponse(w, r, response)
-			tx.Commit()
+			Utility.RenderJsonResponse(w, r, response, 200)
 			return response
 		}
 	}
-	tx.Rollback()
 	response.Message = "Failed to authorize at the moment. Please Login again and try!"
-	Utility.RenderJsonResponse(w, r, response)
+	Utility.RenderJsonResponse(w, r, response, 500)
 	return response
 }
