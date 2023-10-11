@@ -349,7 +349,7 @@ func TestUserPutWithOwnersToken(t *testing.T) {
 		"twoFactorKey":          "55",
 		"twoFactorRecoveryCode": "59898",
 		"dob":                   "2023-10-05",
-		"accountType":           "user", // nothing wrong, just not allowed!
+		"accountType":           "user",
 		"companyId":             0,
 		"status":                "active",
 	}
@@ -421,3 +421,14 @@ func TestUserPutWithOwnersToken(t *testing.T) {
 }
 
 // -------------------USER POST TESTS---------------------
+
+// -> firstly, when anyone posting update they'll go through an ACL check which gives us
+// thier details that we have in the DB through cache or through DB itself
+// -> here we don't have checkACL as we totally bypass it so the details part will be mocked by us.
+// -> There are three checks that occur when under controller:
+//		- tokenPayload which if not present that means user is a guest and he won't get access
+//		- if userStruct.id == 0 (case if we misplaced id while transfer so the POST won't get through)
+//		- lastly if userStruct.id != userDetails.id (the POST won't get through as each user can update only their details)
+// based on the above info and to cross check if these conditions really work, let's begin testing!
+
+// TEST #1 postUser with correct data and struct

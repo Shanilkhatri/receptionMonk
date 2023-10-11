@@ -174,13 +174,13 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			Utility.RenderJsonResponse(w, r, response)
 			return
 		}
-		if userDetails.ID != userStruct.ID {
+		// added a company id check too
+		if userDetails.ID != userStruct.ID || userDetails.CompanyID != userStruct.CompanyID {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not allowed to make this request"
 			Utility.RenderJsonResponse(w, r, response)
 			return
 		}
-
 		// fill it with updated data
 		if userStruct.Name != "" && userStruct.Email != "" && userStruct.PasswordHash != "" && userStruct.DOB != "" && userStruct.CompanyID != 0 && userStruct.AccountType != "" && userStruct.TwoFactorKey != "" && userStruct.TwoFactorRecoveryCode != "" && userStruct.Status != "" && userStruct.ID != 0 {
 			// call the ORM update function to update the user details

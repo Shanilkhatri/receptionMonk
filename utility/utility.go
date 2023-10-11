@@ -472,13 +472,6 @@ func CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails) {
 	var userDetails UserDetails
 	// getting user details from token
 	tokenPayload := r.Header.Get("tokenPayload")
-	// if tokenPayload == "" {
-	// 	// filling userDetails var from session in case tokenPayload Empty
-	// 	userDetails.AccountType = fmt.Sprintf("%s", SessionGet(r, "accountType"))
-	// 	userDetails.ID, _ = strconv.Atoi(fmt.Sprintf("%s", SessionGet(r, "id")))
-	// 	userDetails.CompanyID, _ = strconv.Atoi(fmt.Sprintf("%s", SessionGet(r, "companyId")))
-	// 	return true, userDetails
-	// }
 	// unmarshal json and flip it into struct userDetails
 	err := json.Unmarshal([]byte(tokenPayload), &userDetails)
 	if err != nil {

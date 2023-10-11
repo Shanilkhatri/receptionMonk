@@ -40,7 +40,7 @@ func CheckACL(w http.ResponseWriter, r *http.Request, allowedAccess []string) bo
 			userType = "guest"
 		}
 		if !Utility.StringInArray(fmt.Sprintf("%v", userType), allowedAccess) {
-			// http.Error(w, "403 Forbidden", http.StatusForbidden)
+			http.Error(w, "403 Forbidden", http.StatusForbidden)
 			return false
 		}
 	} else {
