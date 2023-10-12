@@ -161,6 +161,21 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		response.Message = "Please check all fields correctly and try again."
 
 	}
+	// date format check
+	if !utility.CheckDateFormat(userStruct.DOB) {
+		// Utility.Logger(err)
+		response.Status = "400"
+		response.Message = "Date is not in format `yyyy-mm-dd`"
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	if !utility.CheckEmailFormat(userStruct.Email) {
+		// Utility.Logger(err)
+		response.Status = "400"
+		response.Message = "Please enter valid email address"
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
 	var userDetails models.Users
 	// integrate token check and return if mismatch found with status 400
 	isok, userDetailsType := Utility.CheckTokenPayloadAndReturnUser(r)
@@ -190,6 +205,21 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		response.Message = "Unauthorized access! You are not allowed to make this request"
 		utility.RenderJsonResponse(w, r, response, 403)
 		return
+	}
+	// this step is to get user incase a user with higher access rights tries to update other user
+	if userDetails.AccountType == "owner" || userDetails.AccountType == "super-admin" && userStruct.AccountType != "super-admin" && userStruct.ID != userDetails.ID {
+		// we need to get user details now
+		row, err := models.Users{}.GetUserById(userStruct.ID)
+		if err != nil {
+			log.Println("error: ", err)
+			utility.Logger(err)
+			response.Status = "400"
+			response.Message = "Unable to get user-record at the moment! Please try again."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		//else assigning userdetails the row we just bought
+		userDetails = row
 	}
 	// check for passwordHash if empty
 	if userStruct.PasswordHash == "" {

@@ -13,33 +13,48 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 	var callLogsStruct models.CallLogs
 	err := utility.StrictParseDataFromJson(r, &callLogsStruct)
 	if err != nil {
-		utility.Logger(err)
-		log.Println("Unable to decode json")
+		log.Println("Unable to decode json: ", err)
+		// utility.Logger(err)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		Utility.RenderTemplate(w, r, "", response)
+		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	// tokenPayload check
 	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 	// only owner can enter call logs
-	if isok && userDetails.AccountType == "owner" {
-		if callLogsStruct.CallDuration != "" && callLogsStruct.CallExtension != "" && callLogsStruct.CallFrom != "" && callLogsStruct.CallPlacedAt != "" && callLogsStruct.CallTo != "" {
-			tx := utility.Db.MustBegin()
-			isOk := models.CallLogs{}.PutCallLogs(callLogsStruct, tx)
-			if !isOk {
-				response.Status = "400"
-				response.Message = "Unable to create CallLog at the moment! Please try again."
-				isok, errString := utility.CheckSqlError(err, "") // dummy check
-				if isok {
-					log.Println(errString)
-
-				}
-				utility.Logger(err)
-			}
-			response.Status = "200"
-			response.Message = "CallLog created successfully."
-		}
+	if !isok || userDetails.AccountType != "owner" {
+		response.Status = "403"
+		response.Message = "You are not authorized to make this request"
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
 	}
-	Utility.RenderTemplate(w, r, "", response)
+	if callLogsStruct.CallDuration != "" && callLogsStruct.CallExtension != "" && callLogsStruct.CallFrom != "" && callLogsStruct.CallPlacedAt != "" && callLogsStruct.CallTo != "" {
+		tx := utility.Db.MustBegin()
+		isOk := models.CallLogs{}.PutCallLogs(callLogsStruct, tx)
+		if !isOk {
+			response.Status = "400"
+			response.Message = "Unable to create CallLog at the moment! Please try again."
+			isok, errString := utility.CheckSqlError(err, "") // dummy check
+			if isok {
+				log.Println(errString)
+
+			}
+			utility.Logger(err)
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		err = tx.Commit()
+		if err != nil {
+			tx.Rollback()
+			response.Status = "400"
+			response.Message = "Unabke to create callLog at the moment. Please try again"
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		response.Status = "200"
+		response.Message = "CallLog created successfully."
+		utility.RenderJsonResponse(w, r, response, 200)
+		return
+	}
 }

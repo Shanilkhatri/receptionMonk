@@ -66,3 +66,11 @@ func (user Users) PostUser(usr Users) (bool, error) {
 	}
 	return false, err
 }
+
+func (user Users) GetUserById(userId int) (Users, error) {
+	var selectedRow Users
+
+	err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE id = ?", userId)
+
+	return selectedRow, err
+}
