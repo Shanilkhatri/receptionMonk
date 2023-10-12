@@ -10,6 +10,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 
 	//"log"
 	//"fmt"
@@ -334,4 +335,22 @@ func ReturnUserDetails(r *http.Request, user interface{}) error {
 	userDetails := r.Header.Get("tokenPayload")
 	err := json.Unmarshal([]byte(userDetails), user)
 	return err
+}
+
+// convert string to int
+func StrToInt(num string) int {
+	if num != "" {
+		intNum, err := strconv.Atoi(num)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return intNum
+	}
+	return 0
+}
+
+// get sql error string from sql error
+func GetSqlErrorString(err error) string {
+	mes := strings.SplitN(err.Error(), ":", -1)
+	return mes[1]
 }
