@@ -29,7 +29,7 @@ func GetUserData(w http.ResponseWriter, r *http.Request) bool {
 	if usr.Id == 0 || usr.CompanyId == 0 {
 		response.Status = "403"
 		response.Message = "Unauthorized access, UserId or companyId doesn't match."
-		Utility.RenderJsonResponse(w, r, response)
+		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
 
