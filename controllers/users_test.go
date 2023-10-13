@@ -576,7 +576,7 @@ func TestUserPostWithOwnerUpdUserOfDiffComp(t *testing.T) {
 		panic(err)
 	}
 
-	// mocking token payload with userDetails as user
+	// mocking token payload with userDetails as owner
 	var userdetails utility.UserDetails
 	userdetails.ID = 3                // diff user
 	userdetails.AccountType = "owner" // type set to owner

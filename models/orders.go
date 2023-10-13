@@ -31,7 +31,7 @@ type OrderDataCondition struct {
 
 func (ord Orders) GetOrders(filter OrderDataCondition, tx *sqlx.Tx) ([]Orders, error) {
 	var ordersArr []Orders
-	query := "SELECT orders.id,orders.productId,orders.placedOn,orders.expiry,orders.price,orders.buyer,orders.status FROM `orders` INNER JOIN users on users.id=orders.buyer WHERE 1=1 " + filter.WhereCondition + "ORDER BY orders.id DESC;"
+	query := "SELECT orders.id,orders.productId,orders.placedOn,orders.expiry,orders.price,orders.buyer,orders.status FROM `orders` INNER JOIN users on users.id=orders.buyer WHERE 1=1 " + filter.WhereCondition + " ORDER BY orders.id DESC;"
 	condtion := map[string]interface{}{
 		"id":        filter.Id,
 		"date_from": filter.DateFrom,
