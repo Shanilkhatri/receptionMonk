@@ -42,5 +42,19 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		case "POST":
 			controllers.PostExtension(w, r)
 		}
+	case "orderdetails":
+		controllers.CheckACL(w, r, []string{"admin", "owner", "user"})
+		controllers.OrderDetailsGet(w, r)
+
+	case "user":
+		controllers.CheckACL(w, r, []string{"admin", "owner", "user"})
+		switch r.Method {
+		case "GET":
+			controllers.GetUserData(w, r)
+
+		case "DELETE":
+			controllers.DeleteUserData(w, r)
+		}
+
 	}
 }
