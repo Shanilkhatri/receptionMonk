@@ -22,7 +22,7 @@ func GetUserData(w http.ResponseWriter, r *http.Request) bool {
 		log.Println(err)
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
-		Utility.RenderJsonResponse(w, r, response)
+		utility.RenderJsonResponse(w, r, response)
 		return true
 	}
 
