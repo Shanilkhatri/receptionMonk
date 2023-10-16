@@ -12,7 +12,7 @@ securityDefinitions:
 paths:
   /users:
     get:
-      summary: Fetch all users registered on the portal.
+      summary: Will return the user information whose token is being used, Other parameters will be available with user's own key or super-admin key
       parameters:
         - name: id
           in: query
@@ -28,7 +28,7 @@ paths:
           type: string
       responses:
         200:
-          description: Returns all matching users
+          description: Returns user based on parameters and key
           schema:
             type: array
             items:
@@ -38,9 +38,9 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
     post:
-      summary: Updates registered users on the portal.
+      summary: Updates user information whose token is being used, Other parameters will be available with user's own key or super-admin key
       parameters:
         - in: body
           name: payload
@@ -56,9 +56,9 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
     put:
-      summary: Adds users to the portal.
+      summary: Adds users to the portal, This will bypass header authentication as new user will not have a token available
       parameters:
         - in: body
           name: payload
@@ -74,9 +74,9 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
     delete:
-      summary: Deletes users from the portal.
+      summary: Deletes users from the portal, Can only delete own account and owner can delete users within org, Only super admin can delete any user
       parameters:
         - in: query
           name: id
@@ -91,10 +91,10 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
   /orders:
     get:
-      summary: Fetch all orders placed.
+      summary: Will return the order information whose token is being used or under company owner, Other parameters will be available with user's own key or super-admin key
       parameters:
         - name: id
           in: query
@@ -124,9 +124,9 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
     post:
-      summary: Updates registered users on the portal.
+      summary: Updates user order whose token is being used will not do anything unless your user account is owner, Other parameters will be available with user's own key or super-admin key
       parameters:
         - in: body
           name: payload
@@ -142,9 +142,9 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
     put:
-      summary: Adds Orders to the portal.
+      summary: Adds user order whose token is being used will not do anything unless your user account is owner, Other parameters will be available with user's own key or super-admin key
       parameters:
         - in: body
           name: payload
@@ -160,9 +160,9 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
     delete:
-      summary: Deletes order from the portal.
+      summary: Deletes user order whose token is being used will not do anything unless your user account is owner, Other parameters will be available with user's own key or super-admin key
       parameters:
         - in: query
           name: id
@@ -177,7 +177,247 @@ paths:
         403:
           description: Unauthorized access, Token doesn't match or works.
         500:
-          description: Internal server error, Any serious issues which cannot be recovered from.
+          description: Internal server error
+  /calllogs:
+    get:
+      summary: Fetch call logs from the system, Running an empty get will list all of the call logs of that particular user.
+      parameters:
+        - name: id
+          in: query
+          description: Fetch call logs based on the primary key / id.
+          type: string
+        - name: companyId
+          in: query
+          description: Fetch call logs based on the company they belong to.
+          type: string
+      responses:
+        200:
+          description: Returns all matching call logs
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CallLogs"
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+    put:
+        summary: Adds call log whose token is being used will not do anything unless your user account is owner, Other parameters will be available with user's own key or super-admin key
+        parameters:
+          - in: body
+            name: payload
+            description: User objects
+            required: true
+            schema:
+              $ref: "#/definitions/CallLogs"
+        responses:
+          200:
+            description: Call Log added successfully.
+          400:
+            description: Bad Request, Incorrect payload or call.
+          403:
+            description: Unauthorized access, Token doesn't match or works.
+          500:
+            description: Internal server error
+  /orderDetails:
+    get:
+      summary: Fetch order details from the system, Will only work if you're owner and can see only their own detail.
+      parameters:
+        - name: id
+          in: query
+          description: Fetch order details based on the primary key / id.
+          type: string
+        - name: companyId
+          in: query
+          description: Fetch order details based on the company they belong to.
+          type: string
+      responses:
+        200:
+          description: Returns all matching order details
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/OrderDetails"
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+  
+  /extensions:
+    get:
+      summary: Will return the extension info whose token is being used, Other parameters will be available with user's own key or super-admin key
+      parameters:
+        - name: id
+          in: query
+          description: Fetch user based on the primary key / id.
+          type: string
+        - name: companyId
+          in: query
+          description: Fetch users based on the company they belong to.
+          type: string
+      responses:
+        200:
+          description: Returns user based on parameters and key
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Extensions"
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+    post:
+      summary: Updates extension whose token is being used, Other parameters will be available with user's own key or super-admin key
+      parameters:
+        - in: body
+          name: payload
+          description: Extension objects
+          required: true
+          schema:
+            $ref: "#/definitions/Extensions"
+      responses:
+        200:
+          description: Extension updated successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+    put:
+      summary: Adds extension to the portal, This will bypass header authentication as new user will not have a token available
+      parameters:
+        - in: body
+          name: payload
+          description: Extension objects
+          required: true
+          schema:
+            $ref: "#/definitions/Extensions"
+      responses:
+        200:
+          description: Extension added successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+    delete:
+      summary: Deletes extensions from the portal, Can only delete own account and owner can delete users within org, Only super admin can delete any user
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: Delete user based on their id / primary key.
+          required: true
+      responses:
+        200:
+          description: Extension deleted successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+  
+  /wallet:
+    get:
+      summary: Will return the wallet transaction info whose token is being used (Only owners), Other parameters will be available with user's own key or super-admin key
+      parameters:
+        - name: id
+          in: query
+          description: Fetch user based on the primary key / id.
+          type: string
+        - name: companyId
+          in: query
+          description: Fetch users based on the company they belong to.
+          type: string
+      responses:
+        200:
+          description: Returns wallet info based on parameters and key
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Wallet"
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+    post:
+      summary: Updates wallet whose token is being used (Only owner), Other parameters will be available with user's own key or super-admin key
+      parameters:
+        - in: body
+          name: payload
+          description: Extension objects
+          required: true
+          schema:
+            $ref: "#/definitions/Wallet"
+      responses:
+        200:
+          description: Wallet Transaction updated successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+    put:
+      summary: Adds wallet transaction info to the portal, This will bypass header authentication as new user will not have a token available
+      parameters:
+        - in: body
+          name: payload
+          description: Wallet objects
+          required: true
+          schema:
+            $ref: "#/definitions/Wallet"
+      responses:
+        200:
+          description: Wallet Transaction added successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+    delete:
+      summary: Deletes wallet transaction from the portal, Can only delete own account and owner can delete users within org, Only super admin can delete any user
+      parameters:
+        - in: query
+          name: id
+          type: string
+          description: Delete user based on their id / primary key.
+          required: true
+      responses:
+        200:
+          description: Wallet transaction deleted successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+
+  /orderRenewal:
+    get:
+      description: Performs order renewal where orders have been expired from an active state, if the state was cancelled we do nothing.
+      responses:
+        200:
+          description: Housekeeping done successfully.
+        400:
+          description: Bad Request, Incorrect payload or call.
+        403:
+          description: Unauthorized access, Token doesn't match or works.
+        500:
+          description: Internal server error
+
 
 definitions:
   Company:
@@ -193,6 +433,12 @@ definitions:
       address:
         type: string
         format: text
+      contactNumber:
+        type: string
+        format: phone
+      contactEmail:
+        type: string
+        format: phone
         
   Users:
     type: object
@@ -207,8 +453,6 @@ definitions:
         format: email
       passwordHash:
         type: string
-      passwordSalt:
-        type: string
       twoFactorKey:
         type: string
       twoFactorRecoveryCode:
@@ -216,11 +460,9 @@ definitions:
       dob:
         type: string
         format: date
-      authToken:
-        type: string
       accountType:
         type: string
-        enum: ["user","admin"]
+        enum: ["user","owner"]
       companyId:
         description: Will link to the company account id, in case a company has multiple users
         type: integer
@@ -278,3 +520,97 @@ definitions:
       status:
         type: string
         enum: ["unpaid", "paid", "cancelled"]
+  
+  OrderDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        orderId:
+          type: integer
+          format: int64
+        phoneNumber:
+          type: string
+          format: phone
+        sipServer:
+          type: string
+        sipUsername:
+          type: string
+        sipPassword:
+          type: string
+        sipPort:
+          type: string
+        isIvrEnabled:
+          type: boolean
+        ivrFlow:
+          type: string
+          format: text
+        maxAllowedUsers:
+          type: integer
+          format: int64
+        maxAllowedDepts:
+          type: integer
+          format: int64
+
+  CallLogs:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      callFrom:
+        type: string
+      callTo:
+        type: string
+      callPlacedAt:
+        type: string
+      callDuration:
+        type: string
+      callExtension:
+        type: string
+  
+  Extensions:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      extension:
+        type: string
+      userId:
+        type: integer
+        format: int64
+      department:
+        type: integer
+        format: int64
+      sipServer:
+        type: string
+      sipUsername:
+        type: string
+      sipPassword:
+        type: string
+      sipPort:
+        type: string
+
+  Wallet:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      charge:
+        type: string
+        enum: ["credit", "debit"]
+      reason:
+        type: string
+      cost:
+        type: integer
+        format: int64
+        description: Please note that we will be saving the numbers upto 2 decimal places as actual numbers, So if you need to save 100 it will become 10000, and 79.99 will become 7999
+      epoch:
+        type: string
+        description: UNIX epoch
+      companyId:
+        type: integer
+        format: int64

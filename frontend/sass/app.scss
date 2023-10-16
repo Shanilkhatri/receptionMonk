@@ -1,0 +1,19 @@
+// ################
+// App CSS
+// ################
+
+// Import Pages Layout Source File
+@import "./layouts/layout";
+
+// Import Utilities
+@import "./utilities/utillities";
+
+// Import Font Files 
+@import "./fonts/fonts";
+
+// Import Bootstrap Libs
+@import "./libs/bootstrap.scss";
+
+// Import Bootstrap Icons SCSS
+// @import "~bootstrap-icons/font/bootstrap-icons";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.scss"

@@ -1,0 +1,32 @@
+// ###################
+// Footer CSS
+// ###################
+
+#footer {
+    padding: 5% 0 3%;
+    line-height: 2;
+    color: $white;
+
+    .social {
+        font-size: larger;
+
+        i:hover {
+            color: $black;
+            cursor: pointer;
+            transition: color 0.3s ease-in;
+        }
+    }
+    .list-group {
+        .list-group-item {
+            background: transparent;
+            border: none;
+            color: $white;
+
+            &:hover {
+                color: $black;
+                cursor: pointer;
+                transition: color 0.3s ease-in;
+            }
+        }
+    }
+}
