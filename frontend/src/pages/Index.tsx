@@ -551,7 +551,7 @@ const Index = () => {
                         </div>                        
                     </div>
                    
-                    <div className="panel flex flex-col justify-between col-span-1 row-span-2">
+                    <div className="panel flex flex-col justify-between col-span-2 row-span-2">
                         <div className="flex items-center mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">Recent Calls</h5>
                         </div>
@@ -568,7 +568,7 @@ const Index = () => {
                         </div>
                     </div> 
 
-                    <div className="panel flex flex-col justify-between col-span-1 row-span-2 p-0 border-0 overflow-hidden bg-gradient-to-r from-[#4361ee] to-[#160f6b]">
+                    {/* <div className="panel flex flex-col justify-between col-span-1 row-span-2 p-0 border-0 overflow-hidden bg-gradient-to-r from-[#4361ee] to-[#160f6b]">
                         <div className="p-8">        
                             <div className=''>
                                 <p className="text-3xl font-bold text-white">Wallet Balance</p>
@@ -589,7 +589,7 @@ const Index = () => {
                                 <p className='text-lg font-semibold text-gray-300 py-8'>Last Wallet Recharge on 20th Septempber - ₹ 2000</p>
                             </div>
                         </div>      
-                    </div>
+                    </div> */}
 
                     <div className="col-span-1 row-start-2 grid grid-cols-2 h-full gap-4 text-white font-bold">
                         <div className="panel h-full grid col-span-1 bg-gradient-to-r from-[#009fb5] to-[#3be3f9]">

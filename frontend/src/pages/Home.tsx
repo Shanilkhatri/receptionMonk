@@ -205,8 +205,203 @@ const Home = () => {
                 </li>
             </ul>
 
-            <div className="pt-5">
-                <div className="grid lg:grid-cols-3 gap-6 mb-6">
+            <div className="py-5">
+
+            <div className="w-full h-full flex flex-row gap-6">
+                <div className="w-2/3"> 
+                    <div className="panel overflow-hidden h-full">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <div className="">Welcome Back!</div>
+                                <div className="text-2xl font-bold">My Dashboard</div>
+                            </div>
+                            <div className="flex">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 me-2">
+                                    <path
+                                        d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12V14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V12Z"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                    />
+                                    <path opacity="0.5" d="M7 4V2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                    <path opacity="0.5" d="M17 4V2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                    <path opacity="0.5" d="M2 9H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                </svg>
+                                <div className="text-xs font-bold">                                        
+                                    12 April, 2023
+                                </div>
+                            </div>
+                            <div className="flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 48 48" className="w-4 h-4 me-2">
+                                    <path d="M 24 4 C 12.972066 4 4 12.972074 4 24 C 4 35.027926 12.972066 44 24 44 C 35.027934 44 44 35.027926 44 24 C 44 12.972074 35.027934 4 24 4 z M 24 7 C 33.406615 7 41 14.593391 41 24 C 41 33.406609 33.406615 41 24 41 C 14.593385 41 7 33.406609 7 24 C 7 14.593391 14.593385 7 24 7 z M 23.476562 11.978516 A 1.50015 1.50015 0 0 0 22 13.5 L 22 25.5 A 1.50015 1.50015 0 0 0 23.5 27 L 31.5 27 A 1.50015 1.50015 0 1 0 31.5 24 L 25 24 L 25 13.5 A 1.50015 1.50015 0 0 0 23.476562 11.978516 z"></path>
+                                </svg>
+                                <div className="text-xs font-bold">                                        
+                                    15:25:56
+                                </div>
+                            </div>
+                        </div>
+                        <div className="relative mt-10">
+                            <div className="grid grid-cols-3 gap-6 p-2 text-center">                                    
+                                <div className="flex flex-col justify-center items-center">
+                                    <img src="/assets/images/profile-34.jpeg" alt="img" className="w-24 h-24 rounded-full object-cover  mb-5" />
+                                    <p className="font-semibold text-primary text-2xl">John Miller</p>
+                                </div>
+
+                                <ul className="flex flex-col max-w-[160px] m-auto space-y-4 font-semibold text-gray-600">
+                                <li className="flex items-center gap-2">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                        <path
+                                            opacity="0.5"
+                                            d="M5 8.51464C5 4.9167 8.13401 2 12 2C15.866 2 19 4.9167 19 8.51464C19 12.0844 16.7658 16.2499 13.2801 17.7396C12.4675 18.0868 11.5325 18.0868 10.7199 17.7396C7.23416 16.2499 5 12.0844 5 8.51464Z"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                        />
+                                        <path
+                                            d="M14 9C14 10.1046 13.1046 11 12 11C10.8954 11 10 10.1046 10 9C10 7.89543 10.8954 7 12 7C13.1046 7 14 7.89543 14 9Z"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                        />
+                                        <path
+                                            d="M20.9605 15.5C21.6259 16.1025 22 16.7816 22 17.5C22 19.9853 17.5228 22 12 22C6.47715 22 2 19.9853 2 17.5C2 16.7816 2.37412 16.1025 3.03947 15.5"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                        />
+                                    </svg>
+                                    New York, USA
+                                </li>
+                                <li>
+                                    <button className="flex items-center gap-2">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                opacity="0.5"
+                                                d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                                stroke="currentColor"
+                                                strokeWidth="1.5"
+                                            />
+                                            <path
+                                                d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
+                                                stroke="currentColor"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                            />
+                                        </svg>
+                                        John@gmail.com
+                                    </button>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M5.00659 6.93309C5.04956 5.7996 5.70084 4.77423 6.53785 3.93723C7.9308 2.54428 10.1532 2.73144 11.0376 4.31617L11.6866 5.4791C12.2723 6.52858 12.0372 7.90533 11.1147 8.8278M17.067 18.9934C18.2004 18.9505 19.2258 18.2992 20.0628 17.4622C21.4558 16.0692 21.2686 13.8468 19.6839 12.9624L18.5209 12.3134C17.4715 11.7277 16.0947 11.9628 15.1722 12.8853"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                        />
+                                        <path
+                                            opacity="0.5"
+                                            d="M5.00655 6.93311C4.93421 8.84124 5.41713 12.0817 8.6677 15.3323C11.9183 18.5829 15.1588 19.0658 17.0669 18.9935M15.1722 12.8853C15.1722 12.8853 14.0532 14.0042 12.0245 11.9755C9.99578 9.94676 11.1147 8.82782 11.1147 8.82782"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                        />
+                                    </svg>
+                                    <span className="whitespace-nowrap text-primary font-bold" dir="ltr">
+                                        +91 98562 52145
+                                    </span>
+                                </li>
+                                </ul>
+
+                                <div>
+                                    <ReactApexChart options={options} series={options.series} type="radialBar" height={200} /> 
+
+                                    {/* <span className="font-semibold text-dark text-xl" dir="ltr">
+                                        Basic Plan
+                                    </span> */}
+                                </div>
+                            </div>                               
+                        </div>
+                    </div>
+                </div>
+
+                <div className="w-1/3">         
+                    <div className="grid h-full col-span-1 row-start-2 gap-6">
+                        <div className="panel h-full grid col-span-1">
+                            <div className="flex">                                
+                                <svg className="svg-main-icon" id="Capa_1" enable-background="new 0 0 512 512" viewBox="0 0 512 512" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="m482 245.242v-60.363c0-29.656-23.597-53.891-53-54.949v-37.051c0-19.299-15.701-35-35-35h-96.358l-12.443-34.587c-3.173-8.82-9.595-15.868-18.083-19.845-8.488-3.978-18.014-4.402-26.821-1.196l-174.855 63.641c-8.798 3.202-15.817 9.641-19.765 18.131s-4.349 18.007-1.128 26.799l7.025 19.175c-28.735 1.777-51.572 25.707-51.572 54.882v272c0 30.327 24.673 55 55 55h372c30.327 0 55-24.673 55-55v-62.363c16.938-2.434 30-17.036 30-34.637v-80c0-17.601-13.062-32.203-30-34.637zm0 114.637c0 2.757-2.243 5-5 5h-80c-24.813 0-45-20.187-45-45s20.187-45 45-45h80c2.757 0 5 2.243 5 5zm-409.284-259.377c-.621-1.695-.166-3.126.161-3.829.327-.702 1.128-1.973 2.824-2.59l174.854-63.641c1.698-.617 3.129-.158 3.832.171s1.972 1.135 2.583 2.835l8.79 24.432h-6.76c-19.299 0-35 15.701-35 35v37h-140.521zm326.284-7.623v37h-145v-37c0-2.757 2.243-5 5-5h135c2.757 0 5 2.243 5 5zm28 389h-372c-13.785 0-25-11.215-25-25v-272c0-13.785 11.215-25 25-25h372c13.785 0 25 11.215 25 25v60h-55c-41.355 0-75 33.645-75 75s33.645 75 75 75h55v62c0 13.785-11.215 25-25 25z" fill="#000"></path>
+                                    <circle cx="397" cy="319.879" r="15" fill="#fff"></circle>
+                                </svg>
+                                <div className="font-bold text-xl ps-3 pt-1">Wallet Balance</div>      
+                            </div>
+                            
+                            <div className="flex justify-center align-center whitespace-nowrap">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="#000" className="mt-1"><path d="M15.571 3h3.866l1.563-3h-16.438l-1.562 3h4.963c2.257 0 3.759.839 4.589 2h-7.99l-1.562 3h10.279c-.266 2.071-1.975 4-4.942 4h-4.337v3c2.321 0 1.584-.553 7.324 9h4.676l-5.963-9c2.505-.396 6.496-2.415 6.92-7h2.48l1.563-3h-4.345c-.238-.707-.602-1.383-1.084-2z"/></svg>
+                                <span className="text-xl ps-2 font-bold"> 41,741.42 </span>                                
+                            </div>                            
+                            
+                            <div className="flex items-end justify-evenly">
+                                <div className="">
+                                    <button type="button" className="flex shadow-[0_0_2px_0_#bfc9d4] bg-[#EBF1F6] rounded-full px-6 py-1 text-white-light place-content-center ltr:mr-2 rtl:ml-2">
+                                        <span className='font-semibold text-lg text-gray-900'>Purchase Plan</span>
+                                    </button>
+                                </div>
+                                <div className="">
+                                    <button type="button" className="btn btn-primary rounded shadow-[0_0_1px_0_#bfc9d4] rounded-full  py-1 ps-6 text-white text-base hover:bg-[#4361ee]">
+                                        Recharge Wallet
+                                        <span className='bg-[#EBF1F6] rounded-xl ms-3'>
+                                            <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="grid">
+                            <div className="panel h-full grid col-span-1">
+                                <div className="flex">                                
+                                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M16.3939 2.02121L16.4604 2.03904C17.5598 2.33361 18.431 2.56704 19.1162 2.81458C19.8172 3.06779 20.3888 3.35744 20.8597 3.79847C21.5453 4.44068 22.0252 5.27179 22.2385 6.18671C22.385 6.81503 22.3501 7.45486 22.2189 8.18849C22.0906 8.90573 21.8572 9.77697 21.5626 10.8764L21.0271 12.8747C20.7326 13.974 20.4991 14.8452 20.2516 15.5305C19.9984 16.2314 19.7087 16.803 19.2677 17.2739C18.6459 17.9377 17.8471 18.4087 16.9665 18.6316C16.7093 19.2213 16.3336 19.7554 15.8597 20.1993C15.3888 20.6403 14.8172 20.9299 14.1162 21.1832C13.431 21.4307 12.5598 21.6641 11.4605 21.9587L11.394 21.9765C10.2946 22.2711 9.42337 22.5045 8.70613 22.6328C7.9725 22.764 7.33266 22.7989 6.70435 22.6524C5.78943 22.4391 4.95832 21.9592 4.31611 21.2736C3.87508 20.8027 3.58542 20.2311 3.33222 19.5302C3.08468 18.8449 2.85124 17.9737 2.55667 16.8743L2.02122 14.876C1.72664 13.7766 1.4932 12.9054 1.36495 12.1882C1.23376 11.4546 1.19881 10.8147 1.34531 10.1864C1.55864 9.27149 2.03849 8.44038 2.72417 7.79817C3.19505 7.35714 3.76664 7.06749 4.46758 6.81428C5.15283 6.56674 6.02404 6.3333 7.12341 6.03873L7.15665 6.02983C7.42112 5.95896 7.67134 5.89203 7.90825 5.82944C8.29986 4.43031 8.64448 3.44126 9.31611 2.72417C9.95831 2.03849 10.7894 1.55864 11.7043 1.34531C12.3327 1.19881 12.9725 1.23376 13.7061 1.36495C14.4233 1.49319 15.2945 1.72664 16.3939 2.02121ZM7.45502 7.5028C6.36214 7.79571 5.57905 8.00764 4.9772 8.22505C4.36778 8.4452 4.00995 8.64907 3.74955 8.89296C3.2804 9.33237 2.95209 9.90103 2.80613 10.527C2.72511 10.8745 2.72747 11.2863 2.84152 11.9242C2.95723 12.5712 3.17355 13.381 3.47902 14.521L3.99666 16.4529C4.30212 17.5929 4.51967 18.4023 4.74299 19.0205C4.96314 19.63 5.16701 19.9878 5.4109 20.2482C5.85031 20.7173 6.41897 21.0456 7.04496 21.1916C7.39242 21.2726 7.80425 21.2703 8.4421 21.1562C9.08915 21.0405 9.89893 20.8242 11.0389 20.5187C12.1789 20.2132 12.9884 19.9957 13.6066 19.7724C14.216 19.5522 14.5739 19.3484 14.8343 19.1045C14.9719 18.9756 15.0973 18.8357 15.2096 18.6865C15.0306 18.6612 14.8463 18.629 14.6557 18.5911C13.9839 18.4575 13.1769 18.2413 12.1808 17.9744L12.1234 17.959C11.024 17.6644 10.1528 17.431 9.46758 17.1835C8.76664 16.9302 8.19505 16.6406 7.72416 16.1996C7.03849 15.5574 6.55864 14.7262 6.34531 13.8113C6.19881 13.183 6.23376 12.5432 6.36494 11.8095C6.4932 11.0923 6.72664 10.2211 7.02122 9.12174L7.45502 7.5028ZM13.4421 2.84152C12.8042 2.72747 12.3924 2.72511 12.045 2.80613C11.419 2.95209 10.8503 3.2804 10.4109 3.74955C9.97479 4.21518 9.70642 4.93452 9.2397 6.64323C9.16384 6.92093 9.08365 7.22023 8.99665 7.54488L8.47902 9.47673C8.17355 10.6167 7.95723 11.4265 7.84152 12.0736C7.72747 12.7114 7.72511 13.1232 7.80613 13.4707C7.95209 14.0967 8.2804 14.6654 8.74955 15.1048C9.00995 15.3487 9.36778 15.5525 9.9772 15.7727C10.5954 15.996 11.4049 16.2136 12.5449 16.519C13.5703 16.7938 14.3303 16.997 14.9482 17.1199C15.5635 17.2422 15.981 17.2723 16.3232 17.23C16.3976 17.2209 16.4691 17.2082 16.5389 17.1919C17.1649 17.0459 17.7335 16.7176 18.1729 16.2485C18.4168 15.9881 18.6207 15.6303 18.8408 15.0208C19.0642 14.4026 19.2817 13.5932 19.5872 12.4532L20.1048 10.5213C20.4103 9.38129 20.6266 8.57151 20.7423 7.92446C20.8564 7.28661 20.8587 6.87479 20.7777 6.52733C20.6317 5.90133 20.3034 5.33267 19.8343 4.89327C19.5739 4.64937 19.216 4.4455 18.6066 4.22535C17.9884 4.00203 17.1789 3.78448 16.0389 3.47902C14.8989 3.17355 14.0892 2.95723 13.4421 2.84152ZM11.0524 9.80588C11.1596 9.40578 11.5709 9.16834 11.971 9.27555L16.8006 10.5696C17.2007 10.6768 17.4381 11.0881 17.3309 11.4882C17.2237 11.8883 16.8125 12.1257 16.4124 12.0185L11.5827 10.7244C11.1826 10.6172 10.9452 10.206 11.0524 9.80588ZM10.2755 12.7036C10.3828 12.3035 10.794 12.066 11.1941 12.1733L14.0919 12.9497C14.492 13.0569 14.7294 13.4682 14.6222 13.8683C14.515 14.2684 14.1038 14.5058 13.7037 14.3986L10.8059 13.6221C10.4058 13.5149 10.1683 13.1037 10.2755 12.7036Z" fill="#000"/>
+                                    </svg>
+                                        <div className="font-bold text-xl ps-3 pt-1">Order Details</div>      
+                                </div>
+
+                                <div className="grid gap-8 text-sm text-[#515365] font-bold">                                    
+                                    <div className='flex items-center justify-evenly'>
+                                        <div className='text-center'>
+                                            <div>Used Calls</div>
+                                            <div className="text-[#04DC8B] text-2xl">129</div>
+                                        </div>                                       
+                                        <div className='text-center'>
+                                            <div>Decline Calls</div>
+                                            <div className="text-danger text-2xl">69</div>
+                                        </div>
+                                        <div className='text-center'>
+                                            <div>Remaining Calls</div>
+                                            <div className="text-info text-2xl">57</div>
+                                        </div>
+                                        <div className="">
+                                            <button type="button" className="btn btn-dark flex shadow-[0_0_2px_0_#bfc9d4] bg-[#EBF1F6] rounded-full px-3 py-0 text-white-light place-content-center ltr:mr-2 rtl:ml-2">
+                                                <span className='font-semibold text-sm text-gray-900'>Order history</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* <div className="flex justify-between align-center whitespace-nowrap">
+                                    <div className="text-lg font-semibold">
+                                        Used Calls
+                                        <span className="text-sm ps-2 font-bold"> 41,741.42 </span>
+                                    </div>
+                                   
+                                    <span className="text-xl ps-2 font-bold"> 41,741.42 </span>
+                                </div> */}
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+                {/* <div className="grid lg:grid-cols-3 gap-6 mb-6">
                     <div className="grid col-span-2 gap-6">
                         <div className="panel overflow-hidden">
                             <div className="flex items-center justify-between">
@@ -309,10 +504,6 @@ const Home = () => {
 
                                     <div>
                                         <ReactApexChart options={options} series={options.series} type="radialBar" height={200} /> 
-
-                                        {/* <span className="font-semibold text-dark text-xl" dir="ltr">
-                                            Basic Plan
-                                        </span> */}
                                     </div>
                                 </div>                               
                             </div>
@@ -357,8 +548,9 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
+
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                     <div className="panel h-full sm:col-span-2 lg:col-span-1 shadow-md">                       
                         <div className="flex justify-between dark:text-white-light mb-5">
