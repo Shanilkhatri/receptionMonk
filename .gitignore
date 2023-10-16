@@ -1,3 +1,6 @@
 # dependencies
 /frontend/node_modules
 
+/portal/node_modules
+/portal/package-lock.json
+

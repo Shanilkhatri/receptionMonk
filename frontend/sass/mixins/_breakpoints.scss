@@ -1,0 +1,287 @@
+// breakpoint_mixin
+
+@mixin min-breakpoint-2xl {
+    @media (min-width: 2000px) {
+        .bg-img {
+            background: $white url('../images/bg-xxl.svg') top center no-repeat !important;
+            background-position: top center !important;
+        }
+        #hero {
+            padding-top: 7%;
+        }
+        #contentfirst {
+            padding: 6% 0 3%;
+        }
+        .sponcership {
+            height: 25rem !important;
+        }
+    }
+}
+@mixin min-breakpoint-xxl {
+    @media (min-width: 1600px) and (max-width: 1999.99px) {
+        .container {
+            max-width: 1660px;
+        }
+        .bg-img {
+            background: $white url('../images/bg-xxl.svg') top right no-repeat !important;
+        }
+        #hero {
+            padding-top: 10%;
+        }
+        #contentfirst {
+            padding: 13.5% 0 0;
+        }        
+        .sponcership {
+            height: 20rem;
+        }
+        #footer {
+            padding: 3% 0 1%;
+        }
+    }   
+}
+@mixin min-max-breakpoint-exl {
+    @media (min-width: 1400px) and (max-width: 1599.99px) {             
+        .bg-img {
+                background: $white url('../images/bg-xxl.svg') top right no-repeat !important;
+        }
+        #hero {
+            padding-top: 15%;
+        }  
+        #contentfirst {
+            padding: 13% 0 0;
+        }
+        .sponcership {
+            height: 15rem;
+        }   
+    }    
+}
+@mixin min-max-breakpoint-xl {
+    @media (min-width: 1200px) and (max-width: 1399.99px) {
+        #hero {
+            padding-top: 15%;
+        } 
+        .sponcership {
+            height: 13rem;
+        } 
+        .hero-text {   
+            .display-3 {
+                font-size: 3.5rem;
+            }         
+            p {
+                font-size: $font-size-base;
+            }
+        }        
+    }    
+}
+@mixin min-max-breakpoint-lg {
+    @media (min-width: 992px) and (max-width: 1199.99px) {
+        .bg-img {
+                background: $white url('../images/bg-lg.svg') top right no-repeat !important;
+        }
+        .nav-item a{
+            font-size: $font-size-base;
+            margin: 0 1rem;
+        }
+        .btn-primary {
+            padding: 0.5rem 2rem !important;
+        }
+        #hero {
+            padding-top: 15%;
+        }   
+        #contentfirst {
+            padding: 15% 0 3%;
+        }
+        .sponcership {
+            height: 15rem;
+        } 
+        .hero-text {   
+            .display-3 {
+                font-size: 3rem;
+            }         
+            p {
+                font-size: medium;
+            }
+        } 
+        #contentSecond {
+            padding: 7% 0 8%;
+            .display-6 {
+                font-size: 2rem;
+            }
+        }
+        #pricetable {
+            .list-group {
+                .list-group-item {
+                    padding: 0;
+                    &.active > span {
+                        padding: 2px !important;
+    
+                        & > i {
+                            font-size: small !important;
+                        }
+                    }
+                    &.deactive {
+                        span {
+                            padding: 2px !important;
+                            & > i {
+                                font-size: small !important;
+                            }
+                        } 
+                    }
+                }
+            }    
+            h4 {
+                margin: 1.5rem !important;
+            }
+        }
+    }    
+}
+
+@mixin max-breakpoint-md {
+    @media (max-width: 991.98px) {
+        .bg-img {
+            background: $white url('../images/bg-md.svg') top right no-repeat !important;
+        }  
+        .navbar-collapse.show {
+            background-color: transparent; 
+            box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+            border-radius: $border-radius-lg;
+        }
+        .navbar.scrolled .navbar-collapse.show {
+            box-shadow: none;
+            border-radius: 0;
+        }
+        #hero{
+            padding-top: 17%;
+            .hero-text {   
+                .display-3 {
+                    font-size: 2rem;
+                }         
+                p {
+                    font-size: $font-size-base;
+                }
+            } 
+        }  
+        .sponcership {
+                height: 8rem;
+            }
+       .btn-primary {
+            padding: 0.5rem 2rem !important;
+        }
+        #contentfirst {
+            padding: 12% 0 3% !important; 
+            p {
+                color: $gray-400 !important;
+            } 
+            .content-bottom-title {
+                p {
+                    color: $gray-600 !important;
+                    font-size: smaller;
+                }
+            }
+        }  
+        #contentSecond {
+            p {
+                font-size: smaller;
+            }
+            .display-6 {
+                font-size: 1.5rem !important;
+            }
+        }
+        #pricetable {
+            .list-group {
+                .list-group-item {
+                    padding: 0;
+                    line-height: 2.5 !important;
+                    font-size: small !important;
+
+                    &.active > span {
+                        padding: 1px !important;
+    
+                        & > i {
+                            font-size: small !important;
+                        }
+                    }
+                    &.deactive {
+                        span {
+                            padding: 1px !important;
+                            & > i {
+                                font-size: small !important;
+                            }
+                        } 
+                    }
+                }
+            }    
+            h4 {
+                margin: 2rem 0.5rem !important;
+            }
+        }
+    }
+}
+
+@mixin max-breakpoint-sm {
+    @media (max-width: 575.98px) { 
+        .bg-img {
+            background: $white url('../images/bg-xs.svg') top right no-repeat;
+        }
+        #hero {
+            padding-top: 135px;           
+            .hero-text {
+                width: 80%;
+            }
+            .anim {
+                margin-top: 2.5rem;
+            }
+        } 
+        #contentfirst {        
+            .content-top-title {
+                h2 {
+                    color: $primary;
+                    &::before {
+                        width: 15%;
+                        background-color: $primary;
+                    }
+                }
+                p {
+                    color: $gray-600 !important;
+                } 
+                .content-bottom-title {
+                    p {
+                        font-size: medium !important;
+                    }
+                }
+            }            
+        }
+        #contentSecond {
+            p {
+                font-size: medium !important; 
+            }
+            .display-6 {
+                font-size: 1.6rem !important;
+            }
+            .circle {
+                &:not(.lastitems)::after {
+                    width: 7%;
+                    left: 45%;
+                  }   
+            }
+        }
+        #pricetable {
+            .list-group {
+                .list-group-item {
+                    padding: 1rem !important;
+                    line-height: 1 !important;
+                    font-size: medium !important;     
+                }
+            }   
+            .col {         
+                padding: 1.5rem;
+                .card {
+                    color: $gray-700;
+                }
+            } 
+        }
+        #footer {
+            padding: 10% 0 5%;
+        }
+    }
+}

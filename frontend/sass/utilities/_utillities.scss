@@ -1,0 +1,37 @@
+// Custom Utilities
+
+@import "../variables/variables";
+
+// Text Color
+.text-primary { color: $text-primary-color !important }
+.text-gray-100 { color: $gray-100 !important}
+.text-gray-200 { color: $gray-200 !important}
+.text-gray-300 { color: $gray-300 !important }
+.text-gray-400 { color: $gray-400 !important }
+.text-gray-500 { color: $gray-500 !important }
+.text-gray-600 { color: $gray-600 !important }
+.text-gray-700 { color: $gray-700 !important }
+.text-gray-800 { color: $gray-800 !important }
+.text-gray-900 { color: $gray-900 !important }
+
+
+// Button
+.btn-xl { padding: 1rem 2rem; }
+
+// Font size
+.text-sm { font-size: .875rem; }
+.text-xl { font-size: 1.25rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-6xl { font-size: 4rem; }
+.text-black { color: #000 }
+
+// Opacity 
+.opacity-50 { opacity: 50%; }
+.opacity-60 { opacity: 60%; }
+.opacity-70 { opacity: 70%; }
+.opacity-80 { opacity: 80%; }
+.opacity-90 { opacity: 90%; }
+
+// Margin
+.my-6 { margin-top: 4rem; margin-bottom: 4rem; }
+.mx-10 { margin-left: 10rem; margin-right: 10rem; }
