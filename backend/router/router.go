@@ -51,7 +51,6 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
 			controllers.GetUserData(w, r)
-
 		case "DELETE":
 			controllers.DeleteUserData(w, r)
 		}
