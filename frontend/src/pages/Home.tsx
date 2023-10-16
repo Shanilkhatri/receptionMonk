@@ -323,7 +323,7 @@ const Home = () => {
                     <div className="panel absolute inset-0 bg-gradient-to-r from-violet-500 to-violet-400"></div>
                         <div
                             className="absolute inset-0"
-                            className={{ backgroundImage: `url('/assets/images/bg/circle-vector.png')`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
+                            style={{ backgroundImage: `url('/assets/images/bg/circle-vector.png')`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
                             <div className="flex items-center justify-center p-8">
                                 <svg className="svg-main-icon" id="Capa_1" enable-background="new 0 0 512 512" viewBox="0 0 512 512" width="50" height="50" xmlns="http://www.w3.org/2000/svg">
                                     <path d="m482 245.242v-60.363c0-29.656-23.597-53.891-53-54.949v-37.051c0-19.299-15.701-35-35-35h-96.358l-12.443-34.587c-3.173-8.82-9.595-15.868-18.083-19.845-8.488-3.978-18.014-4.402-26.821-1.196l-174.855 63.641c-8.798 3.202-15.817 9.641-19.765 18.131s-4.349 18.007-1.128 26.799l7.025 19.175c-28.735 1.777-51.572 25.707-51.572 54.882v272c0 30.327 24.673 55 55 55h372c30.327 0 55-24.673 55-55v-62.363c16.938-2.434 30-17.036 30-34.637v-80c0-17.601-13.062-32.203-30-34.637zm0 114.637c0 2.757-2.243 5-5 5h-80c-24.813 0-45-20.187-45-45s20.187-45 45-45h80c2.757 0 5 2.243 5 5zm-409.284-259.377c-.621-1.695-.166-3.126.161-3.829.327-.702 1.128-1.973 2.824-2.59l174.854-63.641c1.698-.617 3.129-.158 3.832.171s1.972 1.135 2.583 2.835l8.79 24.432h-6.76c-19.299 0-35 15.701-35 35v37h-140.521zm326.284-7.623v37h-145v-37c0-2.757 2.243-5 5-5h135c2.757 0 5 2.243 5 5zm28 389h-372c-13.785 0-25-11.215-25-25v-272c0-13.785 11.215-25 25-25h372c13.785 0 25 11.215 25 25v60h-55c-41.355 0-75 33.645-75 75s33.645 75 75 75h55v62c0 13.785-11.215 25-25 25z" fill="#fff"></path>
@@ -412,7 +412,7 @@ const Home = () => {
 
                     <div className="panel h-full sm:col-span-2 lg:col-span-1 shadow-md">
                         <div className="flex justify-between dark:text-white-light mb-5">
-                            <h5 className="font-semibold text-lg ">Device Registered</h5>
+                            <h5 className="font-semibold text-lg ">Total Calls</h5>
                         </div>
 
                         <div className="grid sm:grid-cols-2 gap-8 text-sm text-[#515365] font-bold">
@@ -520,56 +520,86 @@ const Home = () => {
                 </div>
                         
             <div className="grid col-span-12">
-                <div className="panel h-full">
+                <div className="panel h-full bg-secondary-light">
                     <div className="grid grid-cols-12">
                         <div className="grid col-span-9">                            
                             <div className="p-2">
                                 <ReactApexChart options={uniqueVisitorSeries.options} series={uniqueVisitorSeries.series} type="bar" height={360} />
                             </div>
                         </div>
+
                         <div className="grid col-span-3">
-                            <div className="">
-                                <div className="flex justify-between">
-                                    <select className="image-select default-select dashboard-select primary-light style-1 hidden" aria-label="Default">
-                                        <option selected>This Month</option>
-                                        <option value="1">This Week</option>
-                                        <option value="2">This Day</option>
-                                    </select>
-                                    <div className="nice-select image-select default-select dashboard-select primary-light style-1" tabindex="0">
-                                        <span className="current">This Month</span>
-                                        <ul className="list">
-                                            <li data-value="This Month" className="option selected">This Month</li>
-                                            <li data-value="1" className="option">This Week</li>
-                                            <li data-value="2" className="option">This Day</li>
-                                        </ul>
+                            <div className="panel">
+                                <div className="mb-5">
+                                    <h5 className="font-semibold text-lg dark:text-white-light">Graph  Statistics</h5>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="flex justify-evenly">
+                                        <div>
+                                            <label className="flex items-center cursor-pointer">
+                                                <input type="radio" name="custom_radio2" className="form-radio" defaultChecked />
+                                                <span className="text-white-dark">Answered</span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label className="flex items-center cursor-pointer">
+                                                <input type="radio" name="custom_radio2" className="form-radio" />
+                                                <span className="text-white-dark">Missed</span>
+                                            </label>
+                                        </div>
                                     </div>                                    
-                                </div>
-                            </div>
-                            <div className="card expense mb-3">
-                                <div className="card-body p-3">
-                                    <div className="students1 flex items-center justify-between">
-                                        <div className="content">
-                                            <span>Answered</span>
-                                            <h2>7,929</h2>
+
+                                    <div className="border border-[#ebedf2] rounded dark:bg-[#1b2e4b] dark:border-0">
+                                        <div className="flex items-center justify-between p-4 py-2">
+                                            <div className="grid place-content-center w-6 h-6 rounded-md bg-info dark:bg-info text-info dark:text-info-light">
+                                               
+                                            </div>
+                                            <div className="ltr:ml-4 rtl:mr-4 flex items-start justify-between flex-auto font-semibold">
+                                                <h6 className="text-white-dark text-[13px] dark:text-white-dark">
+                                                    Total Calls
+                                                    <span className="block text-base text-info dark:text-white-light">9,348</span>
+                                                </h6>
+                                                <p className="ltr:ml-auto rtl:mr-auto text-info">100%</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="card expense mb-3">
-                                <div className="card-body p-3">
-                                    <div className="students1 flex items-center justify-between">
-                                        <div className="content">
-                                            <span>Missed</span>
-                                            <h2>1,419</h2>
+
+                                    <div className="border border-[#ebedf2] rounded dark:bg-[#1b2e4b] dark:border-0">
+                                        <div className="flex items-center justify-between p-4 py-2">
+                                            <div className="grid place-content-center w-6 h-6 rounded-md bg-secondary dark:bg-secondary text-secondary dark:text-secondary-light">
+                                                
+                                            </div>
+                                            <div className="ltr:ml-4 rtl:mr-4 flex items-start justify-between flex-auto font-semibold">
+                                                <h6 className="text-white-dark text-[13px] dark:text-white-dark">
+                                                    Answered
+                                                    <span className="block text-base text-secondary dark:text-white-light">7,929</span>
+                                                </h6>
+                                                <p className="ltr:ml-auto rtl:mr-auto text-secondary">90%</p>
+                                            </div>
                                         </div>
                                     </div>
+                                    
+                                    <div className="border border-[#ebedf2] rounded dark:bg-[#1b2e4b] dark:border-0">
+                                        <div className="flex items-center justify-between p-4 py-2">
+                                            <div className="grid place-content-center w-6 h-6 rounded-md bg-warning dark:bg-warning text-warning dark:text-warning-light">
+                                                
+                                            </div>
+                                            <div className="ltr:ml-4 rtl:mr-4 flex items-start justify-between flex-auto font-semibold">
+                                                <h6 className="text-white-dark text-[13px] dark:text-white-dark">
+                                                    Missed 
+                                                    <span className="block text-base text-warning dark:text-white-light">1,419</span>
+                                                </h6>
+                                                <p className="ltr:ml-auto rtl:mr-auto text-warning">40%</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };

@@ -44,6 +44,9 @@ const Sidebar = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location]);
+    
+    const isDarkMode = true;
+
 
     return (
         <div className={semidark ? 'dark' : ''}>
@@ -53,10 +56,13 @@ const Sidebar = () => {
                 <div className="bg-white dark:bg-black h-full">
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo_header.svg" alt="logo" />
-                            {/* <span className="text-2xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{t('RECEPTION MONK')}</span> */}
+                            {isDarkMode ? (
+                            <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_dark.svg" alt="dark logo" />
+                            ) : (
+                            <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_dark.svg" alt="light logo" />
+                            )}
                         </NavLink>
-
+                       
                         <button
                             type="button"
                             className="collapse-icon w-8 h-8 rounded-full flex items-center hover:bg-gray-500/10 dark:hover:bg-dark-light/10 dark:text-white-light transition duration-300 rtl:rotate-180"
