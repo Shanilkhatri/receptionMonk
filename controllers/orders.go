@@ -56,7 +56,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 		}
 		// when user tries to access some other account
 		if userDetails.AccountType == "user" {
-			if paramMap["userId"] != 0 && userDetails.ID != int(paramMap["userId"]) {
+			if paramMap["userId"] != 0 && userDetails.ID != int64(paramMap["userId"]) {
 				log.Println("under user not authed")
 				response.Status = "403"
 				response.Message = "You are not authorized for this request"

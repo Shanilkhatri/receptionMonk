@@ -62,7 +62,7 @@ type AjaxResponce struct {
 }
 
 type UserDetails struct {
-	ID                    int    `json:"id" db:"id"`
+	ID                    int64  `json:"id" db:"id"`
 	Name                  string `json:"name" db:"name"`
 	Email                 string `json:"email" db:"email"`
 	PasswordHash          string `json:"passwordHash" db:"passwordHash"`
@@ -70,7 +70,7 @@ type UserDetails struct {
 	TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
 	DOB                   string `json:"dob" db:"dob"`
 	AccountType           string `json:"accountType" db:"accountType"`
-	CompanyID             int    `json:"companyId" db:"companyId"`
+	CompanyID             int64  `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
 }
 
@@ -598,4 +598,16 @@ func CopyFieldsBetweenDiffStructType(src, dest interface{}) bool {
 		}
 	}
 	return true
+}
+
+// convert string to int
+func StrToInt(num string) int {
+	if num != "" {
+		intNum, err := strconv.Atoi(num)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return intNum
+	}
+	return 0
 }

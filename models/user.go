@@ -9,7 +9,7 @@ import (
 )
 
 type Users struct {
-	ID                    int    `json:"id" db:"id"`
+	ID                    int64  `json:"id" db:"id"`
 	Name                  string `json:"name" db:"name"`
 	Email                 string `json:"email" db:"email"`
 	PasswordHash          string `json:"passwordHash" db:"passwordHash"`
@@ -17,8 +17,13 @@ type Users struct {
 	TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
 	DOB                   string `json:"dob" db:"dob"`
 	AccountType           string `json:"accountType" db:"accountType"`
-	CompanyID             int    `json:"companyId" db:"companyId"`
+	CompanyID             int64  `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
+}
+
+type UserCondition struct {
+	Users
+	WhereCondition string
 }
 
 // for ORM
@@ -67,10 +72,72 @@ func (user Users) PostUser(usr Users) (bool, error) {
 	return false, err
 }
 
-func (user Users) GetUserById(userId int) (Users, error) {
+func (user Users) GetUserById(userId int64) (Users, error) {
 	var selectedRow Users
 
 	err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE id = ?", userId)
 
 	return selectedRow, err
+}
+
+func (Users) GetUser(filter UserCondition) ([]Users, error) {
+	var userData []Users
+	query := "SELECT id,name,email,dob,account_type,company_id,status form authentication Where 1=1" + filter.WhereCondition
+	condi := map[string]interface{}{
+		"Id":        filter.ID,
+		"Dob":       filter.DOB,
+		"CompanyId": filter.CompanyID,
+	}
+	rows, err := utility.Db.NamedQuery(query, condi)
+	if err != nil {
+		log.Println(err)
+		return userData, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var singleRow Users
+		err := rows.Scan(&singleRow.ID, &singleRow.Name, &singleRow.Email, &singleRow.DOB, &singleRow.AccountType, &singleRow.CompanyID, &singleRow.Status)
+		if err != nil {
+			log.Println(err)
+			return userData, err
+		}
+		userData = append(userData, singleRow)
+	}
+	return userData, err
+}
+
+func (Users) GetParaForFilterUser(para UserCondition) UserCondition {
+	if para.ID != 0 {
+		para.WhereCondition += " AND id=:Id "
+	}
+	if para.CompanyID != 0 {
+		para.WhereCondition += " AND companyid=:CompanyId "
+	}
+	if para.DOB != " " {
+		para.WhereCondition += " AND DATE_FORMAT(FROM_UNIXTIME(Dob), '%m%d') = DATE_FORMAT(FROM_UNIXTIME(:Dob),'%m%d')"
+	}
+	if para.AccountType != "" {
+		if para.AccountType == "owner" {
+			para.WhereCondition += " AND type IN ('user','owner')"
+		} else if para.AccountType == "admin" {
+			para.WhereCondition += " AND type IN ('user','owner','admin')"
+		} else {
+			para.WhereCondition += " AND type IN ('user')"
+		}
+	}
+
+	return para
+}
+func (Users) DeleteUser(id int) (bool, error) {
+	row, err := utility.Db.Exec("DELETE FROM authentication WHERE id = ?", id)
+	if err != nil {
+		log.Print(err)
+		return false, err
+	}
+	rowsDeleted, err := row.RowsAffected()
+	if err != nil {
+		log.Print(err)
+		return false, err
+	}
+	return rowsDeleted > 0, nil
 }

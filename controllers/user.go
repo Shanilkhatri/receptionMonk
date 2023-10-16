@@ -5,6 +5,11 @@ import (
 	"net/http"
 	"reakgo/models"
 	"reakgo/utility"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 func IsValidUserStruct(userStruct models.Users) bool {
@@ -294,4 +299,107 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func GetUserData(w http.ResponseWriter, r *http.Request) bool {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+	var para models.UserCondition
+
+	isOk, usr := utility.CheckTokenPayloadAndReturnUser(r)
+	if !isOk {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+
+	if usr.ID == 0 || usr.CompanyID == 0 {
+		response.Status = "403"
+		response.Message = "Unauthorized access, UserId or companyId doesn't match."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return true
+	}
+
+	para.AccountType = usr.AccountType
+	para.ID = int64(utility.StrToInt(r.URL.Query().Get("id")))               // take id for url
+	para.CompanyID = int64(utility.StrToInt(r.URL.Query().Get("CompanyId"))) // take company_id for url
+	birthday := strings.ToLower(r.URL.Query().Get("birthday"))               // take birthday for url
+	if birthday == "today" {
+		para.DOB = strconv.Itoa(int(time.Now().Unix()))
+	}
+	if para.ID != 0 && para.AccountType == "user" {
+		para.ID = usr.ID
+	}
+	parameters := models.Users{}.GetParaForFilterUser(para)
+	result, err := models.Users{}.GetUser(parameters)
+	if err != nil {
+		log.Println(err)
+	} else if len(result) == 0 {
+		response.Status = "400"
+		response.Message = "No result were found for this search. Either record is not present or you are not authorized to access this users data"
+		utility.RenderJsonResponse(w, r, response, 400)
+		return false
+	} else {
+		response.Status = "200"
+		response.Message = "Returns all matching users."
+		response.Payload = result // Set the user data in the response payload
+	}
+	utility.RenderJsonResponse(w, r, response, 200)
+	return false
+}
+
+func DeleteUserData(w http.ResponseWriter, r *http.Request) bool {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+
+	userId := utility.StrToInt(r.URL.Query().Get("id"))
+	if userId <= 0 {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+
+	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	if !isok || userDetails.AccountType == "user" {
+		response.Status = "403"
+		response.Message = "You are not authorized to make this request."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return true
+	}
+	if userDetails.ID != int64(userId) {
+		// get user by userID
+		userData, err := models.Users{}.GetUserById(int64(userId))
+		if err != nil {
+			response.Status = "400"
+			response.Message = "User doesn't exists."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return true
+		}
+		// check if owner and the user he's trying to delete belongs to the same company
+		if userData.CompanyID != userDetails.CompanyID && userDetails.AccountType == "owner" {
+			response.Status = "403"
+			response.Message = "You are not authorized to make this request."
+			utility.RenderJsonResponse(w, r, response, 403)
+			return true
+		}
+	}
+	//Add data in user table then show the error
+	boolType, err := models.Users{}.DeleteUser(userId)
+	if !boolType || err != nil {
+		log.Println(err)
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		if driverErr, ok := err.(*mysql.MySQLError); ok {
+			// MySQL error code 1451 indicates a foreign key constraint
+			if driverErr.Number == 1451 {
+				response.Message = utility.GetSqlErrorString(err)
+			}
+		}
+		utility.RenderJsonResponse(w, r, response, 500)
+		return true
+	}
+	response.Status = "200"
+	response.Message = "User deleted successfully."
+	utility.RenderJsonResponse(w, r, response, 200)
+	return false
 }

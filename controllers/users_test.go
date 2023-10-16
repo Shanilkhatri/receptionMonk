@@ -682,3 +682,443 @@ func TestUserPostWithOwnerUpdUserWithFaultyDate(t *testing.T) {
 		t.Errorf("Expected status code %d, got %d", http.StatusBadRequest, w.Result().StatusCode)
 	}
 }
+
+// ---------------------TESTs FOR DELETE USER----------------------
+
+// -> userID should be sent in query
+// -> AccountType: user doesn't have access to this route (in-short: user cannot use delete).
+// -> AccountType: owner can delete users under his organization and his own account.
+// -> AccountType: super-admin can delete any Account-Type.
+
+// TEST #1 DeleteUser with correct access rights.
+// AccountType: owner trying to delete a user's account that belongs to his own company
+// expecting a 200
+func TestUserDeleteWithOwnerDelUserOfSameComp(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 2         // companyId set same as user's
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// mocking the user detail I expect from the Db op of GetUSerById
+	expectedUser := models.Users{
+		ID:                    1,
+		AccountType:           "user",
+		CompanyID:             2, // companyId set same as owner's
+		DOB:                   "2023-10-05",
+		Name:                  "hguhduhs",
+		Email:                 "user@example.com",
+		TwoFactorKey:          "iuriouf08959374rw857yesiufhu",
+		TwoFactorRecoveryCode: "fjjdjfn",
+		PasswordHash:          "dihfw94534yrehu8yuy84728",
+		Status:                "active",
+	}
+
+	// make expected user a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "passwordHash", "twoFactorKey", "twoFactorRecoveryCode", "dob", "accountType", "companyId", "status"}).AddRow(expectedUser.ID, expectedUser.Name, expectedUser.Email, expectedUser.PasswordHash, expectedUser.TwoFactorKey, expectedUser.TwoFactorRecoveryCode, expectedUser.DOB, expectedUser.AccountType, expectedUser.CompanyID, expectedUser.Status)
+
+	// I am expecting a db op before final updation to get user
+	dbmock.ExpectQuery("SELECT \\* FROM authentication WHERE id = ?").WillReturnRows(rows)
+	// I  expect a Delete Query execution and for that :
+	dbmock.ExpectExec("DELETE FROM authentication").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set userId to be deleted to 1
+	userIdtoDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/users?" + "id=" + userIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteUserData(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "User deleted successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #2 DeleteUser with incorrect access rights.
+// AccountType: owner trying to delete a user's account that belongs to other company
+// expecting a 403
+func TestUserDeleteWithOwnerDelUserOfDiffComp(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 2         // companyId diff from user
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// mocking the user detail I expect from the Db op of GetUSerById
+	expectedUser := models.Users{
+		ID:                    1,
+		AccountType:           "user",
+		CompanyID:             3,
+		DOB:                   "2023-10-05",
+		Name:                  "hguhduhs",
+		Email:                 "user@example.com",
+		TwoFactorKey:          "iuriouf08959374rw857yesiufhu",
+		TwoFactorRecoveryCode: "fjjdjfn",
+		PasswordHash:          "dihfw94534yrehu8yuy84728",
+		Status:                "active",
+	}
+
+	// make expected user a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "passwordHash", "twoFactorKey", "twoFactorRecoveryCode", "dob", "accountType", "companyId", "status"}).AddRow(expectedUser.ID, expectedUser.Name, expectedUser.Email, expectedUser.PasswordHash, expectedUser.TwoFactorKey, expectedUser.TwoFactorRecoveryCode, expectedUser.DOB, expectedUser.AccountType, expectedUser.CompanyID, expectedUser.Status)
+
+	// I am expecting a db op before final updation to get user
+	dbmock.ExpectQuery("SELECT \\* FROM authentication WHERE id = ?").WillReturnRows(rows)
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set userId to be deleted to 1
+	userIdtoDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/users?" + "id=" + userIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteUserData(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "You are not authorized to make this request." && w.Result().StatusCode != 403 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #3 DeleteUser with incorrect access rights.
+// AccountType: user trying to enter delete route
+// -> we won't be mocking DB as user won't make it till the DB ops, we expect an error as soon as we get token data
+// expecting a 403
+func TestUserDeleteWithUser(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "user" // type set to owner
+	userdetails.CompanyID = 2        // companyId diff from user
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+
+	// set userId to be deleted
+	userIdtoDel := "5"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/users?" + "id=" + userIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteUserData(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "You are not authorized to make this request." && w.Result().StatusCode != 403 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #4 DeleteUser with correct access rights.
+// AccountType: owner trying to delete himself
+// expecting a 200
+func TestUserDeleteWithOwnerDelHimself(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 2         // companyId diff from user
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// I  expect a Delete Query execution and for that :
+	dbmock.ExpectExec("DELETE FROM authentication").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set userId to be deleted
+	userIdtoDel := "5"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/users?" + "id=" + userIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteUserData(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "User deleted successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #5 DeleteUser with correct access rights.
+// AccountType: super-admin trying to delete owner, and he will succeed, it's SUPER-ADMIN common!
+// expecting a 200
+func TestUserDeleteWithOSuperAdmin(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "super-admin" // type set to super-admin
+	userdetails.CompanyID = 2               // companyId set same as user's
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// mocking the user detail I expect from the Db op of GetUSerById
+	expectedUser := models.Users{
+		ID:                    1,
+		AccountType:           "owner",
+		CompanyID:             3,
+		DOB:                   "2023-10-05",
+		Name:                  "hguhduhs",
+		Email:                 "user@example.com",
+		TwoFactorKey:          "iuriouf08959374rw857yesiufhu",
+		TwoFactorRecoveryCode: "fjjdjfn",
+		PasswordHash:          "dihfw94534yrehu8yuy84728",
+		Status:                "active",
+	}
+
+	// make expected user a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "passwordHash", "twoFactorKey", "twoFactorRecoveryCode", "dob", "accountType", "companyId", "status"}).AddRow(expectedUser.ID, expectedUser.Name, expectedUser.Email, expectedUser.PasswordHash, expectedUser.TwoFactorKey, expectedUser.TwoFactorRecoveryCode, expectedUser.DOB, expectedUser.AccountType, expectedUser.CompanyID, expectedUser.Status)
+
+	// I am expecting a db op before final updation to get user
+	dbmock.ExpectQuery("SELECT \\* FROM authentication WHERE id = ?").WillReturnRows(rows)
+	// I  expect a Delete Query execution and for that :
+	dbmock.ExpectExec("DELETE FROM authentication").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set userId to be deleted to 1
+	userIdtoDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/users?" + "id=" + userIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteUserData(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "User deleted successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #6 DeleteUser with correct access rights.
+// AccountType: super-admin trying to delete owner that doesn't exist.
+// expecting a 400
+func TestUserDeleteWithOSuperAdminWhenUserDoesntExist(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "super-admin" // type set to super-admin
+	userdetails.CompanyID = 2               // companyId set same as user's
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// make expected user a row that will be returned(empty)
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "passwordHash", "twoFactorKey", "twoFactorRecoveryCode", "dob", "accountType", "companyId", "status"})
+
+	// I am expecting a db op before final updation to get user
+	dbmock.ExpectQuery("SELECT \\* FROM authentication WHERE id = ?").WillReturnRows(rows)
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set userId to be deleted to 1
+	userIdtoDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/users?" + "id=" + userIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteUserData(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "User doesn't exists." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
