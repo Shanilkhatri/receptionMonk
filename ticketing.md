@@ -20,7 +20,7 @@
     - query             string
     - feedback          string          `ENUM (satisfied,not_satisfied,no_feedback)`
     - last_response     string
-
+    - companyId         int64
 ## Full Schema of table : responses
     - id                int64           `UNIQUE/PRIMARY`
     - response          string          
