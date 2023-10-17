@@ -1216,8 +1216,8 @@ const Header = () => {
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink to="/auth/boxed-signin" target="_blank">
-                                            {t('login_boxed')}
+                                        <NavLink to="/auth/Login" target="_blank">
+                                            {t('login')}
                                         </NavLink>
                                     </li>
                                 </ul>
@@ -1260,8 +1260,8 @@ const Header = () => {
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink to="/auth/boxed-password-reset" target="_blank">
-                                            {t('recover_id_boxed')}
+                                        <NavLink to="/auth/ChangePassword" target="_blank">
+                                            {t('ChangePassword')}
                                         </NavLink>
                                     </li>
                                 </ul>

@@ -974,8 +974,8 @@ const Sidebar = () => {
                                 <AnimateHeight duration={300} height={currentMenu === 'auth' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
-                                            <NavLink to="/auth/boxed-signin" target="_blank">
-                                                {t('login_boxed')}
+                                            <NavLink to="/auth/Login" target="_blank">
+                                                {t('login')}
                                             </NavLink>
                                         </li>
                                         <li>
@@ -989,8 +989,13 @@ const Sidebar = () => {
                                             </NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/auth/boxed-password-reset" target="_blank">
-                                                {t('recover_id_boxed')}
+                                            <NavLink to="/auth/ChangePassword" target="_blank">
+                                                {t('change_password')}
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/auth/ForgotPassword" target="_blank">
+                                                {t('forgot_password')}
                                             </NavLink>
                                         </li>
                                         <li>
