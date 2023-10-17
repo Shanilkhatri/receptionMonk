@@ -1,0 +1,33 @@
+// ###################
+// Layout CSS
+// ###################
+
+@import "../variables/variables";
+@import "../mixins/buttons";
+@import "../mixins/breakpoints";
+@import "../components/navbar";
+@import "../components/hero";
+@import "../components/contentblockone";
+@import "../components/contentblocktwo";
+@import "../components/pricetable";
+@import "../components/footer";
+
+
+body {
+    margin: 0;
+    font-family: sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+a {
+    text-transform: capitalize;
+    text-decoration: none !important;    
+}
+.bg-img {
+    background: $white url('../images/bg-xl.svg') top right no-repeat;
+}
+}
+@include min-breakpoint-2xl;
+@include min-breakpoint-xxl;
+@include min-max-breakpoint-exl;
+@include max-breakpoint-md;
+@include max-breakpoint-sm;

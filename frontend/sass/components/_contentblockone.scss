@@ -1,0 +1,73 @@
+// ###################
+// Content Top CSS
+// ###################
+
+@import "../mixins/breakpoints";
+
+#contentfirst {
+    padding: 10% 0 0%;
+
+    .content-top-title {
+
+        h2 {
+            color: $white;
+
+            &::before {
+                content: "";
+                display: block;
+                width: 10%;
+                height: 5px;
+                background-color: $white; 
+                margin-bottom: 1rem; 
+                border-radius: 10px;
+              }    
+        }
+
+        p {
+        color: $gray-100;
+        }
+        
+        .link {
+            &:hover {
+                margin-left: 0.3rem;
+                transition: margin-left 0.2s ease-in;
+            }
+        }
+    }      
+
+    .content-bottom-title {
+        h6 {
+            font-weight: bolder;
+            color: $font-heading-color;
+            padding: 1rem 0;
+        }     
+        
+        p {
+            color: $gray-300;
+        }
+
+        a {
+            color: $font-heading-color;
+
+            i {
+                font-size: larger;
+            }
+
+            &:hover {
+                margin-left: 0.3rem;
+                transition: margin-left 0.2s ease-in;
+            }
+        }
+    }
+
+    .services {
+        padding: 5% 0;
+
+        .serviceanim {
+            padding: 2rem;
+        }
+    }
+} 
+
+@include min-max-breakpoint-exl;
+@include max-breakpoint-md;
