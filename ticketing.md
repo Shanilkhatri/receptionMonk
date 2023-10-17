@@ -13,33 +13,43 @@
 ## Full Schema of table : tickets
     - id                int64           `UNIQUE/PRIMARY`
     - email/userId      string/int64
+    - customer_name     string
     - created_time      int64           `EPOCH-TIMESTAMP`
     - last_updated_on   int64           `EPOCH-TIMESTAMP`
     - status            string          `ENUM(open,in_process,closed)`
     - query             string
-    - feedback          string          `ENUm (satisfied,not_satisfied)`
+    - feedback          string          `ENUM (satisfied,not_satisfied,no_feedback)`
     - last_response     string
 
 ## Full Schema of table : responses
     - id                int64           `UNIQUE/PRIMARY`
-    - response_sent     string          
-    - response_received string
+    - response          string          
     - ticket_id         int64           `FOREIGN KEY`
-    - sent_time         int64           `EPOCH-TIMESTAMP`
-    - rec_time          int64           `EPOCH-TIMESTAMP`
+    - response_time     int64           `EPOCH-TIMESTAMP`
+    - type              string          `ENUM(customer,employee)`
+    - respondee_id      int64           
 
 ## Flow
-- > customer raises a ticket using interface and marks his entry into the `tickets` table populating all the columns except `feedback` & `last_response`.
+- > customer raises a ticket using interface and marks his entry into the `tickets` table populating all the columns except `last_response`, column `feedback` will be initialised with `no_feedback` at first. 
 
-- > We send the first response marking our entry into the `responses` table, populating all the fields except `response_received` & `rec_time` and also changing `status` in tickets table to `in_process`.
+- > We send the first response marking our entry into the `responses` table, populating all the fields and also changing `status` in tickets table to `in_process`.
 
-- > When customer reverts back on our response the otherwise empty columns are populated as well.
+- > At each response, whether from Employee or from Customer, a new entry will be made under `responses`.
 
 - > Once they are satisfied I am hoping they'll have an option to close that ticket and if they don't then based on their responses we can from their side.
 
-- > if the customer chooses to close it they will also be given a `feedback choice` and yup! that will update our `feedback` field in tickets table and will also update the `last_response` by getting the latest response according to timestamp from the `responses` table.
+- > if the customer chooses to close it they will also be given a `feedback choice` and yup! that will update our `feedback` field in tickets table.
 
+- > Whatever will be the latest employee response before closure will be updated as `last_response` under tickets table.
+
+
+### what is `respondee_id`?
+
+***- It's the id of the person who is responding, if it's the customer the `type` field would be set to customer and `respondee_id` would be customers id and vice-versa.***
 
 ### Why this flow?
 
-***-This flow is made keeping in mind that the customer just can't spam with responses, he/she can only send their response against ours, once after each response from our side, no matter how long they want to make it but they have to write it in one go. In short it's not a chat.***
+***- Flow has now been updated and follows a more chat-like approach and if in future we want to switch things up as a chat-based ticketing platform the transition would be smooth.***
+
+
+
