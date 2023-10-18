@@ -73,10 +73,12 @@ const ERROR500 = lazy(() => import('../pages/Pages/Error500'));
 const ERROR503 = lazy(() => import('../pages/Pages/Error503'));
 const Maintenence = lazy(() => import('../pages/Pages/Maintenence'));
 const Login = lazy(() => import('../pages/Authentication/Login'));
-const RegisterBoxed = lazy(() => import('../pages/Authentication/RegisterBoxed'));
-const UnlockBoxed = lazy(() => import('../pages/Authentication/UnlockBox'));
 const ChangePassword = lazy(() => import('../pages/Authentication/ChangePassword'));
 const ForgotPassword = lazy(() => import('../pages/Authentication/ForgotPassword'));
+const SignUp = lazy(() => import('../pages/Authentication/SignUp'));
+const SignUpProcess = lazy(() => import('../pages/Authentication/SignUpProcess'));
+const RegisterBoxed = lazy(() => import('../pages/Authentication/RegisterBoxed'));
+const UnlockBoxed = lazy(() => import('../pages/Authentication/UnlockBox'));
 const LoginCover = lazy(() => import('../pages/Authentication/LoginCover'));
 const RegisterCover = lazy(() => import('../pages/Authentication/RegisterCover'));
 const RecoverIdCover = lazy(() => import('../pages/Authentication/RecoverIdCover'));
@@ -439,6 +441,16 @@ const routes = [
     {
         path: '/auth/ForgotPassword',
         element: <ForgotPassword />,
+        layout: 'blank',
+    },
+    {
+        path: '/auth/SignUp',
+        element: <SignUp />,
+        layout: 'blank',
+    },
+    {
+        path: '/auth/SignUpProcess',
+        element: <SignUpProcess />,
         layout: 'blank',
     },
     {

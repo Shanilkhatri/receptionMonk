@@ -979,16 +979,6 @@ const Sidebar = () => {
                                             </NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/auth/boxed-signup" target="_blank">
-                                                {t('register_boxed')}
-                                            </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/auth/boxed-lockscreen" target="_blank">
-                                                {t('unlock_boxed')}
-                                            </NavLink>
-                                        </li>
-                                        <li>
                                             <NavLink to="/auth/ChangePassword" target="_blank">
                                                 {t('change_password')}
                                             </NavLink>
@@ -998,6 +988,22 @@ const Sidebar = () => {
                                                 {t('forgot_password')}
                                             </NavLink>
                                         </li>
+                                        <li>
+                                            <NavLink to="/auth/SignUp" target="_blank">
+                                                {t('sign_up')}
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/auth/boxed-signup" target="_blank">
+                                                {t('register_boxed')}
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/auth/boxed-lockscreen" target="_blank">
+                                                {t('unlock_boxed')}
+                                            </NavLink>
+                                        </li>
+                                       
                                         <li>
                                             <NavLink to="/auth/cover-login" target="_blank">
                                                 {t('login_cover')}

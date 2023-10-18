@@ -7,7 +7,7 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 const ChangePassword = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Recover Id Box'));
+        dispatch(setPageTitle('Change Password'));
     });
     const navigate = useNavigate();
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
