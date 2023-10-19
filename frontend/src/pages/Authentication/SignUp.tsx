@@ -31,7 +31,7 @@ const SignUp = () => {
                 <form className="space-y-5" onSubmit={submitForm}>
                     <p className="mb-7">Enter your phone number to complete Registration</p>
                     <div>
-                        <label htmlFor="changepwd">Phone No.</label>
+                        <label htmlFor="changepwd">Phone No. <span className='text-red-600'>*</span></label>
                         <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Phone Number" />
                     </div>
 

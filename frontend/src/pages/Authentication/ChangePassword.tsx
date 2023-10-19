@@ -31,7 +31,7 @@ const ChangePassword = () => {
                 <form className="space-y-5" onSubmit={submitForm}>
                     <p className="mb-7">Enter your new password to change password</p>
                     <div>
-                        <label htmlFor="changepwd">Password</label>
+                        <label htmlFor="changepwd">Password <span className='text-red-600'>*</span></label>
                         <input id="changepwd" type="password" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter New Password" />
                     </div>
 

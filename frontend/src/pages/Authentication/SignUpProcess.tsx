@@ -32,27 +32,27 @@ const SignUpProcess = () => {
                     <p className="mb-7">Please fill all details to complete Registration</p>
                     
                     <div>
-                        <label htmlFor="changepwd">Name</label>
+                        <label htmlFor="changepwd">Name <span className='text-red-600'>*</span></label>
                         <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Name" />
                     </div>
 
                     <div>
-                        <label htmlFor="email">Email</label> 
+                        <label htmlFor="email">Email <span className='text-red-600'>*</span></label> 
                         <input id="email" type="email" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
                     </div>
 
                     <div>
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Password <span className='text-red-600'>*</span></label>
                         <input id="password" type="password" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
                     </div>
 
                     <div>
-                        <label htmlFor="changepwd">Date of Birth</label>
+                        <label htmlFor="changepwd">Date of Birth <span className='text-red-600'>*</span></label>
                         <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter DOB" />
                     </div>
 
                     <div>
-                        <label htmlFor="changepwd">Account Type</label>
+                        <label htmlFor="changepwd">Account Type <span className='text-red-600'>*</span></label>
                         <select className="form-select text-white-dark border border-gray-400 focus:border-orange-400">
                             <option value="" selected disabled>Select</option>
                             <option value="owner">Owner</option>

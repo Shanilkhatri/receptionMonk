@@ -101,6 +101,7 @@
     "change_password": "Change Password",
     "forgot_password": "Forgot Password",
     "sign_up": "Sign Up",
+    "setup_2fa": "2FA Setup",
     "register_boxed": "Register Boxed",
     "unlock_boxed": "Unlock Boxed",
     "login_cover": "Login Cover",

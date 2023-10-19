@@ -31,11 +31,11 @@ const Login = () => {
               
                 <form className="space-y-5" onSubmit={submitForm}>
                     <div>
-                        <label htmlFor="email">Email</label> 
+                        <label htmlFor="email">Email <span className='text-red-600'>*</span></label> 
                         <input id="email" type="email" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
                     </div>
                     <div>
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">Password <span className='text-red-600'>*</span></label>
                         <input id="password" type="password" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
                     </div>
                     
