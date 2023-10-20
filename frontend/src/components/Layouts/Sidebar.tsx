@@ -45,7 +45,11 @@ const Sidebar = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location]);
     
-    const isDarkMode = true;
+    const logoImage = themeConfig.theme === 'light' ? (
+        <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_light.svg" alt="logo" />
+      ) : (
+        <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_dark.svg" alt="logo" />
+      );
 
 
     return (
@@ -56,11 +60,7 @@ const Sidebar = () => {
                 <div className="bg-white dark:bg-black h-full">
                     <div className="flex justify-between items-center px-4 py-3">
                         <NavLink to="/" className="main-logo flex items-center shrink-0">
-                            {isDarkMode ? (
-                            <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_dark.svg" alt="dark logo" />
-                            ) : (
-                            <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_dark.svg" alt="light logo" />
-                            )}
+                            {logoImage}
                         </NavLink>
                        
                         <button
