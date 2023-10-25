@@ -992,38 +992,7 @@ const Sidebar = () => {
                                             <NavLink to="/auth/SignUp" target="_blank">
                                                 {t('sign_up')}
                                             </NavLink>
-                                        </li>                                       
-                                        <li>
-                                            <NavLink to="/auth/boxed-signup" target="_blank">
-                                                {t('register_boxed')}
-                                            </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/auth/boxed-lockscreen" target="_blank">
-                                                {t('unlock_boxed')}
-                                            </NavLink>
-                                        </li>
-                                       
-                                        <li>
-                                            <NavLink to="/auth/cover-login" target="_blank">
-                                                {t('login_cover')}
-                                            </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/auth/cover-register" target="_blank">
-                                                {t('register_cover')}
-                                            </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/auth/cover-lockscreen" target="_blank">
-                                                {t('unlock_cover')}
-                                            </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/auth/cover-password-reset" target="_blank">
-                                                {t('recover_id_cover')}
-                                            </NavLink>
-                                        </li>
+                                        </li>                                      
                                     </ul>
                                 </AnimateHeight>
                             </li>

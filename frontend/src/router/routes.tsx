@@ -77,12 +77,6 @@ const ChangePassword = lazy(() => import('../pages/Authentication/ChangePassword
 const ForgotPassword = lazy(() => import('../pages/Authentication/ForgotPassword'));
 const SignUp = lazy(() => import('../pages/Authentication/SignUp'));
 const SignUpProcess = lazy(() => import('../pages/Authentication/SignUpProcess'));
-const RegisterBoxed = lazy(() => import('../pages/Authentication/RegisterBoxed'));
-const UnlockBoxed = lazy(() => import('../pages/Authentication/UnlockBox'));
-const LoginCover = lazy(() => import('../pages/Authentication/LoginCover'));
-const RegisterCover = lazy(() => import('../pages/Authentication/RegisterCover'));
-const RecoverIdCover = lazy(() => import('../pages/Authentication/RecoverIdCover'));
-const UnlockCover = lazy(() => import('../pages/Authentication/UnlockCover'));
 const About = lazy(() => import('../pages/About'));
 const Error = lazy(() => import('../components/Error'));
 const Charts = lazy(() => import('../pages/Charts'));
@@ -453,37 +447,7 @@ const routes = [
         element: <SignUpProcess />,
         layout: 'blank',
     },
-    {
-        path: '/auth/boxed-signup',
-        element: <RegisterBoxed />,
-        layout: 'blank',
-    },
-    {
-        path: '/auth/boxed-lockscreen',
-        element: <UnlockBoxed />,
-        layout: 'blank',
-    },
-    
-    {
-        path: '/auth/cover-login',
-        element: <LoginCover />,
-        layout: 'blank',
-    },
-    {
-        path: '/auth/cover-register',
-        element: <RegisterCover />,
-        layout: 'blank',
-    },
-    {
-        path: '/auth/cover-lockscreen',
-        element: <UnlockCover />,
-        layout: 'blank',
-    },
-    {
-        path: '/auth/cover-password-reset',
-        element: <RecoverIdCover />,
-        layout: 'blank',
-    },
+   
     //forms page
     {
         path: '/forms/basic',
