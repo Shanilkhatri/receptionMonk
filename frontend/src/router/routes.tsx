@@ -76,9 +76,6 @@ const Login = lazy(() => import('../pages/Authentication/Login'));
 const ChangePassword = lazy(() => import('../pages/Authentication/ChangePassword'));
 const ForgotPassword = lazy(() => import('../pages/Authentication/ForgotPassword'));
 const SignUp = lazy(() => import('../pages/Authentication/SignUp'));
-const Setup2FA = lazy(() => import('../pages/Authentication/Setup2FA'));
-const QR2FA = lazy(() => import('../pages/Authentication/QR2FA'));
-const Confirmation2FA = lazy(() => import('../pages/Authentication/Confirmation2FA'));
 const SignUpProcess = lazy(() => import('../pages/Authentication/SignUpProcess'));
 const RegisterBoxed = lazy(() => import('../pages/Authentication/RegisterBoxed'));
 const UnlockBoxed = lazy(() => import('../pages/Authentication/UnlockBox'));
@@ -451,21 +448,6 @@ const routes = [
         element: <SignUp />,
         layout: 'blank',
     },
-    {
-    path: '/auth/QR2FA',
-    element: <QR2FA />,
-    layout: 'blank',
-    },
-    {
-        path: '/auth/Confirmation2FA',
-        element: <Confirmation2FA />,
-        layout: 'blank',
-    },
-    {
-        path: '/auth/Setup2FA',
-        element: <Setup2FA />,
-        layout: 'blank',
-        },
     {
         path: '/auth/SignUpProcess',
         element: <SignUpProcess />,

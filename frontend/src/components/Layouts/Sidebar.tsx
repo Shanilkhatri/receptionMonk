@@ -992,12 +992,7 @@ const Sidebar = () => {
                                             <NavLink to="/auth/SignUp" target="_blank">
                                                 {t('sign_up')}
                                             </NavLink>
-                                        </li>
-                                        <li>
-                                            <NavLink to="/auth/Setup2FA" target="_blank">
-                                                {t('setup_2fa')}
-                                            </NavLink>
-                                        </li>
+                                        </li>                                       
                                         <li>
                                             <NavLink to="/auth/boxed-signup" target="_blank">
                                                 {t('register_boxed')}
