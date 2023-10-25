@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 const Index = lazy(() => import('../pages/Index'));
+const RmHome = lazy(() => import('../pages/RmHome'));
 const Home = lazy(() => import('../pages/Home'));
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Finance = lazy(() => import('../pages/Finance'));
@@ -103,12 +104,16 @@ const routes = [
         path: '/',
         element: <Index />,
     },
+    {
+        path: '/RmHome',
+        element: <RmHome />,
+    },
     // {
     //     path: '/index',
     //     element: <Index />,
     // },
      // home page
-     {
+    {
         path: '/home',
         element: <Home />,
     },
