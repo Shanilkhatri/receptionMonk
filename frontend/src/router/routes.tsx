@@ -72,11 +72,12 @@ const ERROR404 = lazy(() => import('../pages/Pages/Error404'));
 const ERROR500 = lazy(() => import('../pages/Pages/Error500'));
 const ERROR503 = lazy(() => import('../pages/Pages/Error503'));
 const Maintenence = lazy(() => import('../pages/Pages/Maintenence'));
-const Login = lazy(() => import('../pages/Authentication/Login'));
+const LogIn = lazy(() => import('../pages/Authentication/Login'));
 const ChangePassword = lazy(() => import('../pages/Authentication/ChangePassword'));
 const ForgotPassword = lazy(() => import('../pages/Authentication/ForgotPassword'));
+const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
+const SignInOTP = lazy(() => import('../pages/Authentication/SignInOTP'));
 const SignUp = lazy(() => import('../pages/Authentication/SignUp'));
-const SignUpProcess = lazy(() => import('../pages/Authentication/SignUpProcess'));
 const About = lazy(() => import('../pages/About'));
 const Error = lazy(() => import('../components/Error'));
 const Charts = lazy(() => import('../pages/Charts'));
@@ -424,7 +425,17 @@ const routes = [
     //Authentication
     {
         path: '/auth/Login',
-        element: <Login />,
+        element: <LogIn />,
+        layout: 'blank',
+    },
+    {
+        path: '/auth/SignIn',
+        element: <SignIn />,
+        layout: 'blank',
+    },
+    {
+        path: '/auth/SignInOTP',
+        element: <SignInOTP />,
         layout: 'blank',
     },
     {
@@ -440,11 +451,6 @@ const routes = [
     {
         path: '/auth/SignUp',
         element: <SignUp />,
-        layout: 'blank',
-    },
-    {
-        path: '/auth/SignUpProcess',
-        element: <SignUpProcess />,
         layout: 'blank',
     },
    

@@ -7,7 +7,7 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 const SignUp = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Sign Up'));
+        dispatch(setPageTitle('Sign Up Process'));
     });
     const navigate = useNavigate();
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
@@ -24,31 +24,50 @@ const SignUp = () => {
                         <div><img className="h-20" src="/assets/images/logo/rm.png" alt="logo" /></div>                   
                     </div>
                     <div className="text-center pb-8">
-                    <h1 className="font-bold text-2xl text-black pb-12">Reception <span className="text-orange-700">Monk</span></h1>
+                    <h1 className="font-bold text-2xl text-black pb-8">Reception <span className="text-orange-700">Monk</span></h1>
                     <h2 className="font-semibold text-xl mb-3 text-neutral-800">Sign Up</h2>
                  </div>
                 </div>  
                 <form className="space-y-5" onSubmit={submitForm}>
-                    <p className="mb-7">Enter your phone number to complete Registration</p>
+                    <p className="mb-7">Please fill all details to complete Registration</p>
+                    
                     <div>
-                        <label htmlFor="changepwd">Phone No. <span className='text-red-600'>*</span></label>
-                        <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Phone Number" />
+                        <label htmlFor="changepwd">Name <span className='text-red-600'>*</span></label>
+                        <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Name" />
+                    </div>
+
+                    <div>
+                        <label htmlFor="email">Email <span className='text-red-600'>*</span></label> 
+                        <input id="email" type="email" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
+                    </div>
+
+                    <div>
+                        <label htmlFor="password">Password <span className='text-red-600'>*</span></label>
+                        <input id="password" type="password" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
+                    </div>
+
+                    <div>
+                        <label htmlFor="changepwd">Date of Birth <span className='text-red-600'>*</span></label>
+                        <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter DOB" />
+                    </div>
+
+                    <div>
+                        <label htmlFor="changepwd">Account Type <span className='text-red-600'>*</span></label>
+                        <select className="form-select text-white-dark border border-gray-400 focus:border-orange-400">
+                            <option value="" selected disabled>Select</option>
+                            <option value="owner">Owner</option>
+                            <option value="client">Client</option>
+                        </select>
                     </div>
 
                     <div className="flex justify-center py-6">
-                        <Link to="/auth/SignUpProcess">
-                            <button type="submit" className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828]">
-                                REGISTER
-                            </button>
-                        </Link>
+                    <Link to="/">
+                        <button type="submit" className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828]">
+                            SIGN UP
+                        </button>
+                    </Link>
                     </div>        
 
-                    <p className="text-center font-semibold pb-2">
-                        Already have an account ?
-                        <Link to="/auth/Login" className="font-bold text-orange-700 hover:underline ltr:ml-1 rtl:mr-1 hover:text-gray-900">
-                            Sign In
-                        </Link>                     
-                    </p> 
                 </form>                
             </div>
         </div>

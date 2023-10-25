@@ -98,6 +98,7 @@
     "error": "Error",
     "maintenence": "Maintenence",
     "login": "Login",
+    "signin":"Sign In",
     "change_password": "Change Password",
     "forgot_password": "Forgot Password",
     "sign_up": "Sign Up",
