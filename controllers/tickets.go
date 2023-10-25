@@ -17,7 +17,7 @@ func PutTicket(w http.ResponseWriter, r *http.Request) {
 	log.Println("ticketStruct: ", ticketStruct)
 	if err != nil {
 		log.Println("Unable to decode json")
-		utility.Logger(err)
+		// utility.Logger(err)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		utility.RenderJsonResponse(w, r, response, 400)
@@ -25,8 +25,7 @@ func PutTicket(w http.ResponseWriter, r *http.Request) {
 	}
 	// after parsing data we are now checking who is raising the ticket
 	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
-	// customer because I am not sure rightnow about how it will all come together.
-	if !isok || userDetails.AccountType != "customer" {
+	if !isok {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
 		utility.RenderJsonResponse(w, r, response, 403)
@@ -89,9 +88,9 @@ func PostTicket(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	// validation only owner,employee,customer & super-admin can update ticket
+	// validation only employee & super-admin can update ticket
 	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
-	if !isok || userDetails.AccountType == "customer" && userDetails.ID != ticketStruct.Id {
+	if !isok || userDetails.ID != ticketStruct.Id {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
 		utility.RenderJsonResponse(w, r, response, 403)
@@ -106,5 +105,21 @@ func PostTicket(w http.ResponseWriter, r *http.Request) {
 	// get the existing ticket
 	ticketData, err := models.Tickets{}.GetTicketById(ticketStruct.Id)
 	log.Println("ticketData: ", ticketData)
-	// now begin update by id next
+	// copying all the unchanged fields to ticketStruct
+	if utility.FillEmptyFieldsForPostUpdate(ticketData, &ticketStruct) {
+		// now begin update by id next
+		_, err := models.Tickets{}.PostTicket(ticketStruct)
+		if err != nil {
+			log.Println("err when updating ticket: ", err)
+			response.Status = "400"
+			response.Message = "Unable to update records at the moment! Please try again."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		response.Status = "200"
+		response.Message = "Record updated successfully."
+		utility.RenderJsonResponse(w, r, response, 200)
+		return
+	}
+
 }

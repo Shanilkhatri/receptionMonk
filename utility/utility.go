@@ -548,11 +548,12 @@ func SaltPlainPassWord(passW string) (string, error) {
 // func for post user to not change empty fields in user struct
 // -> src is basically the struct we get from tokenPayload with all filled fields from DB or cache
 // -> dest is the userStruct that will come through json and which will also be our final struct
+// -> pass dest using (pass by address "&")
 // -> we have used reflection here to first check that they are valid structs or not
 // -> if they are (valid) are they of same type
 // -> we return a bool value indicating whether the run was successfull or not
 
-func FillEmptyFieldsForPostUser(src, dest interface{}) bool {
+func FillEmptyFieldsForPostUpdate(src, dest interface{}) bool {
 	srcValue := reflect.ValueOf(src)
 	destValue := reflect.ValueOf(dest).Elem() // Use Elem to get the underlying struct Value.
 

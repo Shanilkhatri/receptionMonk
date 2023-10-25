@@ -26,7 +26,7 @@
     - response          string          
     - ticket_id         int64           `FOREIGN KEY`
     - response_time     int64           `EPOCH-TIMESTAMP`
-    - type              string          `ENUM(customer,employee)`
+    - type              string          `ENUM(customer,employee,super-admin)`
     - respondee_id      int64           
 
 ## Flow

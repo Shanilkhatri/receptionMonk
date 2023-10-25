@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"reakgo/utility"
 
@@ -56,4 +57,21 @@ func (Tickets) GetTicketById(ticketId int64) (Tickets, error) {
 	err := utility.Db.Get(&selectedRow, "SELECT * FROM tickets WHERE id = ?", ticketId)
 
 	return selectedRow, err
+}
+
+// update user records by id
+func (Tickets) PostTicket(ticketStruct Tickets) (bool, error) {
+	userData, err := utility.Db.NamedExec("UPDATE tickets SET userId=:UserId,email=:Email,customerName=:CustomerName,createdTime =:CreatedTime,lastUpdatedOn=:LastUpdatedOn,status=:Status,query=:Query,feedback=:FeedBack, lastResponse=:LastResponse,companyId=:CompanyId WHERE id=:Id ", map[string]interface{}{"UserId": ticketStruct.UserId, "Email": ticketStruct.Email, "CustomerName": ticketStruct.CustomerName, "CreatedTime": ticketStruct.CreatedTime, "LastUpdatedOn": ticketStruct.LastUpdatedOn, "Status": ticketStruct.Status, "Query": ticketStruct.Query, "FeedBack": ticketStruct.FeedBack, "LastResponse": ticketStruct.LastResponse, "CompanyId": ticketStruct.CompanyId, "Id": ticketStruct.Id})
+	// Check error
+	if err != nil {
+		utility.Logger(err)
+
+	} else {
+		Rowefffect, _ := userData.RowsAffected()
+		if Rowefffect == 0 {
+			log.Println("input value is not change with previous one or id= " + fmt.Sprint(ticketStruct.Id) + "is not valid")
+		}
+		return Rowefffect > 0, err
+	}
+	return false, err
 }

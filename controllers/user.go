@@ -254,7 +254,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	// flipping values from userDetails(from token) to userStruct(from req) which are empty in userStruct
-	flag = utility.FillEmptyFieldsForPostUser(userDetails, &userStruct)
+	flag = utility.FillEmptyFieldsForPostUpdate(userDetails, &userStruct)
 	if !flag {
 		utility.Logger(err)
 		log.Println("error during flipping data at: FillEmptyFieldsForPostUser")
