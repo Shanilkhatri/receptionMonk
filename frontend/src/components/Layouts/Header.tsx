@@ -177,9 +177,6 @@ const Header = () => {
                                             <button className="btn btn-primary block w-full btn-small" onClick={() => setupModal(true)}> Two Factor Authentication</button>
                                         </div>                            
                                     </li>
-                                    <li>
-                                        <NavLink to="/RmHome">{t('rm_web')}</NavLink>
-                                    </li>
                                 </ul>
                             </Dropdown>
 
