@@ -405,22 +405,22 @@ const Header = () => {
                                                 
                                                 <div className='grid grid-cols-6 gap-4 m-8'>
                                                     <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400" />
+                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
                                                     </div>
                                                     <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400" />
+                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
                                                     </div>
                                                     <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400" />
+                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
                                                     </div>
                                                     <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400" />
+                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
                                                     </div>
                                                     <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400" />
+                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
                                                     </div>
                                                     <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400" />
+                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
                                                     </div>
                                                 </div>
                                                     

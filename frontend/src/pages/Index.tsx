@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import ReactApexChart from 'react-apexcharts';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import Dropdown from '../components/Dropdown';
 import { setPageTitle } from '../store/themeConfigSlice';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -12,11 +11,13 @@ import 'tippy.js/dist/tippy.css';
 const Index = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Sales Admin'));
+        dispatch(setPageTitle('Homepage'));
     });
+
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
+    // radialbar graph    
     const [loading] = useState(false);
 
    
@@ -96,410 +97,104 @@ const Index = () => {
             // You can set options here if you want to dynamically update them.
         }, []);
 
-    //Revenue Chart
-    const revenueChart: any = {
+    // uniqueVisitorSeriesOptions
+    const uniqueVisitorSeries: any = {
         series: [
             {
-                name: 'Income',
-                data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000, 14000, 17000],
+                name: 'Answered',
+                data: [58, 44, 55, 57, 56, 61, 58, 63, 60, 66, 56, 63],
             },
             {
-                name: 'Expenses',
-                data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000, 18000, 19000],
+                name: 'Missed',
+                data: [91, 76, 85, 101, 98, 87, 105, 91, 114, 94, 66, 70],
             },
         ],
         options: {
             chart: {
-                height: 325,
-                type: 'area',
+                height: 360,
+                type: 'bar',
                 fontFamily: 'Nunito, sans-serif',
-                zoom: {
-                    enabled: false,
-                },
                 toolbar: {
                     show: false,
                 },
             },
-
             dataLabels: {
                 enabled: false,
             },
             stroke: {
-                show: true,
-                curve: 'smooth',
                 width: 2,
-                lineCap: 'square',
+                colors: ['transparent'],
             },
+            colors: ['#5c1ac3', '#ffbb44'],
             dropShadow: {
                 enabled: true,
-                opacity: 0.2,
-                blur: 10,
-                left: -7,
-                top: 22,
+                blur: 3,
+                color: '#515365',
+                opacity: 0.4,
             },
-            colors: isDark ? ['#2196F3', '#E7515A'] : ['#1B55E2', '#E7515A'],
-            markers: {
-                discrete: [
-                    {
-                        seriesIndex: 0,
-                        dataPointIndex: 6,
-                        fillColor: '#1B55E2',
-                        strokeColor: 'transparent',
-                        size: 7,
-                    },
-                    {
-                        seriesIndex: 1,
-                        dataPointIndex: 5,
-                        fillColor: '#E7515A',
-                        strokeColor: 'transparent',
-                        size: 7,
-                    },
-                ],
-            },
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            xaxis: {
-                axisBorder: {
-                    show: false,
-                },
-                axisTicks: {
-                    show: false,
-                },
-                crosshairs: {
-                    show: true,
-                },
-                labels: {
-                    offsetX: isRtl ? 2 : 0,
-                    offsetY: 5,
-                    style: {
-                        fontSize: '12px',
-                        cssClass: 'apexcharts-xaxis-title',
-                    },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    borderRadius: 8,
+                    borderRadiusApplication: 'end',
                 },
             },
-            yaxis: {
-                tickAmount: 7,
-                labels: {
-                    formatter: (value: number) => {
-                        return value / 1000 + 'K';
-                    },
-                    offsetX: isRtl ? -30 : -10,
-                    offsetY: 0,
-                    style: {
-                        fontSize: '12px',
-                        cssClass: 'apexcharts-yaxis-title',
-                    },
+            legend: {
+                position: 'bottom',
+                horizontalAlign: 'center',
+                fontSize: '14px',
+                itemMargin: {
+                    horizontal: 8,
+                    vertical: 8,
                 },
-                opposite: isRtl ? true : false,
             },
             grid: {
-                borderColor: isDark ? '#191E3A' : '#E0E6ED',
-                strokeDashArray: 5,
-                xaxis: {
-                    lines: {
-                        show: true,
-                    },
+                borderColor: isDark ? '#191e3a' : '#e0e6ed',
+                padding: {
+                    left: 20,
+                    right: 20,
                 },
-                yaxis: {
+                xaxis: {
                     lines: {
                         show: false,
                     },
                 },
-                padding: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                axisBorder: {
+                    show: true,
+                    color: isDark ? '#3b3f5c' : '#e0e6ed',
                 },
             },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                fontSize: '16px',
-                markers: {
-                    width: 10,
-                    height: 10,
-                    offsetX: -2,
+            yaxis: {
+                tickAmount: 6,
+                opposite: isRtl ? true : false,
+                labels: {
+                    offsetX: isRtl ? -10 : 0,
                 },
-                itemMargin: {
-                    horizontal: 10,
-                    vertical: 5,
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: isDark ? 'dark' : 'light',
+                    type: 'vertical',
+                    shadeIntensity: 0.3,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 0.8,
+                    stops: [0, 100],
                 },
             },
             tooltip: {
                 marker: {
                     show: true,
                 },
-                x: {
-                    show: false,
-                },
-            },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shadeIntensity: 1,
-                    inverseColors: !1,
-                    opacityFrom: isDark ? 0.19 : 0.28,
-                    opacityTo: 0.05,
-                    stops: isDark ? [100, 100] : [45, 100],
-                },
             },
         },
-    };
+    };   
 
-    //Sales By Category
-    const salesByCategory: any = {
-        series: [985, 737, 270],
-        options: {
-            chart: {
-                type: 'donut',
-                height: 460,
-                fontFamily: 'Nunito, sans-serif',
-            },
-            dataLabels: {
-                enabled: false,
-            },
-            stroke: {
-                show: true,
-                width: 25,
-                colors: isDark ? '#0e1726' : '#fff',
-            },
-            colors: isDark ? ['#04DC8B', '#e2a03f', '#e7515a', '#e2a03f'] : ['#e2a03f', '#04DC8B', '#e7515a'],
-            legend: {
-                position: 'bottom',
-                horizontalAlign: 'center',
-                fontSize: '14px',
-                markers: {
-                    width: 10,
-                    height: 10,
-                    offsetX: -2,
-                },
-                height: 50,
-                offsetY: 20,
-            },
-            plotOptions: {
-                pie: {
-                    donut: {
-                        size: '65%',
-                        background: 'transparent',
-                        labels: {
-                            show: true,
-                            name: {
-                                show: true,
-                                fontSize: '29px',
-                                offsetY: -10,
-                            },
-                            value: {
-                                show: true,
-                                fontSize: '26px',
-                                color: isDark ? '#bfc9d4' : undefined,
-                                offsetY: 16,
-                                formatter: (val: any) => {
-                                    return val;
-                                },
-                            },
-                            total: {
-                                show: true,
-                                label: 'Total',
-                                color: '#888ea8',
-                                fontSize: '29px',
-                                formatter: (w: any) => {
-                                    return w.globals.seriesTotals.reduce(function (a: any, b: any) {
-                                        return a + b;
-                                    }, 0);
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            labels: ['Answered', 'Missed', 'IVR'],
-            states: {
-                hover: {
-                    filter: {
-                        type: 'none',
-                        value: 0.15,
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                        value: 0.15,
-                    },
-                },
-            },
-        },
-    };
-
-    //Daily Sales
-    // const dailySales: any = {
-    //     series: [
-    //         {
-    //             name: 'Sales',
-    //             data: [44, 55, 41, 67, 22, 43, 21],
-    //         },
-    //         {
-    //             name: 'Last Week',
-    //             data: [13, 23, 20, 8, 13, 27, 33],
-    //         },
-    //     ],
-    //     options: {
-    //         chart: {
-    //             height: 160,
-    //             type: 'bar',
-    //             fontFamily: 'Nunito, sans-serif',
-    //             toolbar: {
-    //                 show: false,
-    //             },
-    //             stacked: true,
-    //             stackType: '100%',
-    //         },
-    //         dataLabels: {
-    //             enabled: false,
-    //         },
-    //         stroke: {
-    //             show: true,
-    //             width: 1,
-    //         },
-    //         colors: ['#e2a03f', '#e0e6ed'],
-    //         responsive: [
-    //             {
-    //                 breakpoint: 480,
-    //                 options: {
-    //                     legend: {
-    //                         position: 'bottom',
-    //                         offsetX: -10,
-    //                         offsetY: 0,
-    //                     },
-    //                 },
-    //             },
-    //         ],
-    //         xaxis: {
-    //             labels: {
-    //                 show: false,
-    //             },
-    //             categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
-    //         },
-    //         yaxis: {
-    //             show: false,
-    //         },
-    //         fill: {
-    //             opacity: 1,
-    //         },
-    //         plotOptions: {
-    //             bar: {
-    //                 horizontal: false,
-    //                 columnWidth: '25%',
-    //             },
-    //         },
-    //         legend: {
-    //             show: false,
-    //         },
-    //         grid: {
-    //             show: false,
-    //             xaxis: {
-    //                 lines: {
-    //                     show: false,
-    //                 },
-    //             },
-    //             padding: {
-    //                 top: 10,
-    //                 right: -20,
-    //                 bottom: -20,
-    //                 left: -20,
-    //             },
-    //         },
-    //     },
-    // };
-
-    //Total Orders
-    const totalOrders: any = {
-        series: [
-            {
-                name: 'Sales',
-                data: [28, 40, 36, 52, 38, 60, 38, 52, 36, 40],
-            },
-        ],
-        options: {
-            chart: {
-                height: 200,
-                type: 'area',
-                fontFamily: 'Nunito, sans-serif',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            colors: isDark ? ['#00ab55'] : ['#00ab55'],
-            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-            yaxis: {
-                min: 0,
-                show: false,
-            },
-            grid: {
-                padding: {
-                    top: 125,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
-                },
-            },
-            fill: {
-                opacity: 1,
-                type: 'gradient',
-                gradient: {
-                    type: 'vertical',
-                    shadeIntensity: 1,
-                    inverseColors: !1,
-                    opacityFrom: 0.3,
-                    opacityTo: 0.05,
-                    stops: [100, 100],
-                },
-            },
-            tooltip: {
-                x: {
-                    show: false,
-                },
-            },
-        },
-    };
-
-    // Basic plan
-    const donutChart: any = {
-        series: [70,30],
-        options: {
-            chart: {
-                height: 250,
-                type: 'donut',
-                zoom: {
-                    enabled: false,
-                },
-                toolbar: {
-                    show: false,
-                },
-            },
-            stroke: {
-                show: false,
-            },
-            // labels: ['27 Days Left'],
-            colors: ['#005bea', '#e6e6e6'],
-            responsive: [
-                {
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200,
-                        },
-                    },
-                },
-            ],
-            legend: {
-                position: 'bottom',
-            },
-        },
-    };
 
     return (
         <div>
@@ -513,697 +208,408 @@ const Index = () => {
                     <span>Home</span>
                 </li>
             </ul>
-            
-            {/* <div className="grid grid-cols-3 gap-4 ">
-                <div className="col-span-1 bg-danger">
-                col - 1
-                </div>
-
-                <div className="col-span-1 row-span-2 bg-primary">
-                    col - 2
-                </div>
-                
-                <div className="col-span-1 row-span-2 bg-warning">
-                    col - 3
-                </div>
-                
-                <div className="col-span-1 row-start-2 grid grid-cols-2 gap-4">
-                    <div className="col-span-1 bg-secondary">
-                        col - 1 - 1.1
-                    </div>
-                    <div className="col-span-1 bg-secondary">
-                        col - 1 - 1.2
-                    </div>
-                </div>
-            </div>         */}
 
             <div className="pt-5">
-                <div className="grid lg:grid-cols-3 gap-4 mb-6">                   
-
-                    <div className="panel col-span-1 bg-gradient-to-r from-[#8b60db] to-[#b18af8]">
-                        <div className="grid grid-cols-2 gap-8">
-                            <div className='flex items-center'>
-                                <h5 className="font-bold dark:text-white text-3xl">Basic Plan <span className='text-lg'><br/> +91 98562 52145</span></h5>
-                            </div>
-                            <div>
-                                <ReactApexChart options={options} series={options.series} type="radialBar" height={250} /> 
-                            </div>
-                        </div>                        
-                    </div>
-                   
-                    <div className="panel flex flex-col justify-between col-span-2 row-span-2">
-                        <div className="flex items-center mb-5">
-                            <h5 className="font-semibold text-lg dark:text-white-light">Recent Calls</h5>
-                        </div>
-                        <div>
-                            <div className="bg-white dark:bg-black rounded-lg">
-                                {loading ? (
-                                    <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
-                                        <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
-                                    </div>
-                                ) : (
-                                    <ReactApexChart series={salesByCategory.series} options={salesByCategory.options} type="donut" height={460} />
-                                )}
-                            </div>
-                        </div>
-                    </div> 
-
-                    {/* <div className="panel flex flex-col justify-between col-span-1 row-span-2 p-0 border-0 overflow-hidden bg-gradient-to-r from-[#4361ee] to-[#160f6b]">
-                        <div className="p-8">        
-                            <div className=''>
-                                <p className="text-3xl font-bold text-white">Wallet Balance</p>
-                            </div>                    
-                            <div className="text-white flex justify-between items-center py-6 min-h-[190px]">
-                                <div>
-                                    <h5 className="ltr:ml-auto rtl:mr-auto text-4xl font-bold">
-                                        <span className="text-white-light">₹</span>2953
-                                    </h5>
-                                </div>     
-                                <div>
-                                    <button type="button" className="btn btn- btn-secondary px-8 py-4">
-                                        Recharge
-                                    </button>
-                                </div>   
-                            </div>
-                            <div>
-                                <p className='text-lg font-semibold text-gray-300 py-8'>Last Wallet Recharge on 20th Septempber - ₹ 2000</p>
-                            </div>
-                        </div>      
-                    </div> */}
-
-                    <div className="col-span-1 row-start-2 grid grid-cols-2 h-full gap-4 text-white font-bold">
-                        <div className="panel h-full grid col-span-1 bg-gradient-to-r from-[#009fb5] to-[#3be3f9]">
-                            <div>
-                                <p className='text-2xl'>
-                                    Device Registered
-                                </p>
-                            </div>
-                           
-                            <div className="grid content-end">
-                                <p className='text-2xl'>
-                                    2 /3
-                                </p>
-                            </div>                            
-                        </div>
-                        <div className="panel h-full grid col-span-1 col-span-1 bg-gradient-to-r from-[#009fb5] to-[#3be3f9]">
-                            <p className='text-2xl'>
-                                Extensitons
-                            </p>
-                            <div className="grid content-end">
-                                <p className='text-2xl'>
-                                    2 /3
-                                </p>
-                            </div>                           
-                        </div>
-                    </div>
-                </div>
-                {/* ------------ */}
-
-
-
-                 {/* <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mb-6">        
-                   
-                    // Total Balance Previous
-                    <div
-                        className="panel h-full overflow-hidden before:bg-[#1937cc] before:absolute before:-right-44 before:top-0 before:bottom-0 before:m-auto before:rounded-full before:w-96 before:h-96 grid grid-cols-1 content-between"
-                        style={{ background: 'linear-gradient(0deg,#00c6fb -227%,#005bea)' }}>
-                        <div className="flex items-start justify-between text-white-light mb-16 z-[7]">
-                            <h5 className="font-semibold text-3xl">Total Balance</h5>
-
-                            <div className="relative text-xl whitespace-nowrap">
-                                $ 41,741.42
-                                <span className="table text-[#d3d3d3] bg-[#4361ee] rounded p-1 text-xs mt-1 ltr:ml-auto rtl:mr-auto">+ 2453</span>
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-between z-10">
+                <div className="w-full h-full flex flex-col sm:flex-row gap-6">
+                    <div className="w-full sm:w-2/3"> 
+                        <div className="panel overflow-hidden h-full shadow-md">
                             <div className="flex items-center justify-between">
-                                <button type="button" className="shadow-[0_0_2px_0_#bfc9d4] rounded p-1 text-white-light hover:bg-[#1937cc] place-content-center ltr:mr-2 rtl:ml-2">
-                                    <svg className="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                </button>
-                                <button type="button" className="shadow-[0_0_2px_0_#bfc9d4] rounded p-1 text-white-light hover:bg-[#1937cc] grid place-content-center">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <div>
+                                    <div className="">Welcome Back!</div>
+                                    <div className="text-2xl font-bold">My Dashboard</div>
+                                </div>
+                                <div className="flex">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 me-2">
                                         <path
-                                            d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                            d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12V14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V12Z"
                                             stroke="currentColor"
                                             strokeWidth="1.5"
                                         />
-                                        <path opacity="0.5" d="M10 16H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                        <path opacity="0.5" d="M14 16H12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                        <path opacity="0.5" d="M2 10L22 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                        <path opacity="0.5" d="M7 4V2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                        <path opacity="0.5" d="M17 4V2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                        <path opacity="0.5" d="M2 9H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                     </svg>
-                                </button>
-                            </div>
-                            <button type="button" className="btn btn-primary rounded-full shadow-[0_0_1px_0_#bfc9d4] rounded px-6 text-white text-base hover:bg-[#4361ee] z-10">
-                                Recharge
-                            </button>
-                        </div>
-                    </div>
-
-                                       
-                    // Revenue
-                    <div className="panel h-full xl:col-span-2 p-0 border-0">
-                        <div className="flex items-center justify-between dark:text-white-light mb-5">
-                            <h5 className="font-semibold text-lg">Revenue</h5>
-                            <div className="dropdown">
-                                <Dropdown
-                                    offset={[0, 1]}
-                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    button={
-                                        <svg className="w-5 h-5 text-black/70 dark:text-white/70 hover:!text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="5" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                            <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                            <circle cx="19" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                        </svg>
-                                    }
-                                >
-                                    <ul>
-                                        <li>
-                                            <button type="button">Weekly</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Monthly</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Yearly</button>
-                                        </li>
-                                    </ul>
-                                </Dropdown>
-                            </div>
-                        </div>
-                        <p className="text-lg dark:text-white-light/90">
-                            Total Profit <span className="text-primary ml-2">$10,840</span>
-                        </p>
-                        <div className="relative">
-                            <div className="bg-white dark:bg-black rounded-lg">
-                                {loading ? (
-                                    <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
-                                        <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
+                                    <div className="text-xs font-bold">                                        
+                                        12 April, 2023
                                     </div>
-                                ) : (
-                                    <ReactApexChart series={revenueChart.series} options={revenueChart.options} type="area" height={325} />
-                                )}
-                            </div>
-                        </div>
-                    </div> */}
-
-                    {/* 
-                    // Sales by category
-                    <div className="panel h-full">
-                        <div className="flex items-center mb-5">
-                            <h5 className="font-semibold text-lg dark:text-white-light">Sales By Category</h5>
-                        </div>
-                        <div>
-                            <div className="bg-white dark:bg-black rounded-lg">
-                                {loading ? (
-                                    <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
-                                        <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
-                                    </div>
-                                ) : (
-                                    <ReactApexChart series={salesByCategory.series} options={salesByCategory.options} type="donut" height={460} />
-                                )}
-                            </div>
-                        </div>
-                    </div> 
-                </div> */}
-
-                {/* Daily Sales */}
-                {/* <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
-                    <div className="panel h-full sm:col-span-2 xl:col-span-1">
-                        <div className="flex items-center mb-5">
-                            <h5 className="font-semibold text-lg dark:text-white-light">
-                                Daily Sales
-                                <span className="block text-white-dark text-sm font-normal">Go to columns for details.</span>
-                            </h5>
-                            <div className="ltr:ml-auto rtl:mr-auto relative">
-                                <div className="w-11 h-11 text-warning bg-[#ffeccb] dark:bg-warning dark:text-[#ffeccb] grid place-content-center rounded-full">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 6V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                        <path
-                                            d="M15 9.5C15 8.11929 13.6569 7 12 7C10.3431 7 9 8.11929 9 9.5C9 10.8807 10.3431 12 12 12C13.6569 12 15 13.1193 15 14.5C15 15.8807 13.6569 17 12 17C10.3431 17 9 15.8807 9 14.5"
-                                            stroke="currentColor"
-                                            strokeWidth="1.5"
-                                            strokeLinecap="round"
-                                        />
+                                </div>
+                                <div className="flex">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 48 48" className="w-4 h-4 me-2">
+                                        <path d="M 24 4 C 12.972066 4 4 12.972074 4 24 C 4 35.027926 12.972066 44 24 44 C 35.027934 44 44 35.027926 44 24 C 44 12.972074 35.027934 4 24 4 z M 24 7 C 33.406615 7 41 14.593391 41 24 C 41 33.406609 33.406615 41 24 41 C 14.593385 41 7 33.406609 7 24 C 7 14.593391 14.593385 7 24 7 z M 23.476562 11.978516 A 1.50015 1.50015 0 0 0 22 13.5 L 22 25.5 A 1.50015 1.50015 0 0 0 23.5 27 L 31.5 27 A 1.50015 1.50015 0 1 0 31.5 24 L 25 24 L 25 13.5 A 1.50015 1.50015 0 0 0 23.476562 11.978516 z"></path>
                                     </svg>
+                                    <div className="text-xs font-bold">                                        
+                                        15:25:56
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <div className="bg-white dark:bg-black rounded-lg">
-                                {loading ? (
-                                    <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
-                                        <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
+                            <div className="relative mt-5">
+                                <div className="grid grid-cols-3 gap-6 p-2 text-center">                                    
+                                    <div className="flex flex-col justify-center items-center">
+                                        <img src="/assets/images/profile-34.jpeg" alt="img" className="w-24 h-24 rounded-full object-cover  mb-5" />
+                                        <p className="font-semibold text-primary text-2xl">John Miller</p>
                                     </div>
-                                ) : (
-                                    <ReactApexChart series={dailySales.series} options={dailySales.options} type="bar" height={160} />
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="panel h-full">
-                        <div className="flex items-center justify-between dark:text-white-light mb-5">
-                            <h5 className="font-semibold text-lg">Summary</h5>
-                            <div className="dropdown">
-                                <Dropdown
-                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    button={
-                                        <svg className="w-5 h-5 text-black/70 dark:text-white/70 hover:!text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="5" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                            <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                            <circle cx="19" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                        </svg>
-                                    }
-                                >
-                                    <ul>
-                                        <li>
-                                            <button type="button">View Report</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Edit Report</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Mark as Done</button>
-                                        </li>
-                                    </ul>
-                                </Dropdown>
-                            </div>
-                        </div>
-                        <div className="space-y-9">
-                            <div className="flex items-center">
-                                <div className="w-9 h-9 ltr:mr-3 rtl:ml-3">
-                                    <div className="bg-secondary-light dark:bg-secondary text-secondary dark:text-secondary-light  rounded-full w-9 h-9 grid place-content-center">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                                    <ul className="flex flex-col max-w-[160px] m-auto space-y-4 font-semibold text-gray-600">
+                                    <li className="flex items-center gap-2">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
                                             <path
-                                                d="M3.74157 18.5545C4.94119 20 7.17389 20 11.6393 20H12.3605C16.8259 20 19.0586 20 20.2582 18.5545M3.74157 18.5545C2.54194 17.1091 2.9534 14.9146 3.77633 10.5257C4.36155 7.40452 4.65416 5.84393 5.76506 4.92196M3.74157 18.5545C3.74156 18.5545 3.74157 18.5545 3.74157 18.5545ZM20.2582 18.5545C21.4578 17.1091 21.0464 14.9146 20.2235 10.5257C19.6382 7.40452 19.3456 5.84393 18.2347 4.92196M20.2582 18.5545C20.2582 18.5545 20.2582 18.5545 20.2582 18.5545ZM18.2347 4.92196C17.1238 4 15.5361 4 12.3605 4H11.6393C8.46374 4 6.87596 4 5.76506 4.92196M18.2347 4.92196C18.2347 4.92196 18.2347 4.92196 18.2347 4.92196ZM5.76506 4.92196C5.76506 4.92196 5.76506 4.92196 5.76506 4.92196Z"
+                                                opacity="0.5"
+                                                d="M5 8.51464C5 4.9167 8.13401 2 12 2C15.866 2 19 4.9167 19 8.51464C19 12.0844 16.7658 16.2499 13.2801 17.7396C12.4675 18.0868 11.5325 18.0868 10.7199 17.7396C7.23416 16.2499 5 12.0844 5 8.51464Z"
                                                 stroke="currentColor"
                                                 strokeWidth="1.5"
                                             />
                                             <path
-                                                opacity="0.5"
-                                                d="M9.1709 8C9.58273 9.16519 10.694 10 12.0002 10C13.3064 10 14.4177 9.16519 14.8295 8"
+                                                d="M14 9C14 10.1046 13.1046 11 12 11C10.8954 11 10 10.1046 10 9C10 7.89543 10.8954 7 12 7C13.1046 7 14 7.89543 14 9Z"
+                                                stroke="currentColor"
+                                                strokeWidth="1.5"
+                                            />
+                                            <path
+                                                d="M20.9605 15.5C21.6259 16.1025 22 16.7816 22 17.5C22 19.9853 17.5228 22 12 22C6.47715 22 2 19.9853 2 17.5C2 16.7816 2.37412 16.1025 3.03947 15.5"
                                                 stroke="currentColor"
                                                 strokeWidth="1.5"
                                                 strokeLinecap="round"
                                             />
                                         </svg>
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex font-semibold text-white-dark mb-2">
-                                        <h6>Income</h6>
-                                        <p className="ltr:ml-auto rtl:mr-auto">$92,600</p>
-                                    </div>
-                                    <div className="rounded-full h-2 bg-dark-light dark:bg-[#1b2e4b] shadow">
-                                        <div className="bg-gradient-to-r from-[#7579ff] to-[#b224ef] w-11/12 h-full rounded-full"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="w-9 h-9 ltr:mr-3 rtl:ml-3">
-                                    <div className="bg-success-light dark:bg-success text-success dark:text-success-light rounded-full w-9 h-9 grid place-content-center">
+                                        New York, USA
+                                    </li>
+                                    <li>
+                                        <button className="flex items-center gap-2">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    opacity="0.5"
+                                                    d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                />
+                                                <path
+                                                    d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                    strokeLinecap="round"
+                                                />
+                                            </svg>
+                                            John@gmail.com
+                                        </button>
+                                    </li>
+                                    <li className="flex items-center gap-2">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
-                                                d="M4.72848 16.1369C3.18295 14.5914 2.41018 13.8186 2.12264 12.816C1.83509 11.8134 2.08083 10.7485 2.57231 8.61875L2.85574 7.39057C3.26922 5.59881 3.47597 4.70292 4.08944 4.08944C4.70292 3.47597 5.59881 3.26922 7.39057 2.85574L8.61875 2.57231C10.7485 2.08083 11.8134 1.83509 12.816 2.12264C13.8186 2.41018 14.5914 3.18295 16.1369 4.72848L17.9665 6.55812C20.6555 9.24711 22 10.5916 22 12.2623C22 13.933 20.6555 15.2775 17.9665 17.9665C15.2775 20.6555 13.933 22 12.2623 22C10.5916 22 9.24711 20.6555 6.55812 17.9665L4.72848 16.1369Z"
+                                                d="M5.00659 6.93309C5.04956 5.7996 5.70084 4.77423 6.53785 3.93723C7.9308 2.54428 10.1532 2.73144 11.0376 4.31617L11.6866 5.4791C12.2723 6.52858 12.0372 7.90533 11.1147 8.8278M17.067 18.9934C18.2004 18.9505 19.2258 18.2992 20.0628 17.4622C21.4558 16.0692 21.2686 13.8468 19.6839 12.9624L18.5209 12.3134C17.4715 11.7277 16.0947 11.9628 15.1722 12.8853"
                                                 stroke="currentColor"
                                                 strokeWidth="1.5"
                                             />
-                                            <circle opacity="0.5" cx="8.60699" cy="8.87891" r="2" transform="rotate(-45 8.60699 8.87891)" stroke="currentColor" strokeWidth="1.5" />
-                                            <path opacity="0.5" d="M11.5417 18.5L18.5208 11.5208" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex font-semibold text-white-dark mb-2">
-                                        <h6>Profit</h6>
-                                        <p className="ltr:ml-auto rtl:mr-auto">$37,515</p>
-                                    </div>
-                                    <div className="w-full rounded-full h-2 bg-dark-light dark:bg-[#1b2e4b] shadow">
-                                        <div className="bg-gradient-to-r from-[#3cba92] to-[#0ba360] w-full h-full rounded-full" style={{ width: '65%' }}></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="w-9 h-9 ltr:mr-3 rtl:ml-3">
-                                    <div className="bg-warning-light dark:bg-warning text-warning dark:text-warning-light rounded-full w-9 h-9 grid place-content-center">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
-                                                d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                                opacity="0.5"
+                                                d="M5.00655 6.93311C4.93421 8.84124 5.41713 12.0817 8.6677 15.3323C11.9183 18.5829 15.1588 19.0658 17.0669 18.9935M15.1722 12.8853C15.1722 12.8853 14.0532 14.0042 12.0245 11.9755C9.99578 9.94676 11.1147 8.82782 11.1147 8.82782"
                                                 stroke="currentColor"
                                                 strokeWidth="1.5"
                                             />
-                                            <path opacity="0.5" d="M10 16H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                            <path opacity="0.5" d="M14 16H12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                            <path opacity="0.5" d="M2 10L22 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                         </svg>
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex font-semibold text-white-dark mb-2">
-                                        <h6>Expenses</h6>
-                                        <p className="ltr:ml-auto rtl:mr-auto">$55,085</p>
-                                    </div>
-                                    <div className="w-full rounded-full h-2 bg-dark-light dark:bg-[#1b2e4b] shadow">
-                                        <div className="bg-gradient-to-r from-[#f09819] to-[#ff5858] w-full h-full rounded-full" style={{ width: '80%' }}></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="panel h-full p-0">
-                        <div className="flex items-center justify-between w-full p-5 absolute">
-                            <div className="relative">
-                                <div className="text-success dark:text-success-light bg-success-light dark:bg-success w-11 h-11 rounded-lg flex items-center justify-center">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19"
-                                            stroke="currentColor"
-                                            strokeWidth="1.5"
-                                            strokeLinecap="round"
-                                        />
-                                        <path
-                                            opacity="0.5"
-                                            d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z"
-                                            stroke="currentColor"
-                                            strokeWidth="1.5"
-                                        />
-                                        <path
-                                            opacity="0.5"
-                                            d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z"
-                                            stroke="currentColor"
-                                            strokeWidth="1.5"
-                                        />
-                                        <path opacity="0.5" d="M11 9H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                        <path
-                                            d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5"
-                                            stroke="currentColor"
-                                            strokeWidth="1.5"
-                                        />
-                                    </svg>
-                                </div>
-                            </div>
-                            <h5 className="font-semibold text-2xl ltr:text-right rtl:text-left dark:text-white-light">
-                                3,192
-                                <span className="block text-sm font-normal">Total Orders</span>
-                            </h5>
-                        </div>
-                        <div className="bg-transparent rounded-lg">
-                           
-                            {loading ? (
-                                <div className="min-h-[325px] grid place-content-center bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] ">
-                                    <span className="animate-spin border-2 border-black dark:border-white !border-l-transparent  rounded-full w-5 h-5 inline-flex"></span>
-                                </div>
-                            ) : (
-                                <ReactApexChart series={totalOrders.series} options={totalOrders.options} type="area" height={290} />
-                            )}
-                        </div>
-                    </div>
-                </div> */}
-
-                 {/* 
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
-                                       
-                    //  Recent Activity *
-                    <div className="panel h-full sm:col-span-2 xl:col-span-1 pb-0">
-                        <h5 className="font-semibold text-lg dark:text-white-light mb-5">Recent Activities</h5>
-                        <PerfectScrollbar className="relative h-[290px] pr-3 -mr-3 mb-4">
-                            <div className="text-sm cursor-pointer">
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-primary w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Updated Server Logs</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">Just Now</div>
-
-                                    <span className="badge badge-outline-primary absolute ltr:right-0 rtl:left-0 text-xs bg-primary-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        Pending
-                                    </span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-success w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Send Mail to HR and Admin</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">2 min ago</div>
-
-                                    <span className="badge badge-outline-success absolute ltr:right-0 rtl:left-0 text-xs bg-success-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        Completed
-                                    </span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-danger w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Backup Files EOD</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">14:00</div>
-
-                                    <span className="badge badge-outline-danger absolute ltr:right-0 rtl:left-0 text-xs bg-danger-light dark:bg-black opacity-0 group-hover:opacity-100">Pending</span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-black w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Collect documents from Sara</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">16:00</div>
-
-                                    <span className="badge badge-outline-dark absolute ltr:right-0 rtl:left-0 text-xs bg-dark-light dark:bg-black opacity-0 group-hover:opacity-100">Completed</span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-warning w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Conference call with Marketing Manager.</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">17:00</div>
-
-                                    <span className="badge badge-outline-warning absolute ltr:right-0 rtl:left-0 text-xs bg-warning-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        In progress
-                                    </span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-info w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Rebooted Server</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">17:00</div>
-
-                                    <span className="badge badge-outline-info absolute ltr:right-0 rtl:left-0 text-xs bg-info-light dark:bg-black opacity-0 group-hover:opacity-100">Completed</span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-secondary w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Send contract details to Freelancer</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">18:00</div>
-
-                                    <span className="badge badge-outline-secondary absolute ltr:right-0 rtl:left-0 text-xs bg-secondary-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        Pending
-                                    </span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-primary w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Updated Server Logs</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">Just Now</div>
-
-                                    <span className="badge badge-outline-primary absolute ltr:right-0 rtl:left-0 text-xs bg-primary-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        Pending
-                                    </span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-success w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Send Mail to HR and Admin</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">2 min ago</div>
-
-                                    <span className="badge badge-outline-success absolute ltr:right-0 rtl:left-0 text-xs bg-success-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        Completed
-                                    </span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-danger w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Backup Files EOD</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">14:00</div>
-
-                                    <span className="badge badge-outline-danger absolute ltr:right-0 rtl:left-0 text-xs bg-danger-light dark:bg-black opacity-0 group-hover:opacity-100">Pending</span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-black w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Collect documents from Sara</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">16:00</div>
-
-                                    <span className="badge badge-outline-dark absolute ltr:right-0 rtl:left-0 text-xs bg-dark-light dark:bg-black opacity-0 group-hover:opacity-100">Completed</span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-warning w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Conference call with Marketing Manager.</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">17:00</div>
-
-                                    <span className="badge badge-outline-warning absolute ltr:right-0 rtl:left-0 text-xs bg-warning-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        In progress
-                                    </span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-info w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Rebooted Server</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">17:00</div>
-
-                                    <span className="badge badge-outline-info absolute ltr:right-0 rtl:left-0 text-xs bg-info-light dark:bg-black opacity-0 group-hover:opacity-100">Completed</span>
-                                </div>
-                                <div className="flex items-center py-1.5 relative group">
-                                    <div className="bg-secondary w-1.5 h-1.5 rounded-full ltr:mr-1 rtl:ml-1.5"></div>
-                                    <div className="flex-1">Send contract details to Freelancer</div>
-                                    <div className="ltr:ml-auto rtl:mr-auto text-xs text-white-dark dark:text-gray-500">18:00</div>
-
-                                    <span className="badge badge-outline-secondary absolute ltr:right-0 rtl:left-0 text-xs bg-secondary-light dark:bg-black opacity-0 group-hover:opacity-100">
-                                        Pending
-                                    </span>
-                                </div>
-                            </div>
-                        </PerfectScrollbar>
-                        <div className="border-t border-white-light dark:border-white/10">
-                            <Link to="/" className=" font-semibold group hover:text-primary p-4 flex items-center justify-center group">
-                                View All
-                                <svg
-                                    className="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition duration-300 ltr:ml-1 rtl:mr-1"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                            </Link>
-                        </div>
-                    </div>
-
-                    // Transactions
-                    <div className="panel h-full">
-                        <div className="flex items-center justify-between dark:text-white-light mb-5">
-                            <h5 className="font-semibold text-lg">Transactions</h5>
-                            <div className="dropdown">
-                                <Dropdown
-                                    placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                    button={
-                                        <svg className="w-5 h-5 text-black/70 dark:text-white/70 hover:!text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="5" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                            <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                            <circle cx="19" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
-                                        </svg>
-                                    }
-                                >
-                                    <ul>
-                                        <li>
-                                            <button type="button">View Report</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Edit Report</button>
-                                        </li>
-                                        <li>
-                                            <button type="button">Mark as Done</button>
-                                        </li>
+                                        <span className="whitespace-nowrap text-primary font-bold" dir="ltr">
+                                            +91 98562 52145
+                                        </span>
+                                    </li>
                                     </ul>
-                                </Dropdown>
+
+                                    <div>
+                                        <ReactApexChart options={options} series={options.series} type="radialBar" height={200} /> 
+                                    </div>
+                                </div>                               
                             </div>
                         </div>
-                        <div>
-                            <div className="space-y-6">
-                                <div className="flex">
-                                    <span className="grid place-content-center text-base w-9 h-9 rounded-md bg-success-light dark:bg-success text-success dark:text-success-light">SP</span>
-                                    <div className="px-3 flex-1">
-                                        <div>Shaun Park</div>
-                                        <div className="text-xs text-white-dark dark:text-gray-500">10 Jan 1:00PM</div>
-                                    </div>
-                                    <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">+$36.11</span>
+                    </div>
+
+                    <div className="w-full sm:w-1/3">         
+                        <div className="grid h-full col-span-1 row-start-2 gap-6">
+                            <div className="panel h-full grid col-span-1 shadow-md">
+                                <div className="flex">                                
+                                    <svg className="svg-main-icon" id="Capa_1" enable-background="new 0 0 512 512" viewBox="0 0 512 512" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="m482 245.242v-60.363c0-29.656-23.597-53.891-53-54.949v-37.051c0-19.299-15.701-35-35-35h-96.358l-12.443-34.587c-3.173-8.82-9.595-15.868-18.083-19.845-8.488-3.978-18.014-4.402-26.821-1.196l-174.855 63.641c-8.798 3.202-15.817 9.641-19.765 18.131s-4.349 18.007-1.128 26.799l7.025 19.175c-28.735 1.777-51.572 25.707-51.572 54.882v272c0 30.327 24.673 55 55 55h372c30.327 0 55-24.673 55-55v-62.363c16.938-2.434 30-17.036 30-34.637v-80c0-17.601-13.062-32.203-30-34.637zm0 114.637c0 2.757-2.243 5-5 5h-80c-24.813 0-45-20.187-45-45s20.187-45 45-45h80c2.757 0 5 2.243 5 5zm-409.284-259.377c-.621-1.695-.166-3.126.161-3.829.327-.702 1.128-1.973 2.824-2.59l174.854-63.641c1.698-.617 3.129-.158 3.832.171s1.972 1.135 2.583 2.835l8.79 24.432h-6.76c-19.299 0-35 15.701-35 35v37h-140.521zm326.284-7.623v37h-145v-37c0-2.757 2.243-5 5-5h135c2.757 0 5 2.243 5 5zm28 389h-372c-13.785 0-25-11.215-25-25v-272c0-13.785 11.215-25 25-25h372c13.785 0 25 11.215 25 25v60h-55c-41.355 0-75 33.645-75 75s33.645 75 75 75h55v62c0 13.785-11.215 25-25 25z" fill="#000"></path>
+                                        <circle cx="397" cy="319.879" r="15" fill="#fff"></circle>
+                                    </svg>
+                                    <div className="font-bold text-xl ps-3 pt-1">Wallet Balance</div>      
                                 </div>
-                                <div className="flex">
-                                    <span className="grid place-content-center w-9 h-9 rounded-md bg-warning-light dark:bg-warning text-warning dark:text-warning-light">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M2 10C2 7.17157 2 5.75736 2.87868 4.87868C3.75736 4 5.17157 4 8 4H13C15.8284 4 17.2426 4 18.1213 4.87868C19 5.75736 19 7.17157 19 10C19 12.8284 19 14.2426 18.1213 15.1213C17.2426 16 15.8284 16 13 16H8C5.17157 16 3.75736 16 2.87868 15.1213C2 14.2426 2 12.8284 2 10Z"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                            <path
-                                                opacity="0.5"
-                                                d="M19.0003 7.07617C19.9754 7.17208 20.6317 7.38885 21.1216 7.87873C22.0003 8.75741 22.0003 10.1716 22.0003 13.0001C22.0003 15.8285 22.0003 17.2427 21.1216 18.1214C20.2429 19.0001 18.8287 19.0001 16.0003 19.0001H11.0003C8.17187 19.0001 6.75766 19.0001 5.87898 18.1214C5.38909 17.6315 5.17233 16.9751 5.07642 16"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                            <path
-                                                d="M13 10C13 11.3807 11.8807 12.5 10.5 12.5C9.11929 12.5 8 11.3807 8 10C8 8.61929 9.11929 7.5 10.5 7.5C11.8807 7.5 13 8.61929 13 10Z"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                            <path opacity="0.5" d="M16 12L16 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                            <path opacity="0.5" d="M5 12L5 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                
+                                <div className="flex justify-center align-center whitespace-nowrap">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="#000" className="mt-1"><path d="M15.571 3h3.866l1.563-3h-16.438l-1.562 3h4.963c2.257 0 3.759.839 4.589 2h-7.99l-1.562 3h10.279c-.266 2.071-1.975 4-4.942 4h-4.337v3c2.321 0 1.584-.553 7.324 9h4.676l-5.963-9c2.505-.396 6.496-2.415 6.92-7h2.48l1.563-3h-4.345c-.238-.707-.602-1.383-1.084-2z"/></svg>
+                                    <span className="text-xl ps-2 font-bold"> 41,741.42 </span>                                
+                                </div>                            
+                                
+                                <div className="flex items-end justify-evenly">
+                                    <div className="">
+                                        <button type="button" className="flex shadow-[0_0_2px_0_#bfc9d4] bg-[#EBF1F6] rounded-full px-6 py-1 text-white-light place-content-center ltr:mr-2 rtl:ml-2">
+                                            <span className='font-semibold text-lg text-gray-900'>Purchase Plan</span>
+                                        </button>
+                                    </div>
+                                    <div className="">
+                                        <button type="button" className="btn btn-primary rounded shadow-[0_0_1px_0_#bfc9d4] rounded-full  py-1 ps-6 text-white text-base hover:bg-[#4361ee]">
+                                            Recharge Wallet
+                                            <span className='bg-[#EBF1F6] rounded-xl ms-3'>
+                                                <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid">
+                                <div className="panel h-full grid col-span-1 shadow-md">
+                                    <div className="flex">                                
+                                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M16.3939 2.02121L16.4604 2.03904C17.5598 2.33361 18.431 2.56704 19.1162 2.81458C19.8172 3.06779 20.3888 3.35744 20.8597 3.79847C21.5453 4.44068 22.0252 5.27179 22.2385 6.18671C22.385 6.81503 22.3501 7.45486 22.2189 8.18849C22.0906 8.90573 21.8572 9.77697 21.5626 10.8764L21.0271 12.8747C20.7326 13.974 20.4991 14.8452 20.2516 15.5305C19.9984 16.2314 19.7087 16.803 19.2677 17.2739C18.6459 17.9377 17.8471 18.4087 16.9665 18.6316C16.7093 19.2213 16.3336 19.7554 15.8597 20.1993C15.3888 20.6403 14.8172 20.9299 14.1162 21.1832C13.431 21.4307 12.5598 21.6641 11.4605 21.9587L11.394 21.9765C10.2946 22.2711 9.42337 22.5045 8.70613 22.6328C7.9725 22.764 7.33266 22.7989 6.70435 22.6524C5.78943 22.4391 4.95832 21.9592 4.31611 21.2736C3.87508 20.8027 3.58542 20.2311 3.33222 19.5302C3.08468 18.8449 2.85124 17.9737 2.55667 16.8743L2.02122 14.876C1.72664 13.7766 1.4932 12.9054 1.36495 12.1882C1.23376 11.4546 1.19881 10.8147 1.34531 10.1864C1.55864 9.27149 2.03849 8.44038 2.72417 7.79817C3.19505 7.35714 3.76664 7.06749 4.46758 6.81428C5.15283 6.56674 6.02404 6.3333 7.12341 6.03873L7.15665 6.02983C7.42112 5.95896 7.67134 5.89203 7.90825 5.82944C8.29986 4.43031 8.64448 3.44126 9.31611 2.72417C9.95831 2.03849 10.7894 1.55864 11.7043 1.34531C12.3327 1.19881 12.9725 1.23376 13.7061 1.36495C14.4233 1.49319 15.2945 1.72664 16.3939 2.02121ZM7.45502 7.5028C6.36214 7.79571 5.57905 8.00764 4.9772 8.22505C4.36778 8.4452 4.00995 8.64907 3.74955 8.89296C3.2804 9.33237 2.95209 9.90103 2.80613 10.527C2.72511 10.8745 2.72747 11.2863 2.84152 11.9242C2.95723 12.5712 3.17355 13.381 3.47902 14.521L3.99666 16.4529C4.30212 17.5929 4.51967 18.4023 4.74299 19.0205C4.96314 19.63 5.16701 19.9878 5.4109 20.2482C5.85031 20.7173 6.41897 21.0456 7.04496 21.1916C7.39242 21.2726 7.80425 21.2703 8.4421 21.1562C9.08915 21.0405 9.89893 20.8242 11.0389 20.5187C12.1789 20.2132 12.9884 19.9957 13.6066 19.7724C14.216 19.5522 14.5739 19.3484 14.8343 19.1045C14.9719 18.9756 15.0973 18.8357 15.2096 18.6865C15.0306 18.6612 14.8463 18.629 14.6557 18.5911C13.9839 18.4575 13.1769 18.2413 12.1808 17.9744L12.1234 17.959C11.024 17.6644 10.1528 17.431 9.46758 17.1835C8.76664 16.9302 8.19505 16.6406 7.72416 16.1996C7.03849 15.5574 6.55864 14.7262 6.34531 13.8113C6.19881 13.183 6.23376 12.5432 6.36494 11.8095C6.4932 11.0923 6.72664 10.2211 7.02122 9.12174L7.45502 7.5028ZM13.4421 2.84152C12.8042 2.72747 12.3924 2.72511 12.045 2.80613C11.419 2.95209 10.8503 3.2804 10.4109 3.74955C9.97479 4.21518 9.70642 4.93452 9.2397 6.64323C9.16384 6.92093 9.08365 7.22023 8.99665 7.54488L8.47902 9.47673C8.17355 10.6167 7.95723 11.4265 7.84152 12.0736C7.72747 12.7114 7.72511 13.1232 7.80613 13.4707C7.95209 14.0967 8.2804 14.6654 8.74955 15.1048C9.00995 15.3487 9.36778 15.5525 9.9772 15.7727C10.5954 15.996 11.4049 16.2136 12.5449 16.519C13.5703 16.7938 14.3303 16.997 14.9482 17.1199C15.5635 17.2422 15.981 17.2723 16.3232 17.23C16.3976 17.2209 16.4691 17.2082 16.5389 17.1919C17.1649 17.0459 17.7335 16.7176 18.1729 16.2485C18.4168 15.9881 18.6207 15.6303 18.8408 15.0208C19.0642 14.4026 19.2817 13.5932 19.5872 12.4532L20.1048 10.5213C20.4103 9.38129 20.6266 8.57151 20.7423 7.92446C20.8564 7.28661 20.8587 6.87479 20.7777 6.52733C20.6317 5.90133 20.3034 5.33267 19.8343 4.89327C19.5739 4.64937 19.216 4.4455 18.6066 4.22535C17.9884 4.00203 17.1789 3.78448 16.0389 3.47902C14.8989 3.17355 14.0892 2.95723 13.4421 2.84152ZM11.0524 9.80588C11.1596 9.40578 11.5709 9.16834 11.971 9.27555L16.8006 10.5696C17.2007 10.6768 17.4381 11.0881 17.3309 11.4882C17.2237 11.8883 16.8125 12.1257 16.4124 12.0185L11.5827 10.7244C11.1826 10.6172 10.9452 10.206 11.0524 9.80588ZM10.2755 12.7036C10.3828 12.3035 10.794 12.066 11.1941 12.1733L14.0919 12.9497C14.492 13.0569 14.7294 13.4682 14.6222 13.8683C14.515 14.2684 14.1038 14.5058 13.7037 14.3986L10.8059 13.6221C10.4058 13.5149 10.1683 13.1037 10.2755 12.7036Z" fill="#000"/>
                                         </svg>
-                                    </span>
-                                    <div className="px-3 flex-1">
-                                        <div>Cash withdrawal</div>
-                                        <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
+                                            <div className="font-bold text-xl ps-3 pt-1">Order Details</div>      
                                     </div>
-                                    <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">-$16.44</span>
+
+                                    <div className="grid gap-8 text-sm text-[#515365] font-bold">                                    
+                                        <div className='flex items-center justify-evenly'>
+                                            <div className='text-center'>
+                                                <div>Used Calls</div>
+                                                <div className="text-[#04DC8B] text-2xl">129</div>
+                                            </div>                                       
+                                            <div className='text-center'>
+                                                <div>Decline Calls</div>
+                                                <div className="text-danger text-2xl">69</div>
+                                            </div>
+                                            <div className='text-center'>
+                                                <div>Remaining Calls</div>
+                                                <div className="text-info text-2xl">57</div>
+                                            </div>
+                                            <div className="">
+                                                <button type="button" className="btn btn-dark flex shadow-[0_0_2px_0_#bfc9d4] bg-[#EBF1F6] rounded-full px-3 py-0 text-white-light place-content-center ltr:mr-2 rtl:ml-2">
+                                                    <span className='font-semibold text-sm text-gray-900'>Order history</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6">
+                    <div className="panel h-full sm:col-span-2 lg:col-span-1 shadow-md">                       
+                        <div className="flex justify-between dark:text-white-light mb-5">
+                            <h5 className="font-semibold text-lg ">Answered Calls</h5>                            
+                        </div>
+                        
+                        <div className="grid sm:grid-cols-2 gap-8 text-sm text-[#515365] font-bold">
+                            <div className='flex justify-center'>
+                                <div className='bg-[#04DC8B] flex align-center rounded-full justify-center w-20 h-20 '>
+                                    <div className="grid place-content-center">                                
+                                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14.5 6.5C15.2372 6.64382 15.9689 6.96892 16.5 7.5C17.0311 8.03108 17.3562 8.76284 17.5 9.5M15 3C16.5315 3.17014 17.9097 3.91107 19 5C20.0903 6.08893 20.8279 7.46869 21 9M20.9995 16.4767V19.1864C21.0037 20.2223 20.0723 21.0873 19.0265 20.9929C10.0001 21 3.00006 13.935 3.00713 4.96919C2.91294 3.92895 3.77364 3.00106 4.80817 3.00009H7.52331C7.96253 2.99577 8.38835 3.151 8.72138 3.43684C9.66819 4.24949 10.2772 7.00777 10.0429 8.10428C9.85994 8.96036 8.99696 9.55929 8.41026 10.1448C9.69864 12.4062 11.5747 14.2785 13.8405 15.5644C14.4272 14.9788 15.0274 14.1176 15.8851 13.935C16.9855 13.7008 19.7615 14.3106 20.5709 15.264C20.858 15.6021 21.0105 16.0337 20.9995 16.4767Z" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    </div>
                                 </div>
-                                <div className="flex">
-                                    <span className="grid place-content-center w-9 h-9 rounded-md bg-danger-light dark:bg-danger text-danger dark:text-danger-light">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="12" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
-                                            <path
-                                                opacity="0.5"
-                                                d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                        </svg>
-                                    </span>
-                                    <div className="px-3 flex-1">
-                                        <div>Amy Diaz</div>
-                                        <div className="text-xs text-white-dark dark:text-gray-500">10 Jan 1:00PM</div>
-                                    </div>
-                                    <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">+$66.44</span>
-                                </div>
-                                <div className="flex">
-                                    <span className="grid place-content-center w-9 h-9 rounded-md bg-secondary-light dark:bg-secondary text-secondary dark:text-secondary-light">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
-                                            <path
-                                                fill="currentColor"
-                                                d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596c2.344.058 4.85.398 4.854.398c-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951c-.043-7.86-.004-15.913.002-22.95zM5.398 1.05V24c1.873-.225 2.81-.312 4.715-.398v-9.22z"
-                                            />
-                                        </svg>
-                                    </span>
-                                    <div className="px-3 flex-1">
-                                        <div>Netflix</div>
-                                        <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
-                                    </div>
-                                    <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">-$32.00</span>
-                                </div>
-                                <div className="flex">
-                                    <span className="grid place-content-center text-base w-9 h-9 rounded-md bg-info-light dark:bg-info text-info dark:text-info-light">DA</span>
-                                    <div className="px-3 flex-1">
-                                        <div>Daisy Anderson</div>
-                                        <div className="text-xs text-white-dark dark:text-gray-500">10 Jan 1:00PM</div>
-                                    </div>
-                                    <span className="text-success text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">+$10.08</span>
-                                </div>
-                                <div className="flex">
-                                    <span className="grid place-content-center w-9 h-9 rounded-md bg-primary-light dark:bg-primary text-primary dark:text-primary-light">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M13.926 9.70541C13.5474 9.33386 13.5474 8.74151 13.5474 7.55682V7.24712C13.5474 3.96249 13.5474 2.32018 12.6241 2.03721C11.7007 1.75425 10.711 3.09327 8.73167 5.77133L5.66953 9.91436C4.3848 11.6526 3.74244 12.5217 4.09639 13.205C4.10225 13.2164 4.10829 13.2276 4.1145 13.2387C4.48945 13.9117 5.59888 13.9117 7.81775 13.9117C9.05079 13.9117 9.6673 13.9117 10.054 14.2754"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                            <path
-                                                opacity="0.5"
-                                                d="M13.9259 9.70557L13.9459 9.72481C14.3326 10.0885 14.9492 10.0885 16.1822 10.0885C18.4011 10.0885 19.5105 10.0885 19.8854 10.7615C19.8917 10.7726 19.8977 10.7838 19.9036 10.7951C20.2575 11.4785 19.6151 12.3476 18.3304 14.0858L15.2682 18.2288C13.2888 20.9069 12.2991 22.2459 11.3758 21.9629C10.4524 21.68 10.4524 20.0376 10.4525 16.753L10.4525 16.4434C10.4525 15.2587 10.4525 14.6663 10.074 14.2948L10.054 14.2755"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                        </svg>
-                                    </span>
-                                    <div className="px-3 flex-1">
-                                        <div>Electricity Bill</div>
-                                        <div className="text-xs text-white-dark dark:text-gray-500">04 Jan 1:00PM</div>
-                                    </div>
-                                    <span className="text-danger text-base px-1 ltr:ml-auto rtl:mr-auto whitespace-pre">-$22.00</span>
+                            </div>
+
+                            <div className='flex items-center'>
+                                <div>
+                                    <div>Total Received</div>
+                                    <div className="text-[#04DC8B] text-3xl">7,929</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
+                    <div className="panel h-full sm:col-span-2 lg:col-span-1 shadow-md">
+                        <div className="flex justify-between dark:text-white-light mb-5">
+                            <h5 className="font-semibold text-lg ">Missed Calls</h5>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-8 text-sm text-[#515365] font-bold">
+                            <div className='flex justify-center'>
+                                <div className='bg-[#dc3545] flex align-center rounded-full justify-center w-20 h-20 '>
+                                    <div className="grid place-content-center">                                
+                                    <svg width="50" height="50" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="#ffffff" fill="none">
+                                        <path d="M11.11,8.4a2.62,2.62,0,0,0-2.53,2.78c.35,6,2,20.64,9.9,29.77,9.46,11,21.78,14.79,34.42,14.23a2.68,2.68,0,0,0,2.52-2.65V42.92a4,4,0,0,0-3.09-3.86L46,37.66a4,4,0,0,0-4.16,1.69l-1.4,2.12a1,1,0,0,1-1.22.37C36,40.45,23.17,34.45,21.76,24.33a1,1,0,0,1,.48-1l2.54-1.55a4,4,0,0,0,1.81-4.21L25.2,11.13a4,4,0,0,0-4-3.12Z"/><line x1="39.32" y1="10.89" x2="53.65" y2="25.22"/><line x1="39.32" y1="25.22" x2="53.65" y2="10.89"/>
+                                    </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='flex items-center'>
+                                <div>
+                                    <div>Total Missed</div>
+                                    <div className="text-[#dc3545] text-3xl">1,419</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="panel h-full sm:col-span-2 lg:col-span-1 shadow-md">
+                        <div className="flex justify-between dark:text-white-light mb-5">
+                            <h5 className="font-semibold text-lg ">Total Calls</h5>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-8 text-sm text-[#515365] font-bold">
+                            <div className='flex justify-center'>
+                                <div className='bg-[#0dcaf0] flex align-center rounded-full justify-center w-20 h-20 '>
+                                    <div className="grid place-content-center">                                
+                                    <svg height="50" width="50" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                                        viewBox="0 0 295.239 295.239" xml:space="preserve">
+                                    <g>
+                                        <g>
+                                            <path fill="#ffffff" d="M147.62,166.667c-57.767,0-104.762,46.995-104.762,104.762v23.81h209.524v-23.81
+                                                C252.382,213.662,205.387,166.667,147.62,166.667z M189.782,186.162c-13.552,29.305-33.367,71.714-41.9,89.029l-42.4-89.043
+                                                c12.724-6.314,26.995-9.957,42.138-9.957C162.772,176.19,177.053,179.838,189.782,186.162z M196.901,193.467l11.948,51.771
+                                                l-49.533,28.305C165.796,260.395,176.958,236.6,196.901,193.467z M136.786,274.038l-50.396-28.795l11.976-51.886L136.786,274.038z
+                                                M52.382,271.429c0-29.786,13.762-56.395,35.238-73.871l-12.1,52.438l62.505,35.719H52.382V271.429z M242.858,285.714h-85.643
+                                                l62.509-35.719l-12.105-52.438c21.476,17.476,35.238,44.086,35.238,73.871v14.286H242.858z"/>
+                                            <path fill="#ffffff" d="M207.001,138.095h12.048c7.876,0,14.286-6.41,14.286-14.286v-14.286h-9.524v14.286
+                                                c0,2.624-2.133,4.762-4.762,4.762h-5.548c6.514-11.224,10.31-24.21,10.31-38.095c0-42.01-34.181-76.19-76.19-76.19
+                                                s-76.19,34.181-76.19,76.19s34.181,76.19,76.19,76.19C171.615,166.667,193.025,155.49,207.001,138.095z M80.953,90.476
+                                                c0-36.762,29.905-66.667,66.667-66.667s66.667,29.905,66.667,66.667c0,14.162-4.471,27.286-12.033,38.095h-31.7
+                                                c-1.971-5.529-7.21-9.524-13.41-9.524h-19.048c-7.876,0-14.286,6.41-14.286,14.286s6.41,14.286,14.286,14.286h19.048
+                                                c6.2,0,11.438-3.995,13.41-9.524h23.638c-12.029,11.762-28.457,19.048-46.567,19.048
+                                                C110.858,157.143,80.953,127.238,80.953,90.476z M161.906,133.333c0,2.624-2.133,4.762-4.762,4.762h-19.048
+                                                c-2.629,0-4.762-2.138-4.762-4.762s2.133-4.762,4.762-4.762h19.048C159.772,128.571,161.906,130.71,161.906,133.333z"/>
+                                            <path fill="#ffffff" d="M147.62,9.524c34.414,0,65.138,21.814,76.457,54.281l8.995-3.133
+                                                C220.415,24.381,186.077,0,147.62,0c-38.452,0-72.79,24.381-85.448,60.667l8.995,3.138C82.487,31.338,113.211,9.524,147.62,9.524z
+                                                "/>
+                                            <path fill="#333333" d="M71.43,123.81h-4.762c-18.376,0-33.333-14.957-33.333-33.333s14.957-33.333,33.333-33.333h4.762
+                                                V123.81z"/>
+                                            <path fill="#333333" d="M228.572,123.81h-4.762V57.143h4.762c18.376,0,33.333,14.957,33.333,33.333
+                                                S246.949,123.81,228.572,123.81z"/>
+                                        </g>
+                                    </g>
+                                    </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='flex items-center'>
+                                <div>
+                                    <div>Total IVR</div>
+                                    <div className="text-[#0dcaf0] text-3xl">5,233</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="panel h-full sm:col-span-2 lg:col-span-1 shadow-md">
+                        <div className="flex justify-between dark:text-white-light mb-5">
+                            <h5 className="font-semibold text-lg ">Extensions</h5>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-8 text-sm text-[#515365] font-bold">
+                            <div className='flex justify-center'>
+                                <div className='bg-[#FD8F01] flex align-center rounded-full justify-center w-20 h-20 '>
+                                    <div className="grid place-content-center">  
+                                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g opacity="0.5">
+                                            <path d="M7.20468 7.56232C7.51523 7.28822 7.54478 6.81427 7.27069 6.50371C6.99659 6.19316 6.52264 6.1636 6.21208 6.4377C4.39676 8.03992 3.25 10.3865 3.25 13C3.25 13.4142 3.58579 13.75 4 13.75C4.41421 13.75 4.75 13.4142 4.75 13C4.75 10.8347 5.69828 8.89188 7.20468 7.56232Z" fill="#1C274C"/>
+                                            <path d="M17.7879 6.4377C17.4774 6.1636 17.0034 6.19316 16.7293 6.50371C16.4552 6.81427 16.4848 7.28822 16.7953 7.56232C18.3017 8.89188 19.25 10.8347 19.25 13C19.25 13.4142 19.5858 13.75 20 13.75C20.4142 13.75 20.75 13.4142 20.75 13C20.75 10.3865 19.6032 8.03992 17.7879 6.4377Z" fill="#1C274C"/>
+                                            <path d="M10.1869 20.0217C9.7858 19.9184 9.37692 20.1599 9.27367 20.5611C9.17043 20.9622 9.41192 21.3711 9.81306 21.4743C10.5129 21.6544 11.2458 21.75 12 21.75C12.7542 21.75 13.4871 21.6544 14.1869 21.4743C14.5881 21.3711 14.8296 20.9622 14.7263 20.5611C14.6231 20.1599 14.2142 19.9184 13.8131 20.0217C13.2344 20.1706 12.627 20.25 12 20.25C11.373 20.25 10.7656 20.1706 10.1869 20.0217Z" fill="#1C274C"/>
+                                            </g>
+                                            <path d="M9 6C9 7.65685 10.3431 9 12 9C13.6569 9 15 7.65685 15 6C15 4.34315 13.6569 3 12 3C10.3431 3 9 4.34315 9 6Z" fill="#1C274C"/>
+                                            <path d="M2.5 18C2.5 19.6569 3.84315 21 5.5 21C7.15685 21 8.5 19.6569 8.5 18C8.5 16.3431 7.15685 15 5.5 15C3.84315 15 2.5 16.3431 2.5 18Z" fill="#1C274C"/>
+                                            <path d="M18.5 21C16.8431 21 15.5 19.6569 15.5 18C15.5 16.3431 16.8431 15 18.5 15C20.1569 15 21.5 16.3431 21.5 18C21.5 19.6569 20.1569 21 18.5 21Z" fill="#1C274C"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='flex items-center'>
+                                <div>
+                                    <div>Total Members</div>
+                                    <div className="text-[#FD8F01] text-3xl">10,419</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                */}
+
+                <div className="grid col-span-12 pb-6">
+                    <div className="panel h-full bg-secondary-light">
+                        <div className="grid grid-cols-12">
+                            <div className="grid col-span-9">                            
+                                <div className="p-2">
+                                    <ReactApexChart options={uniqueVisitorSeries.options} series={uniqueVisitorSeries.series} type="bar" height={360} />
+                                </div>
+                            </div>
+
+                            <div className="grid col-span-3 shadow-md">
+                                <div className="panel">
+                                    <div className="mb-5">
+                                        <h5 className="font-semibold text-lg dark:text-white-light">Graph  Statistics</h5>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="flex justify-evenly">
+                                            <div>
+                                                <label className="flex items-center cursor-pointer">
+                                                    <input type="radio" name="custom_radio2" className="form-radio" defaultChecked />
+                                                    <span className="text-white-dark">Answered</span>
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label className="flex items-center cursor-pointer">
+                                                    <input type="radio" name="custom_radio2" className="form-radio" />
+                                                    <span className="text-white-dark">Missed</span>
+                                                </label>
+                                            </div>
+                                        </div>                                    
+
+                                        <div className="border border-[#ebedf2] rounded dark:bg-[#1b2e4b] dark:border-0">
+                                            <div className="flex items-center justify-between p-4 py-2">
+                                                <div className="grid place-content-center w-6 h-6 rounded-md bg-info dark:bg-info text-info dark:text-info-light">
+                                                
+                                                </div>
+                                                <div className="ltr:ml-4 rtl:mr-4 flex items-start justify-between flex-auto font-semibold">
+                                                    <h6 className="text-white-dark text-[13px] dark:text-white-dark">
+                                                        Total Calls
+                                                        <span className="block text-base text-info dark:text-white-light">9,348</span>
+                                                    </h6>
+                                                    <p className="ltr:ml-auto rtl:mr-auto text-info">100%</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="border border-[#ebedf2] rounded dark:bg-[#1b2e4b] dark:border-0">
+                                            <div className="flex items-center justify-between p-4 py-2">
+                                                <div className="grid place-content-center w-6 h-6 rounded-md bg-secondary dark:bg-secondary text-secondary dark:text-secondary-light">
+                                                    
+                                                </div>
+                                                <div className="ltr:ml-4 rtl:mr-4 flex items-start justify-between flex-auto font-semibold">
+                                                    <h6 className="text-white-dark text-[13px] dark:text-white-dark">
+                                                        Answered
+                                                        <span className="block text-base text-secondary dark:text-white-light">7,929</span>
+                                                    </h6>
+                                                    <p className="ltr:ml-auto rtl:mr-auto text-secondary">90%</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="border border-[#ebedf2] rounded dark:bg-[#1b2e4b] dark:border-0">
+                                            <div className="flex items-center justify-between p-4 py-2">
+                                                <div className="grid place-content-center w-6 h-6 rounded-md bg-warning dark:bg-warning text-warning dark:text-warning-light">
+                                                    
+                                                </div>
+                                                <div className="ltr:ml-4 rtl:mr-4 flex items-start justify-between flex-auto font-semibold">
+                                                    <h6 className="text-white-dark text-[13px] dark:text-white-dark">
+                                                        Missed 
+                                                        <span className="block text-base text-warning dark:text-white-light">1,419</span>
+                                                    </h6>
+                                                    <p className="ltr:ml-auto rtl:mr-auto text-warning">40%</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
 
                     {/* Employee Management */}
-                    <div className="panel h-full w-full">
+                    <div className="panel h-full w-full shadow-lg">
                         <div className="flex items-center justify-between mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">Employee Management</h5>
                         </div>
@@ -1339,7 +745,7 @@ const Index = () => {
                     </div>
 
                     {/* Call History */}
-                    <div className="panel h-full w-full">
+                    <div className="panel h-full w-full shadow-lg">
                         <div className="flex items-center justify-between mb-5">
                             <h5 className="font-semibold text-lg dark:text-white-light">Call History</h5>
                         </div>
@@ -1509,7 +915,7 @@ const Index = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
     );
 };
