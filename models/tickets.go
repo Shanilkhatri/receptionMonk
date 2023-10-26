@@ -33,6 +33,11 @@ type Tickets struct {
 	CompanyId     int64  `db:"companyId" json:"companyId"`
 }
 
+type TicketsCondition struct {
+	WhereCondition string
+	Tickets
+}
+
 func (Tickets) PutTicket(ticketStruct Tickets, tx *sqlx.Tx) bool {
 
 	// executing query
@@ -60,12 +65,12 @@ func (Tickets) GetTicketById(ticketId int64) (Tickets, error) {
 }
 
 // update user records by id
-func (Tickets) PostTicket(ticketStruct Tickets) (bool, error) {
-	userData, err := utility.Db.NamedExec("UPDATE tickets SET userId=:UserId,email=:Email,customerName=:CustomerName,createdTime =:CreatedTime,lastUpdatedOn=:LastUpdatedOn,status=:Status,query=:Query,feedback=:FeedBack, lastResponse=:LastResponse,companyId=:CompanyId WHERE id=:Id ", map[string]interface{}{"UserId": ticketStruct.UserId, "Email": ticketStruct.Email, "CustomerName": ticketStruct.CustomerName, "CreatedTime": ticketStruct.CreatedTime, "LastUpdatedOn": ticketStruct.LastUpdatedOn, "Status": ticketStruct.Status, "Query": ticketStruct.Query, "FeedBack": ticketStruct.FeedBack, "LastResponse": ticketStruct.LastResponse, "CompanyId": ticketStruct.CompanyId, "Id": ticketStruct.Id})
+func (Tickets) PostTicket(ticketStruct Tickets, tx *sqlx.Tx) (bool, error) {
+	userData, err := tx.NamedExec("UPDATE tickets SET userId=:UserId,email=:Email,customerName=:CustomerName,createdTime =:CreatedTime,lastUpdatedOn=:LastUpdatedOn,status=:Status,query=:Query,feedback=:FeedBack, lastResponse=:LastResponse,companyId=:CompanyId WHERE id=:Id ", map[string]interface{}{"UserId": ticketStruct.UserId, "Email": ticketStruct.Email, "CustomerName": ticketStruct.CustomerName, "CreatedTime": ticketStruct.CreatedTime, "LastUpdatedOn": ticketStruct.LastUpdatedOn, "Status": ticketStruct.Status, "Query": ticketStruct.Query, "FeedBack": ticketStruct.FeedBack, "LastResponse": ticketStruct.LastResponse, "CompanyId": ticketStruct.CompanyId, "Id": ticketStruct.Id})
 	// Check error
 	if err != nil {
-		utility.Logger(err)
-
+		log.Println("error: ", err)
+		// utility.Logger(err)
 	} else {
 		Rowefffect, _ := userData.RowsAffected()
 		if Rowefffect == 0 {
@@ -74,4 +79,50 @@ func (Tickets) PostTicket(ticketStruct Tickets) (bool, error) {
 		return Rowefffect > 0, err
 	}
 	return false, err
+}
+
+func (ord Orders) GetTickets(filter TicketsCondition, tx *sqlx.Tx) ([]Tickets, error) {
+	var ticketsArr []Tickets
+	query := "SELECT * FROM `tickets` WHERE 1=1 " + filter.WhereCondition + " ORDER BY tickets.id DESC;"
+	condtion := map[string]interface{}{
+		"id":            filter.Id,
+		"createdTime":   filter.CreatedTime,
+		"lastUpdatedOn": filter.LastUpdatedOn,
+		"companyId":     filter.CompanyId,
+		"userId":        filter.UserId,
+	}
+	rows, err := tx.NamedQuery(query, condtion)
+	if err != nil {
+		return ticketsArr, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var singleRow Tickets
+		err := rows.Scan(&singleRow.Id, &singleRow.UserId, &singleRow.Email, &singleRow.CustomerName, &singleRow.CreatedTime, &singleRow.LastUpdatedOn, &singleRow.Status, &singleRow.Query, &singleRow.FeedBack, &singleRow.LastResponse, &singleRow.CompanyId)
+		if err != nil {
+			return ticketsArr, err
+		}
+
+		ticketsArr = append(ticketsArr, singleRow)
+	}
+	return ticketsArr, nil
+}
+
+// Building conditions for getting Tickets Data
+func (Tickets) GetParamsForFilterTicketsData(params TicketsCondition) TicketsCondition {
+
+	if params.Id != 0 {
+		params.WhereCondition += " AND tickets.id = :id"
+	}
+	if params.UserId != 0 {
+		params.WhereCondition += " AND tickets.userId = :userId"
+	}
+	if params.LastUpdatedOn != 0 {
+		params.WhereCondition += " AND orders.lastUpdatedOn = :lastUpdatedOn"
+	} else if params.CreatedTime != 0 {
+		params.WhereCondition += " AND orders.createdTime = :createdTime"
+	} else if params.CompanyId != 0 {
+		params.WhereCondition += " AND tickets.companyId= :companyId"
+	}
+	return params
 }

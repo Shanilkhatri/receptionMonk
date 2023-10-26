@@ -90,27 +90,62 @@ func PostTicket(w http.ResponseWriter, r *http.Request) {
 	}
 	// validation only employee & super-admin can update ticket
 	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
-	if !isok || userDetails.ID != ticketStruct.Id {
+	if !isok || userDetails.AccountType != "employee" && userDetails.AccountType != "super-admin" {
 		response.Status = "403"
-		response.Message = "Unauthorized access! You are not allowed to make this request"
+		response.Message = "Unauthorized access! You are not allowed to make this request."
 		utility.RenderJsonResponse(w, r, response, 403)
 		return
 	}
-	if userDetails.AccountType != "super-admin" && userDetails.CompanyID != ticketStruct.CompanyId {
-		response.Status = "403"
-		response.Message = "Unauthorized access! You are not allowed to make this request"
-		utility.RenderJsonResponse(w, r, response, 403)
-		return
-	}
+	//  will only open this condition when :
+	// -> only super-admin can edit/update any ticket and,
+	// -> employee can only update tickets to the company he belongs
+	// -> for now both can update any ticket
+	// if userDetails.AccountType != "super-admin" && userDetails.CompanyID != ticketStruct.CompanyId {
+	// 	response.Status = "403"
+	// 	response.Message = "Unauthorized access! You are not allowed to make this request"
+	// 	utility.RenderJsonResponse(w, r, response, 403)
+	// 	return
+	// }
+
+	// setting lastUpdated on to current timestamp
+	ticketStruct.LastUpdatedOn = time.Now().Unix()
+
 	// get the existing ticket
 	ticketData, err := models.Tickets{}.GetTicketById(ticketStruct.Id)
+	if err != nil {
+		errStr := utility.GetSqlErrorString(err)
+		log.Println("sqlError: ", errStr)
+		response.Status = "400"
+		response.Message = errStr
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
 	log.Println("ticketData: ", ticketData)
 	// copying all the unchanged fields to ticketStruct
 	if utility.FillEmptyFieldsForPostUpdate(ticketData, &ticketStruct) {
+		tx := utility.Db.MustBegin()
+		log.Println("ticketStruct after flip: ", ticketStruct)
+		// to handle any panic
+		defer func() {
+			if recover := recover(); recover != nil {
+				log.Println("panic occured: ", recover)
+				tx.Rollback()
+				response.Message = "An internal error occurred, please try again"
+				utility.RenderJsonResponse(w, r, response, 500)
+			}
+		}()
 		// now begin update by id next
-		_, err := models.Tickets{}.PostTicket(ticketStruct)
+		_, err := models.Tickets{}.PostTicket(ticketStruct, tx)
 		if err != nil {
 			log.Println("err when updating ticket: ", err)
+			response.Status = "400"
+			response.Message = "Unable to update records at the moment! Please try again."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		err = tx.Commit()
+		if err != nil {
+			tx.Rollback()
 			response.Status = "400"
 			response.Message = "Unable to update records at the moment! Please try again."
 			utility.RenderJsonResponse(w, r, response, 400)
@@ -121,5 +156,103 @@ func PostTicket(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 200)
 		return
 	}
+}
 
+func GetTicket(w http.ResponseWriter, r *http.Request) {
+	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
+	tx := utility.Db.MustBegin()
+	// for handling any panic
+	defer func() {
+		if recover := recover(); recover != nil {
+			log.Println("panic occured: ", recover)
+			tx.Rollback()
+			response.Message = "An internal error occurred, please try again"
+			utility.RenderJsonResponse(w, r, response, 500)
+		}
+	}()
+
+	//  get params from query
+	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	log.Println("userDetails: ", userDetails)
+	if isOk {
+		queryParams := r.URL.Query()
+
+		paramMap := map[string]int64{
+			"id":            0,
+			"userId":        0,
+			"companyId":     0,
+			"createdTime":   0,
+			"lastUpdatedOn": 0,
+		}
+		for paramName := range paramMap {
+			paramValue := queryParams.Get(paramName)
+			if paramValue != "" {
+				paramParsed, err := utility.StrToInt64(paramValue)
+				if err != nil {
+					log.Println(err)
+				} else {
+					paramMap[paramName] = paramParsed
+				}
+			}
+		}
+
+		// validation (anyone other than employee, user, owner & super-admin will not be allowed)
+		if userDetails.AccountType != "employee" && userDetails.AccountType != "user" && userDetails.AccountType != "owner" && userDetails.AccountType != "super-admin" {
+			response.Status = "403"
+			response.Message = "You are not authorized for this request"
+			utility.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+		// when user tries to access some other account
+		if userDetails.AccountType == "user" {
+			if paramMap["userId"] != 0 && userDetails.ID != int64(paramMap["userId"]) {
+				log.Println("under user not authed")
+				response.Status = "403"
+				response.Message = "You are not authorized for this request"
+				utility.RenderJsonResponse(w, r, response, 403)
+				return
+			} else {
+				// id given from token data
+				paramMap["userId"] = int64(userDetails.ID)
+			}
+		}
+		if userDetails.AccountType == "owner" {
+			if paramMap["userId"] != 0 || paramMap["id"] != 0 {
+				paramMap["companyId"] = int64(userDetails.CompanyID)
+			} else {
+				// id given from token data
+				paramMap["userId"] = int64(userDetails.ID)
+			}
+		}
+
+		param := models.TicketsCondition{
+			Tickets: models.Tickets{
+				Id:            paramMap["id"],
+				UserId:        paramMap["userId"],
+				CompanyId:     paramMap["companyId"],
+				CreatedTime:   paramMap["createdTime"],
+				LastUpdatedOn: paramMap["lastUpdatedOn"],
+			},
+		}
+
+		params := models.Tickets{}.GetParamsForFilterTicketsData(param)
+		result, err := models.Orders{}.GetTickets(params, tx)
+		if err != nil {
+			log.Println(err)
+		} else if len(result) == 0 {
+			response.Status = "400"
+			response.Message = "Either You don't have access or there isn't any record present! Please try again with valid parameters."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		} else {
+			response.Status = "200"
+			response.Message = "Results found successfully"
+			response.Payload = result
+			utility.RenderJsonResponse(w, r, response, 200)
+			return
+		}
+	}
+	response.Message = "Failed to authorize at the moment. Please Login again and try!"
+	utility.RenderJsonResponse(w, r, response, 500)
+	return
 }
