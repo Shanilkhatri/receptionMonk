@@ -121,6 +121,70 @@ const Sidebar = () => {
                                 </AnimateHeight>
                             </li>
 
+                            {/* User */}
+
+                            <li className="menu nav-item">
+                                <button type="button" className={`${currentMenu === 'user' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('user')}>
+                                    <div className="flex items-center">
+                                        <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle opacity="0.5" cx="15" cy="6" r="3" fill="currentColor" />
+                                            <ellipse opacity="0.5" cx="16" cy="17" rx="5" ry="3" fill="currentColor" />
+                                            <circle cx="9.00098" cy="6" r="4" fill="currentColor" />
+                                            <ellipse cx="9.00098" cy="17.001" rx="7" ry="4" fill="currentColor" />
+                                        </svg>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('user')}</span>
+                                    </div>
+
+                                    <div className={currentMenu === 'user' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <AnimateHeight duration={300} height={currentMenu === 'user' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to="/adduser">{t('adduser')}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/viewuser">{t('viewuser')}</NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
+                            </li>
+
+                            {/* Extenstions */}
+
+                            <li className="menu nav-item">
+                                <button type="button" className={`${currentMenu === 'ext' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('ext')}>
+                                    <div className="flex items-center">
+                                        <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m 6 0 c -0.554688 0 -1 0.445312 -1 1 v 3 c 0 0.554688 0.445312 1 1 1 h 1 v 2 h -7 v 2 h 2 v 2 h -1 c -0.554688 0 -1 0.445312 -1 1 v 3 c 0 0.554688 0.445312 1 1 1 h 4 c 0.554688 0 1 -0.445312 1 -1 v -3 c 0 -0.554688 -0.445312 -1 -1 -1 h -1 v -2 h 8 v 2 h -1 c -0.554688 0 -1 0.445312 -1 1 v 3 c 0 0.554688 0.445312 1 1 1 h 4 c 0.554688 0 1 -0.445312 1 -1 v -3 c 0 -0.554688 -0.445312 -1 -1 -1 h -1 v -2 h 2 v -2 h -7 v -2 h 1 c 0.554688 0 1 -0.445312 1 -1 v -3 c 0 -0.554688 -0.445312 -1 -1 -1 z m 0 0" fill="currentColor"/>
+                                        </svg>
+                                
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('ext')}</span>
+                                    </div>
+
+                                    <div className={currentMenu === 'ext' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <AnimateHeight duration={300} height={currentMenu === 'ext' ? 'auto' : 0}>
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <NavLink to="/">{t('addext')}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/">{t('viewext')}</NavLink>
+                                        </li>
+                                    </ul>
+                                </AnimateHeight>
+                            </li>
+
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <svg className="w-4 h-5 flex-none hidden" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="5" y1="12" x2="19" y2="12"></line>

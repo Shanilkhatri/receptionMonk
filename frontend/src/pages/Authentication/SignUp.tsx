@@ -48,7 +48,7 @@ const SignUp = () => {
 
                     <div>
                         <label htmlFor="changepwd">Date of Birth <span className='text-red-600'>*</span></label>
-                        <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter DOB" />
+                        <input id="phoneno" type="date" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter DOB" />
                     </div>
 
                     <div>
