@@ -105,5 +105,4 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Message = "Failed to authorize at the moment. Please Login again and try!"
 	utility.RenderJsonResponse(w, r, response, 500)
-	return
 }

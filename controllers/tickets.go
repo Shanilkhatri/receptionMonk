@@ -254,5 +254,65 @@ func GetTicket(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Message = "Failed to authorize at the moment. Please Login again and try!"
 	utility.RenderJsonResponse(w, r, response, 500)
-	return
+}
+
+func DeleteTicket(w http.ResponseWriter, r *http.Request) {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+
+	ticketId := utility.StrToInt(r.URL.Query().Get("id"))
+	if ticketId <= 0 {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	if !isok {
+		response.Status = "403"
+		response.Message = "You are not authorized to make this request."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	if userDetails.AccountType == "user" {
+		// get the ticket he wants to delete and check if the userId matches
+		ticketData, err := models.Tickets{}.GetTicketById(int64(ticketId))
+		if err != nil {
+			response.Status = "400"
+			response.Message = utility.GetSqlErrorString(err)
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		if ticketData.UserId != userDetails.ID {
+			response.Status = "403"
+			response.Message = "You are not authorized to make this request."
+			utility.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+	}
+	if userDetails.AccountType == "owner" {
+		// get the ticket he wants to delete and check if the userId matches
+		ticketData, err := models.Tickets{}.GetTicketById(int64(ticketId))
+		if err != nil {
+			response.Status = "400"
+			response.Message = utility.GetSqlErrorString(err)
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		if ticketData.CompanyId != userDetails.CompanyID {
+			response.Status = "403"
+			response.Message = "You are not authorized to make this request."
+			utility.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+	}
+	_, err := models.Tickets{}.DeleteTicket(ticketId)
+	if err != nil {
+		response.Status = "400"
+		response.Message = utility.GetSqlErrorString(err)
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	response.Status = "200"
+	response.Message = "Ticket deleted successfully."
+	utility.RenderJsonResponse(w, r, response, 200)
 }

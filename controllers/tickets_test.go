@@ -756,3 +756,239 @@ func TestGetTicketsWithTypeOwnerAccessingAnotherUserOfSameCompany(t *testing.T) 
 		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
 	}
 }
+
+// ---------------------TESTs FOR DELETE TICKET----------------------
+
+// -> TicketId should be sent in query
+// -> AccountType: user have access to this route, but he/she can only delete there tickets.
+// -> AccountType: owner can delete tickets under his organization and his own tickets.
+// -> AccountType: super-admin can delete any Ticket.
+
+// TEST #1 DeleteTicket with correct access rights.
+// AccountType: owner trying to delete a user's Ticket that belongs to his own company
+// expecting a 200
+func TestTicketDeleteWithOwnerDelUserOfSameComp(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 2         // companyId set same as user's
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// mocking the expected Ticket
+	expectedTicketRow := models.Tickets{
+		Id:            1,
+		UserId:        3,
+		Email:         "shasha@hmail.com",
+		CustomerName:  "shanu",
+		CreatedTime:   1698214419,
+		LastUpdatedOn: 1698214419,
+		Status:        "open",
+		Query:         "how to do a certain thing",
+		FeedBack:      "no_feedback",
+		LastResponse:  "",
+		CompanyId:     2, // companyId same as owners
+	}
+	// make expected Ticket a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "userId", "email", "customerName", "createdTime", "lastUpdatedOn", "status", "query", "feedback", "lastResponse", "companyId"}).AddRow(expectedTicketRow.Id, expectedTicketRow.UserId, expectedTicketRow.Email, expectedTicketRow.CustomerName, expectedTicketRow.CreatedTime, expectedTicketRow.LastUpdatedOn, expectedTicketRow.Status, expectedTicketRow.Query, expectedTicketRow.FeedBack, expectedTicketRow.LastResponse, expectedTicketRow.CompanyId)
+
+	// I also expect a GET Query execution and for that :
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE").WillReturnRows(rows)
+	// I  expect a Delete Query execution and for that :
+	dbmock.ExpectExec("DELETE FROM tickets").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set TicketId to be deleted to 1
+	ticketId := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/users?" + "id=" + ticketId
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteTicket(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "Ticket deleted successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #2 DeleteTicket with incorrect access rights.
+// AccountType: owner trying to delete a user's Ticket that belongs to other company
+// expecting a 403
+func TestTicketDeleteWithOwnerDelUserOfDiffComp(t *testing.T) {
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 2         // companyId diff from user
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// mocking the expected Ticket
+	expectedTicketRow := models.Tickets{
+		Id:            1,
+		UserId:        3,
+		Email:         "shasha@hmail.com",
+		CustomerName:  "shanu",
+		CreatedTime:   1698214419,
+		LastUpdatedOn: 1698214419,
+		Status:        "open",
+		Query:         "how to do a certain thing",
+		FeedBack:      "no_feedback",
+		LastResponse:  "",
+		CompanyId:     3, // companyId Diff from owners
+	}
+	// make expected Ticket a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "userId", "email", "customerName", "createdTime", "lastUpdatedOn", "status", "query", "feedback", "lastResponse", "companyId"}).AddRow(expectedTicketRow.Id, expectedTicketRow.UserId, expectedTicketRow.Email, expectedTicketRow.CustomerName, expectedTicketRow.CreatedTime, expectedTicketRow.LastUpdatedOn, expectedTicketRow.Status, expectedTicketRow.Query, expectedTicketRow.FeedBack, expectedTicketRow.LastResponse, expectedTicketRow.CompanyId)
+
+	// I also expect a GET Query execution and for that :
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE").WillReturnRows(rows)
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set userId to be deleted to 1
+	ticketToDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/tickets?" + "id=" + ticketToDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteTicket(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "You are not authorized to make this request." && w.Result().StatusCode != 403 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #5 DeleteTicket with correct access rights.
+// AccountType: super-admin trying to delete owners Ticket, and he will succeed, it's SUPER-ADMIN common!
+// expecting a 200
+func TestTicketDeleteWithOSuperAdmin(t *testing.T) {
+	// mocking token payload with userDetails as super-admin
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 5
+	userdetails.AccountType = "super-admin" // type set to super-admin
+	userdetails.CompanyID = 2
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// I  expect a Delete Query execution and for that :
+	dbmock.ExpectExec("DELETE FROM tickets").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set userId to be deleted to 1
+	ticketToDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/tickets?" + "id=" + ticketToDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	DeleteTicket(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.Message: ", data.Message)
+	if data.Message != "Ticket deleted successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}

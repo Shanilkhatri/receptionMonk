@@ -59,7 +59,7 @@ func (Tickets) PutTicket(ticketStruct Tickets, tx *sqlx.Tx) bool {
 func (Tickets) GetTicketById(ticketId int64) (Tickets, error) {
 	var selectedRow Tickets
 
-	err := utility.Db.Get(&selectedRow, "SELECT * FROM tickets WHERE id = ?", ticketId)
+	err := utility.Db.Get(&selectedRow, "SELECT * FROM `tickets` WHERE id = ?", ticketId)
 
 	return selectedRow, err
 }
@@ -125,4 +125,19 @@ func (Tickets) GetParamsForFilterTicketsData(params TicketsCondition) TicketsCon
 		params.WhereCondition += " AND tickets.companyId= :companyId"
 	}
 	return params
+}
+
+func (Tickets) DeleteTicket(id int) (bool, error) {
+	// row, err := utility.Db.Exec("UPDATE tickets SET status=:Status WHERE id = :Id", map[string]interface{}{"Status": "closed", "Id":id})
+	row, err := utility.Db.Exec("DELETE FROM tickets WHERE id = ?", id)
+	if err != nil {
+		log.Print(err)
+		return false, err
+	}
+	rowsDeleted, err := row.RowsAffected()
+	if err != nil {
+		log.Print(err)
+		return false, err
+	}
+	return rowsDeleted > 0, nil
 }
