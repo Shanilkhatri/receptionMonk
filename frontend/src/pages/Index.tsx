@@ -37,7 +37,7 @@ const Index = () => {
                 hollow: {
                     margin: 0,
                     size: '80%',
-                    background: '#fff',
+                    background: 'transparent',
                     image: undefined,
                     imageOffsetX: 0,
                     imageOffsetY: 0,
