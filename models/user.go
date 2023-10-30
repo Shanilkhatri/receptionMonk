@@ -82,13 +82,13 @@ func (user Users) GetUserById(userId int64) (Users, error) {
 
 func (Users) GetUser(filter UserCondition) ([]Users, error) {
 	var userData []Users
-	query := "SELECT id,name,email,dob,account_type,company_id,status form authentication Where 1=1" + filter.WhereCondition
-	condi := map[string]interface{}{
+	query := "SELECT id,name,email,dob,account_type,company_id,status from authentication Where 1=1" + filter.WhereCondition
+	condition := map[string]interface{}{
 		"Id":        filter.ID,
 		"Dob":       filter.DOB,
 		"CompanyId": filter.CompanyID,
 	}
-	rows, err := utility.Db.NamedQuery(query, condi)
+	rows, err := utility.Db.NamedQuery(query, condition)
 	if err != nil {
 		log.Println(err)
 		return userData, err

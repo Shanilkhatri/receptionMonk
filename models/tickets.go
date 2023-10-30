@@ -64,6 +64,33 @@ func (Tickets) GetTicketById(ticketId int64) (Tickets, error) {
 	return selectedRow, err
 }
 
+func (Tickets) GetTicketsByUserId(userId int64) ([]Tickets, error) {
+	var tickets []Tickets
+
+	query := "SELECT * FROM `tickets` WHERE 1=1 AND userId=:UserId AND status IN (:Status1, :Status2) "
+	condition := map[string]interface{}{
+		"UserId":  userId,
+		"Status1": "in_process", // only tickets under Process will show up here
+		"Status2": "open",       // only tickets under Process will show up here
+	}
+	rows, err := utility.Db.NamedQuery(query, condition)
+	if err != nil {
+		log.Println(err)
+		return tickets, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var singleRow Tickets
+		err := rows.Scan(&singleRow.Id, &singleRow.UserId, &singleRow.Email, &singleRow.CustomerName, &singleRow.CreatedTime, &singleRow.LastUpdatedOn, &singleRow.Status, &singleRow.Query, &singleRow.FeedBack, &singleRow.LastResponse, &singleRow.CompanyId)
+		if err != nil {
+			log.Println(err)
+			return tickets, err
+		}
+		tickets = append(tickets, singleRow)
+	}
+	return tickets, err
+}
+
 // update user records by id
 func (Tickets) PostTicket(ticketStruct Tickets, tx *sqlx.Tx) (bool, error) {
 	userData, err := tx.NamedExec("UPDATE tickets SET userId=:UserId,email=:Email,customerName=:CustomerName,createdTime =:CreatedTime,lastUpdatedOn=:LastUpdatedOn,status=:Status,query=:Query,feedback=:FeedBack, lastResponse=:LastResponse,companyId=:CompanyId WHERE id=:Id ", map[string]interface{}{"UserId": ticketStruct.UserId, "Email": ticketStruct.Email, "CustomerName": ticketStruct.CustomerName, "CreatedTime": ticketStruct.CreatedTime, "LastUpdatedOn": ticketStruct.LastUpdatedOn, "Status": ticketStruct.Status, "Query": ticketStruct.Query, "FeedBack": ticketStruct.FeedBack, "LastResponse": ticketStruct.LastResponse, "CompanyId": ticketStruct.CompanyId, "Id": ticketStruct.Id})
@@ -118,9 +145,9 @@ func (Tickets) GetParamsForFilterTicketsData(params TicketsCondition) TicketsCon
 		params.WhereCondition += " AND tickets.userId = :userId"
 	}
 	if params.LastUpdatedOn != 0 {
-		params.WhereCondition += " AND orders.lastUpdatedOn = :lastUpdatedOn"
+		params.WhereCondition += " AND tickets.lastUpdatedOn = :lastUpdatedOn"
 	} else if params.CreatedTime != 0 {
-		params.WhereCondition += " AND orders.createdTime = :createdTime"
+		params.WhereCondition += " AND tickets.createdTime = :createdTime"
 	} else if params.CompanyId != 0 {
 		params.WhereCondition += " AND tickets.companyId= :companyId"
 	}
@@ -128,8 +155,8 @@ func (Tickets) GetParamsForFilterTicketsData(params TicketsCondition) TicketsCon
 }
 
 func (Tickets) DeleteTicket(id int) (bool, error) {
-	// row, err := utility.Db.Exec("UPDATE tickets SET status=:Status WHERE id = :Id", map[string]interface{}{"Status": "closed", "Id":id})
-	row, err := utility.Db.Exec("DELETE FROM tickets WHERE id = ?", id)
+	row, err := utility.Db.Exec("UPDATE tickets SET status=:Status WHERE id = :Id", map[string]interface{}{"Status": "archive", "Id": id})
+	// row, err := utility.Db.Exec("DELETE FROM tickets WHERE id = ?", id)
 	if err != nil {
 		log.Print(err)
 		return false, err

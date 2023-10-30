@@ -16,7 +16,7 @@
     - customer_name     string
     - created_time      int64           `EPOCH-TIMESTAMP`
     - last_updated_on   int64           `EPOCH-TIMESTAMP`
-    - status            string          `ENUM(open,in_process,closed)`
+    - status            string          `ENUM(open,in_process,closed,archive)`
     - query             string
     - feedback          string          `ENUM (satisfied,not_satisfied,no_feedback)`
     - last_response     string
