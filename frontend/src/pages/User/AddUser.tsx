@@ -33,58 +33,58 @@ const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) ===
                     <div className="flex justify-between lg:flex-row flex-col">
                         <div className="lg:w-1/2 w-full m-8">                           
                             <div className="my-8 flex items-center">
-                                <label htmlFor="reciever-name" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="user-name" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Name
                                 </label>
-                                <input id="reciever-name" type="text" name="reciever-name" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Name" />
+                                <input id="user-name" type="text" name="user-name" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Name" />
                             </div>
                             <div className="my-8 flex items-center">
-                                <label htmlFor="reciever-email" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="user-email" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Email
                                 </label>
-                                <input id="reciever-email" type="email" name="reciever-email" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
+                                <input id="user-email" type="email" name="user-email" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
                             </div>
                             <div className="my-8 flex items-center">
-                                <label htmlFor="reciever-address" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="pwd" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Password
                                 </label>
-                                <input id="reciever-address" type="text" name="reciever-address" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
+                                <input id="pwd" type="text" name="pwd" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
                             </div>
                             <div className="my-8 flex items-center">
-                                <label htmlFor="reciever-number" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="phn-number" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Phone Number
                                 </label>
-                                <input id="reciever-number" type="text" name="reciever-number" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Phone number" />
+                                <input id="phn-number" type="text" name="phn-number" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Phone number" />
                             </div>
                         </div>
                         <div className="lg:w-1/2 w-full m-8">
                             <div className="flex items-center my-8">
-                                <label htmlFor="acno" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="dob" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Date of Birth
                                 </label>
-                                <input id="acno" type="date" name="acno" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Account Number" />
+                                <input id="dob" type="date" name="dob" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Account Number" />
                             </div>
                             <div className="flex items-center my-8">
-                                <label htmlFor="country" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="acctype" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Account Type
                                 </label>
-                                <select id="country" name="country" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
+                                <select id="acctype" name="acctype" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
                                     <option value="">Select</option>
                                     <option value="United States">User</option>
                                     <option value="United Kingdom">Owner</option>                   
                                 </select>
                             </div>
                             <div className="flex items-center my-8">
-                                <label htmlFor="swift-code" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="comp-name" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Company Name
                                 </label>
-                                <input id="swift-code" type="text" name="swift-code" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Company Name" />
+                                <input id="comp-name" type="text" name="comp-name" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Company Name" />
                             </div>                            
                             <div className="flex items-center my-8">
-                                <label htmlFor="country" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                <label htmlFor="status" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
                                     Status
                                 </label>
-                                <select id="country" name="country" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
+                                <select id="status" name="status" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
                                     <option value="">Select</option>
                                     <option value="United States">Active</option>
                                     <option value="United Kingdom">Pending</option>

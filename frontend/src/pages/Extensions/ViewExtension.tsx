@@ -6,159 +6,114 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
 import { setPageTitle } from '../../store/themeConfigSlice';
 
-const ViewUser = () => {
-
+const ViewExt = () => {
 const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('View User'));
+        dispatch(setPageTitle('View Extension'));
     });
 
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
     const [items, setItems] = useState([
         {
             id: 1,
-            invoice: '081451',
-            name: 'Laurie Fox',
-            email: 'lauriefox@company.com',
-            date: '15 Dec 2020',
-            amount: '+91 74125 89632',
-            actype: 'User',
-            cname: 'ABC',
-            status: { tooltip: 'Active', color: 'success' },
-            profile: 'profile-1.jpeg',
+            extname: 'ABC',
+            extuname: 'Laurie Fox',
+            dept: 'Sales',
+            sipsname: 'Server Name 1',
+            sipuname: 'K12002',
+            sippwd: '145236',
+            sipport: 'Port 8080',
         },
         {
             id: 2,
-            invoice: '081452',
-            name: 'Alexander Gray',
-            email: 'alexGray3188@gmail.com',
-            date: '20 Dec 2020',
-            amount: '+91 52147 36528',
-            actype: 'Owner',
-            cname: 'XYZ',
-            status: { tooltip: 'Deactive', color: 'danger' },
-            profile: 'profile-1.jpeg',
-        },
+            extname: 'XYZ',
+            extuname: 'Alexander Gray',
+            dept: 'Support',
+            sipsname: 'Server Name 2',
+            sipuname: 'J45782',           
+            sippwd: '232323',
+            sipport: 'Port 8080',
+        },  
         {
             id: 3,
-            invoice: '081451',
-            name: 'Laurie Fox',
-            email: 'lauriefox@company.com',
-            date: '15 Dec 2020',
-            amount: '+91 74125 89632',
-            actype: 'User',
-            cname: 'ABC',
-            status: { tooltip: 'Active', color: 'success' },
-            profile: 'profile-1.jpeg',
+            extname: 'ABC',
+            extuname: 'Laurie Fox',
+            dept: 'Sales',
+            sipsname: 'Server Name 1',
+            sipuname: 'K12002',
+            sippwd: '145236',
+            sipport: 'Port 8080',
         },
         {
             id: 4,
-            invoice: '081452',
-            name: 'Alexander Gray',
-            email: 'alexGray3188@gmail.com',
-            date: '20 Dec 2020',
-            amount: '+91 52147 36528',
-            actype: 'Owner',
-            cname: 'XYZ',
-            status: { tooltip: 'Deactive', color: 'danger' },
-            profile: 'profile-1.jpeg',
-        },
+            extname: 'XYZ',
+            extuname: 'Alexander Gray',
+            dept: 'Support',
+            sipsname: 'Server Name 2',
+            sipuname: 'J45782',           
+            sippwd: '232323',
+            sipport: 'Port 8080',
+        },  
         {
             id: 5,
-            invoice: '081451',
-            name: 'Laurie Fox',
-            email: 'lauriefox@company.com',
-            date: '15 Dec 2020',
-            amount: '+91 74125 89632',
-            actype: 'User',
-            cname: 'ABC',
-            status: { tooltip: 'Active', color: 'success' },
-            profile: 'profile-1.jpeg',
+            extname: 'ABC',
+            extuname: 'Laurie Fox',
+            dept: 'Sales',
+            sipsname: 'Server Name 1',
+            sipuname: 'K12002',
+            sippwd: '145236',
+            sipport: 'Port 8080',
         },
         {
             id: 6,
-            invoice: '081452',
-            name: 'Alexander Gray',
-            email: 'alexGray3188@gmail.com',
-            date: '20 Dec 2020',
-            amount: '+91 52147 36528',
-            actype: 'Owner',
-            cname: 'XYZ',
-            status: { tooltip: 'Deactive', color: 'danger' },
-            profile: 'profile-1.jpeg',
-        },
+            extname: 'XYZ',
+            extuname: 'Alexander Gray',
+            dept: 'Support',
+            sipsname: 'Server Name 2',
+            sipuname: 'J45782',           
+            sippwd: '232323',
+            sipport: 'Port 8080',
+        },  
         {
             id: 7,
-            invoice: '081451',
-            name: 'Laurie Fox',
-            email: 'lauriefox@company.com',
-            date: '15 Dec 2020',
-            amount: '+91 74125 89632',
-            actype: 'User',
-            cname: 'ABC',
-            status: { tooltip: 'Active', color: 'success' },
-            profile: 'profile-1.jpeg',
+            extname: 'ABC',
+            extuname: 'Laurie Fox',
+            dept: 'Sales',
+            sipsname: 'Server Name 1',
+            sipuname: 'K12002',
+            sippwd: '145236',
+            sipport: 'Port 8080',
         },
         {
             id: 8,
-            invoice: '081452',
-            name: 'Alexander Gray',
-            email: 'alexGray3188@gmail.com',
-            date: '20 Dec 2020',
-            amount: '+91 52147 36528',
-            actype: 'Owner',
-            cname: 'XYZ',
-            status: { tooltip: 'Deactive', color: 'danger' },
-            profile: 'profile-1.jpeg',
-        },
+            extname: 'XYZ',
+            extuname: 'Alexander Gray',
+            dept: 'Support',
+            sipsname: 'Server Name 2',
+            sipuname: 'J45782',           
+            sippwd: '232323',
+            sipport: 'Port 8080',
+        },       
         {
             id: 9,
-            invoice: '081451',
-            name: 'Laurie Fox',
-            email: 'lauriefox@company.com',
-            date: '15 Dec 2020',
-            amount: '+91 74125 89632',
-            actype: 'User',
-            cname: 'ABC',
-            status: { tooltip: 'Active', color: 'success' },
-            profile: 'profile-1.jpeg',
+            extname: 'ABC',
+            extuname: 'Laurie Fox',
+            dept: 'Sales',
+            sipsname: 'Server Name 1',
+            sipuname: 'K12002',
+            sippwd: '145236',
+            sipport: 'Port 8080',
         },
         {
             id: 10,
-            invoice: '081452',
-            name: 'Alexander Gray',
-            email: 'alexGray3188@gmail.com',
-            date: '20 Dec 2020',
-            amount: '+91 52147 36528',
-            actype: 'Owner',
-            cname: 'XYZ',
-            status: { tooltip: 'Deactive', color: 'danger' },
-            profile: 'profile-1.jpeg',
-        },
-        {
-            id: 11,
-            invoice: '081451',
-            name: 'Laurie Fox',
-            email: 'lauriefox@company.com',
-            date: '15 Dec 2020',
-            amount: '+91 74125 89632',
-            actype: 'User',
-            cname: 'ABC',
-            status: { tooltip: 'Active', color: 'success' },
-            profile: 'profile-1.jpeg',
-        },
-        {
-            id: 12,
-            invoice: '081452',
-            name: 'Alexander Gray',
-            email: 'alexGray3188@gmail.com',
-            date: '20 Dec 2020',
-            amount: '+91 52147 36528',
-            actype: 'Owner',
-            cname: 'XYZ',
-            status: { tooltip: 'Deactive', color: 'danger' },
-            profile: 'profile-1.jpeg',
-        },
+            extname: 'XYZ',
+            extuname: 'Alexander Gray',
+            dept: 'Support',
+            sipsname: 'Server Name 2',
+            sipuname: 'J45782',           
+            sippwd: '232323',
+            sipport: 'Port 8080',
+        },        
     ]);
 
     const deleteRow = (id: any = null) => {
@@ -194,7 +149,7 @@ const dispatch = useDispatch();
 
     const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-        columnAccessor: 'firstName',
+        columnAccessor: 'extname',
         direction: 'asc',
     });
 
@@ -212,31 +167,30 @@ const dispatch = useDispatch();
     useEffect(() => {
         setInitialRecords(() => {
             return items.filter((item) => {
-                return (
-                    item.invoice.toLowerCase().includes(search.toLowerCase()) ||
-                    item.name.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.date.toLowerCase().includes(search.toLowerCase()) ||
-                    item.amount.toLowerCase().includes(search.toLowerCase()) ||
-                    item.actype.toLowerCase().includes(search.toLowerCase()) ||
-                    item.cname.toLowerCase().includes(search.toLowerCase()) ||
-                    item.status.tooltip.toLowerCase().includes(search.toLowerCase())
+                return (                    
+                    item.extname.toLowerCase().includes(search.toLowerCase()) ||
+                    item.extuname.toLowerCase().includes(search.toLowerCase()) ||
+                    item.dept.toLowerCase().includes(search.toLowerCase()) ||
+                    item.sipsname.toLowerCase().includes(search.toLowerCase()) ||
+                    item.sipuname.toLowerCase().includes(search.toLowerCase()) ||
+                    item.sippwd.toLowerCase().includes(search.toLowerCase()) ||
+                    item.sipport.toLowerCase().includes(search.toLowerCase())
                 );
             });
         });
     }, [search]);
 
-    useEffect(() => {
-        const data2 = sortBy(initialRecords, sortStatus.columnAccessor);
-        setRecords(sortStatus.direction === 'desc' ? data2.reverse() : data2);
-        setPage(1);
-    }, [sortStatus]);   
+    // useEffect(() => {
+    //     const data2 = sortBy(initialRecords, sortStatus.columnAccessor);
+    //     setRecords(sortStatus.direction === 'desc' ? data2.reverse() : data2);
+    //     setPage(1);
+    // }, [sortStatus]);   
     return (
         <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
                 <li>
                     <Link to="#" className="text-primary hover:underline">
-                        User
+                        Extension
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
@@ -246,7 +200,7 @@ const dispatch = useDispatch();
 
             <div className="panel px-0 border-white-light dark:border-[#1b2e4b] py-5">
                 
-                    <div className='text-xl font-bold text-dark dark:text-white text-center py-8'>View User</div>
+                    <div className='text-xl font-bold text-dark dark:text-white text-center py-8'>View Extension</div>
 
                     <div className="invoice-table">
                         <div className="datatables pagination-padding">
@@ -256,45 +210,44 @@ const dispatch = useDispatch();
                                 columns={[
                                     
                                     {
-                                        accessor: 'name',
+                                        accessor: 'Extension name',
                                         sortable: true,
-                                        render: ({ name, id }) => (
-                                            <div className="flex items-center font-semibold">
-                                                <div className="p-0.5 bg-white-dark/30 rounded-full w-max ltr:mr-2 rtl:ml-2">
-                                                    <img className="h-8 w-8 rounded-full object-cover" src={`/assets/images/profile-${id}.jpeg`} alt="" />
-                                                </div>
-                                                <div>{name}</div>
+                                        render: ({ extname, id }) => (
+                                            <div className="flex items-center font-semibold">                                                
+                                                <div>{extname}</div>
                                             </div>
                                         ),
                                     },
                                     {
-                                        accessor: 'email',
+                                        accessor: 'User name',
                                         sortable: true,
+                                        render: ({ extuname, id }) => <div className="font-semibold">{`${extuname}`}</div>,
                                     },
                                     {
-                                        accessor: 'date',
+                                        accessor: 'department name',
                                         sortable: true,
+                                        render: ({ dept, id }) => <div className="font-semibold">{`${dept}`}</div>,
                                     },
                                     {
-                                        accessor: 'phone number',
+                                        accessor: 'SIP Server Name',
                                         sortable: true,
                                         titleClassName: 'text-right',
-                                        render: ({ amount, id }) => <div className="font-semibold">{`${amount}`}</div>,
+                                        render: ({ sipsname, id }) => <div className="font-semibold">{`${sipsname}`}</div>,
                                     },
                                     {
-                                        accessor: 'account type',
+                                        accessor: 'Sip Username',
                                         sortable: true,
-                                        render: ({ actype, id }) => <div className="font-semibold">{`${actype}`}</div>,
+                                        render: ({ sipuname, id }) => <div className="font-semibold">{`${sipuname}`}</div>,
                                     },
                                     {
-                                        accessor: 'company name',
+                                        accessor: 'Sip Password',
                                         sortable: true,
-                                        render: ({ cname, id }) => <div className="font-semibold">{`${cname}`}</div>,
+                                        render: ({ sippwd, id }) => <div className="font-semibold">{`${sippwd}`}</div>,
                                     },
                                     {
-                                        accessor: 'status',
+                                        accessor: 'Sip Port',
                                         sortable: true,
-                                        render: ({ status }) => <span className={`badge badge-outline-${status.color} `}>{status.tooltip}</span>,
+                                        render: ({ sipport, id }) => <div className="font-semibold">{`${sipport}`}</div>,
                                     },
                                     {
                                         accessor: 'action',
@@ -303,7 +256,7 @@ const dispatch = useDispatch();
                                         textAlignment: 'center',
                                         render: ({ id }) => (
                                             <div className="flex gap-4 items-center w-max mx-auto">
-                                                <NavLink to="/edituser" className="flex hover:text-info">
+                                                <NavLink to="/editext" className="flex hover:text-info">
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5">
                                                         <path
                                                             opacity="0.5"
@@ -356,9 +309,9 @@ const dispatch = useDispatch();
                                 page={page}
                                 onPageChange={(p) => setPage(p)}
                                 recordsPerPageOptions={PAGE_SIZES}
-                                onRecordsPerPageChange={setPageSize}
-                                sortStatus={sortStatus}
-                                onSortStatusChange={setSortStatus}
+                                // onRecordsPerPageChange={setPageSize}
+                                // sortStatus={sortStatus}
+                                // onSortStatusChange={setSortStatus}
                                 selectedRecords={selectedRecords}
                                 onSelectedRecordsChange={setSelectedRecords}
                                 paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
@@ -371,4 +324,4 @@ const dispatch = useDispatch();
     );
 };
 
-export default ViewUser;
+export default ViewExt;

@@ -4,6 +4,9 @@ const Graph = lazy(() => import('../pages/Graph'));
 const AddUser = lazy(() => import('../pages/User/AddUser'));
 const EditUser = lazy(() => import('../pages/User/EditUser'));
 const ViewUser = lazy(() => import('../pages/User/ViewUser'));
+const AddExt = lazy(() => import('../pages/Extensions/AddExtension'));
+const EditExt = lazy(() => import('../pages/Extensions/EditExtension'));
+const ViewExt = lazy(() => import('../pages/Extensions/ViewExtension'));
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Finance = lazy(() => import('../pages/Finance'));
 const Crypto = lazy(() => import('../pages/Crypto'));
@@ -128,6 +131,21 @@ const routes = [
         path: '/viewuser',
         element: <ViewUser />,
     },
+
+    // Extensions
+    {
+        path: '/addext',
+        element: <AddExt />
+    },
+    {
+        path: '/editext',
+        element: <EditExt />
+    },
+    {
+        path: '/viewext',
+        element: <ViewExt />
+    },
+    
     // analytics page
     {
         path: '/analytics',
