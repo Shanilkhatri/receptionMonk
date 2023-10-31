@@ -1,7 +1,7 @@
 import { useEffect, Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { IRootState } from '../../store';
 import { toggleTheme } from '../../store/themeConfigSlice';
 import { useTranslation } from 'react-i18next';
@@ -37,9 +37,17 @@ const Header = () => {
     const [, setTheme] = useState<any>();
     const dispatch = useDispatch();
 
+    const navigate = useNavigate();
+    const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
+
+    const submitForm = () => {
+        navigate('/');
+    };
+
     const [setupmodal, setupModal] = useState(false);    
     const [qrmodal, qrModal] = useState(false);
     const [confmodal, confModal] = useState(false);
+    const [signupmodal, signupModal] = useState(false);
 
     const openQRModal = () => {
         setupModal(false); 
@@ -171,11 +179,89 @@ const Header = () => {
                                 <ul className="!py-0 text-dark dark:text-white-dark w-[300px] sm:w-[350px] divide-y dark:divide-white/10">
                                     <div className="px-4 py-2 font-semibold">
                                         <h4 className="text-lg">Settings</h4>
-                                    </div>
+                                    </div>  
+                                    {/* 2FA Before verification */}
                                     <li>
-                                        <div className="p-4">
-                                            <button className="btn btn-primary block w-full btn-small" onClick={() => setupModal(true)}> Two Factor Authentication</button>
-                                        </div>                            
+                                        <div className='flex items-center py-3 px-5'>
+                                            <div>
+                                                <span className="grid place-content-center w-9 h-9 rounded-full bg-danger-light dark:bg-danger text-danger dark:text-success-light">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <span className="px-3 dark:text-gray-500">
+                                                <div className="font-semibold text-sm dark:text-white-light/90 hover:cursor-pointer hover:underline underline-offset-4 decoration-dotted" onClick={() => setupModal(true)}>Two Factor Authentication</div>
+                                                <div>To secure your account.</div>
+                                            </span>
+                                            <span className="font-semibold bg-danger-light rounded text-danger px-1 ltr:ml-auto rtl:mr-auto whitespace-pre dark:text-white/80 ltr:mr-2 rtl:ml-2">
+                                                Required                                          
+                                            </span>
+                                        </div>
+                                    </li>
+
+                                    {/* 2FA After verification */}
+                                    <li>
+                                        <div className='flex items-center py-3 px-5'>
+                                            <div>
+                                                <span className="grid place-content-center w-9 h-9 rounded-full bg-success-light dark:bg-success text-success dark:text-success-light">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <span className="px-3 dark:text-gray-500">
+                                                <div className="font-semibold text-sm dark:text-white-light/90 hover:cursor-pointer hover:underline underline-offset-4 decoration-dotted" onClick={() => setupModal(true)}>Two Factor Authentication</div>
+                                                <div>Successfully done</div>
+                                            </span>
+                                            <span className="font-semibold bg-success-light rounded text-success px-1 ltr:ml-auto rtl:mr-auto whitespace-pre dark:text-white/80 ltr:mr-2 rtl:ml-2">
+                                                Verified                                          
+                                            </span>
+                                        </div>
+                                    </li>
+                                   
+                                   {/* Sign up Before completion */}
+                                    <li>
+                                        <div className='flex items-center py-3 px-5'>
+                                            <div>
+                                                <span className="grid place-content-center w-9 h-9 rounded-full bg-warning-light dark:bg-warning text-warning dark:text-warning-light">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">    
+                                                        <circle cx="12" cy="12" r="10"></circle> 
+                                                           <line x1="12" y1="8" x2="12" y2="12"></line>    
+                                                           <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <span className="px-3 dark:text-gray-500">
+                                                <div className="font-semibold text-sm dark:text-white-light/90 hover:cursor-pointer hover:underline underline-offset-4 decoration-dotted" onClick={() => signupModal(true)}>Signup</div>
+                                                <div>Please complete signup process</div>
+                                            </span>
+                                            <span className="font-semibold bg-warning-light rounded text-warning px-1 ltr:ml-auto rtl:mr-auto whitespace-pre dark:text-white/80 ltr:mr-2 rtl:ml-2">
+                                                20%                                          
+                                            </span>
+                                        </div>
+                                    </li>
+
+                                    {/* Sign up After completion */}
+                                    <li>
+                                        <div className='flex items-center py-3 px-5'>
+                                            <div>
+                                                <span className="grid place-content-center w-9 h-9 rounded-full bg-success-light dark:bg-success text-success dark:text-warning-light">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">    
+                                                        <circle cx="12" cy="12" r="10"></circle> 
+                                                           <line x1="12" y1="8" x2="12" y2="12"></line>    
+                                                           <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <span className="px-3 dark:text-gray-500">
+                                                <div className="font-semibold text-sm dark:text-white-light/90 hover:cursor-pointer hover:underline underline-offset-4 decoration-dotted" onClick={() => signupModal(true)}>Signup</div>
+                                                <div>Successfully completed</div>
+                                            </span>
+                                            <span className="font-semibold bg-success-light rounded text-success px-1 ltr:ml-auto rtl:mr-auto whitespace-pre dark:text-white/80 ltr:mr-2 rtl:ml-2">
+                                                100%                                          
+                                            </span>
+                                        </div>
                                     </li>
                                 </ul>
                             </Dropdown>
@@ -224,7 +310,7 @@ const Header = () => {
                                                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                                                             </svg>
                                                         </button>
-                                                    </div>
+                                                    </div>                                                    
                                                     <div className="p-6">
                                                     <p className="m-2 text-base"> 2FA provides an extra protection for your account by requiring a special code. Protect your account in just two steps:</p>
 
@@ -370,73 +456,167 @@ const Header = () => {
                                     <div className="fixed inset-0" />
                                     </Transition.Child>
                                     <div className="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60">
-                                    <div className="flex min-h-screen items-center justify-center px-4">
-                                        <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                        >
-                                        <Dialog.Panel as="div" className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
-                                            <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
-                                            <h5 className="text-lg font-bold m-2">Confirmation Two Factor Authentication</h5>
-                                            <button type="button" className="text-white-dark hover:text-dark" onClick={() => confModal(false)}>
-                                                <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="20"
-                                                height="20"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="#282828"
-                                                strokeWidth="2.5"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                >
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                </svg>
-                                            </button>
-                                            </div>
-                                            <div className="p-6">
-                                                <p className="m-2 text-base">Enter 6-digit code generated by your authenticator app to activate your 2FA</p>
-                                                
-                                                <div className='grid grid-cols-6 gap-4 m-8'>
-                                                    <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
-                                                    </div>
-                                                    <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
-                                                    </div>
-                                                    <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
-                                                    </div>
-                                                    <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
-                                                    </div>
-                                                    <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
-                                                    </div>
-                                                    <div>
-                                                        <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
-                                                    </div>
+                                        <div className="flex min-h-screen items-center justify-center px-4">
+                                            <Transition.Child
+                                            as={Fragment}
+                                            enter="ease-out duration-300"
+                                            enterFrom="opacity-0 scale-95"
+                                            enterTo="opacity-100 scale-100"
+                                            leave="ease-in duration-200"
+                                            leaveFrom="opacity-100 scale-100"
+                                            leaveTo="opacity-0 scale-95"
+                                            >
+                                            <Dialog.Panel as="div" className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                                                <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                                                <h5 className="text-lg font-bold m-2">Confirmation Two Factor Authentication</h5>
+                                                <button type="button" className="text-white-dark hover:text-dark" onClick={() => confModal(false)}>
+                                                    <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="20"
+                                                    height="20"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="#282828"
+                                                    strokeWidth="2.5"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    >
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                    </svg>
+                                                </button>
                                                 </div>
+                                                <div className="p-6">
+                                                    <p className="m-2 text-base">Enter 6-digit code generated by your authenticator app to activate your 2FA</p>
                                                     
-                                                <div className="flex justify-center py-6">
-                                                    <button type="submit" className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828]" onClick={() => coloredToast('dark')}>
-                                                        CONFIRM
-                                                    </button>
-                                                </div>      
-                                            </div>
-                                        </Dialog.Panel>
-                                        </Transition.Child>
-                                    </div>
+                                                    <div className='grid grid-cols-6 gap-4 m-8'>
+                                                        <div>
+                                                            <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
+                                                        </div>
+                                                        <div>
+                                                            <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
+                                                        </div>
+                                                        <div>
+                                                            <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
+                                                        </div>
+                                                        <div>
+                                                            <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
+                                                        </div>
+                                                        <div>
+                                                            <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
+                                                        </div>
+                                                        <div>
+                                                            <input type="type" className="form-input border border-gray-400 focus:border-orange-400 text-center" />
+                                                        </div>
+                                                    </div>
+                                                        
+                                                    <div className="flex justify-center py-6">
+                                                        <button type="submit" className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828]" onClick={() => coloredToast('dark')}>
+                                                            CONFIRM
+                                                        </button>
+                                                    </div>      
+                                                </div>
+                                            </Dialog.Panel>
+                                            </Transition.Child>
+                                        </div>
                                     </div>
                                 </Dialog>
-                                </Transition>
+                            </Transition>
                             {/* CONFIRMATION MODAL END */}
+
+                            {/* SIGNUP MODAL START */}
+                            <Transition appear show={signupmodal} as={Fragment}>
+                                <Dialog as="div" open={signupmodal} onClose={() => signupModal(false)}>
+                                    <Transition.Child
+                                        as={Fragment}
+                                        enter="ease-out duration-300"
+                                        enterFrom="opacity-0"
+                                        enterTo="opacity-100"
+                                        leave="ease-in duration-200"
+                                        leaveFrom="opacity-100"
+                                        leaveTo="opacity-0"
+                                    >
+                                        <div className="fixed inset-0" />
+                                    </Transition.Child>
+                                    <div className="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60">
+                                        <div className="flex min-h-screen items-center justify-center px-4">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <Dialog.Panel as="div" className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                                                    <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                                                        <h5 className="text-lg font-bold m-2">To Complete Sign UP</h5>
+                                                        <button type="button" className="text-white-dark hover:text-dark" onClick={() => signupModal(false)}>
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="20"
+                                                                height="20"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="#282828"
+                                                                strokeWidth="2.5"
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                            >
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </div>                                                    
+                                                    
+                                                    <form className="space-y-5 p-8" onSubmit={submitForm}>
+                                                        <p className="mb-7">Please fill all details to complete Registration</p>
+                                                        
+                                                        <div>
+                                                            <label htmlFor="changepwd">Name <span className='text-red-600'>*</span></label>
+                                                            <input id="phoneno" type="text" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Name" />
+                                                        </div>
+
+                                                        <div>
+                                                            <label htmlFor="email">Email <span className='text-red-600'>*</span></label> 
+                                                            <input id="email" type="email" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
+                                                        </div>
+
+                                                        <div>
+                                                            <label htmlFor="password">Password <span className='text-red-600'>*</span></label>
+                                                            <input id="password" type="password" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
+                                                        </div>
+
+                                                        <div>
+                                                            <label htmlFor="changepwd">Date of Birth <span className='text-red-600'>*</span></label>
+                                                            <input id="phoneno" type="date" className="form-input border border-gray-400 focus:border-orange-400" placeholder="Enter DOB" />
+                                                        </div>
+
+                                                        <div>
+                                                            <label htmlFor="changepwd">Account Type <span className='text-red-600'>*</span></label>
+                                                            <select className="form-select text-white-dark border border-gray-400 focus:border-orange-400">
+                                                                <option value="" selected disabled>Select</option>
+                                                                <option value="owner">Owner</option>
+                                                                <option value="client">Client</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div className="flex justify-center py-6">
+                                                        <Link to="/">
+                                                            <button type="submit" className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828]">
+                                                                SIGN UP
+                                                            </button>
+                                                        </Link>
+                                                        </div> 
+                                                    </form>  
+                                                </Dialog.Panel>
+                                            </Transition.Child>
+                                        </div>
+                                    </div>
+                                </Dialog>
+                            </Transition>
+                            {/* SIGNUP MODAL END */}
 
                         </div>                                
 
