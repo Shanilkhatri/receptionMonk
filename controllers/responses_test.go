@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -333,5 +334,357 @@ func TestResponsePutWithErrInSql(t *testing.T) {
 
 	if w.Result().StatusCode != 400 || data.Message != "Cannot send response at the moment! Please try again." {
 		t.Errorf("Expected status code %d, got %d", http.StatusForbidden, w.Result().StatusCode)
+	}
+}
+
+// GetResponse
+// testcase #1 GetResponse with correct Struct and also correct Data,show 200.
+func TestGetresponseWithCorrectStruct(t *testing.T) {
+	// parameters to be send on the basis of which we can filter orders and fetch
+	// instead of sending json data we have to send parametrs in query
+	queryParams := map[string]string{
+		"ticketId": "1",
+	}
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "user" // type set to user
+	userdetails.CompanyID = 1
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	expectedTicket := models.Tickets{
+		Id:        1,
+		UserId:    1,
+		CompanyId: 1,
+	}
+	// make expected user a row that will be returned
+	rows1 := sqlmock.NewRows([]string{"id", "userId", "companyId"}).AddRow(expectedTicket.Id, expectedTicket.UserId, expectedTicket.CompanyId)
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows1)
+	// mocking the user detail I expect from the Db op
+	expectedResponse := models.Response{
+		Id:           1,
+		Response:     "",
+		TicketId:     1,
+		ResponseTime: 1698747288,
+		Type:         "",
+		RespondeeId:  1, // This is basically userId
+	}
+	// make expected user a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "response", "ticketId", "ResponseTime", "Type", "RespondeeId"}).AddRow(expectedResponse.Id, expectedResponse.Response, expectedResponse.TicketId, expectedResponse.ResponseTime, expectedResponse.Type, expectedResponse.RespondeeId)
+
+	// I also expect a GET Query execution and for that :
+	dbmock.ExpectQuery("SELECT \\* from responses ").WillReturnRows(rows)
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// here we will prepare the url with parameters to pass to our request
+	url := "/response?" + buildQuery(queryParams)
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	GetResponse(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Returns all matching users." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// testcase #2 GetResponse ,if user id is different,show 403.
+func TestGetresponse(t *testing.T) {
+	// parameters to be send on the basis of which we can filter orders and fetch
+	// instead of sending json data we have to send parametrs in query
+	queryParams := map[string]string{
+		"ticketId": "1",
+	}
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "user" // type set to user
+	userdetails.CompanyID = 1
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	expectedTicket := models.Tickets{
+		Id:        1,
+		UserId:    2,
+		CompanyId: 1,
+	}
+	// make expected user a row that will be returned
+	rows1 := sqlmock.NewRows([]string{"id", "userId", "companyId"}).AddRow(expectedTicket.Id, expectedTicket.UserId, expectedTicket.CompanyId)
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows1)
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// here we will prepare the url with parameters to pass to our request
+	url := "/response?" + buildQuery(queryParams)
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	GetResponse(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Unauthorized access! You are not allowed to make this request." && w.Result().StatusCode != 403 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// testcase #3 GetResponse, if ticket id is empty string,show 400.
+func TestGetResponseWithoutTicketId(t *testing.T) {
+	// parameters to be send on the basis of which we can filter orders and fetch
+	// instead of sending json data we have to send parametrs in query
+	queryParams := map[string]string{
+		"ticketId": "",
+	}
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "user" // type set to user
+	userdetails.CompanyID = 1
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+
+	// here we will prepare the url with parameters to pass to our request
+	url := "/response?" + buildQuery(queryParams)
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	GetResponse(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Bad request! No ticketId found." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// testcase #4 GetResponse, empty user Struct,show 403.
+func TestGetResponseWithEmptyUser(t *testing.T) {
+	// parameters to be send on the basis of which we can filter orders and fetch
+	// instead of sending json data we have to send parametrs in query
+	queryParams := map[string]string{
+		"ticketId": "1",
+	}
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		MockCheckTokenPayloadAndReturnUserBool: false,
+	}
+
+	// here we will prepare the url with parameters to pass to our request
+	url := "/response?" + buildQuery(queryParams)
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	GetResponse(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Unauthorized access! You are not allowed to make this request" && w.Result().StatusCode != 403 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// testcase #5 GetResponse if ticket table return empty rows,show 400.
+func TestGetresponseReturnEmptyRows(t *testing.T) {
+	// parameters to be send on the basis of which we can filter orders and fetch
+	// instead of sending json data we have to send parametrs in query
+	queryParams := map[string]string{
+		"ticketId": "1",
+	}
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "user" // type set to user
+	userdetails.CompanyID = 1
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// make expected user a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "userId", "companyId"})
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows)
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// here we will prepare the url with parameters to pass to our request
+	url := "/response?" + buildQuery(queryParams)
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	GetResponse(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Cannot get ticket data at the moment! Please try again." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// testcase #6 GetResponse return sql errors,show 500.
+func TestGetresponseWithSqlErrors(t *testing.T) {
+	// parameters to be send on the basis of which we can filter orders and fetch
+	// instead of sending json data we have to send parametrs in query
+	queryParams := map[string]string{
+		"ticketId": "1",
+	}
+	// mocking token payload with userDetails as user
+	// haven't populated all the fields as they aren't required
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "user" // type set to user
+	userdetails.CompanyID = 1
+
+	// Mocking the utility functions that are used there
+	Utility = MockHelper{
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	expectedTicket := models.Tickets{
+		Id:        1,
+		UserId:    1,
+		CompanyId: 1,
+	}
+	// make expected user a row that will be returned
+	rows1 := sqlmock.NewRows([]string{"id", "userId", "companyId"}).AddRow(expectedTicket.Id, expectedTicket.UserId, expectedTicket.CompanyId)
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows1)
+
+	// I also expect a GET Query execution and for that :
+	dbmock.ExpectQuery("SELECT \\* FROM `responses` WHERE id = ?").WillReturnError(sql.ErrNoRows)
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// here we will prepare the url with parameters to pass to our request
+	url := "/response?" + buildQuery(queryParams)
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodGet, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	GetResponse(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Internal server error, Any serious issues which cannot be recovered from." && w.Result().StatusCode != 500 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
 	}
 }

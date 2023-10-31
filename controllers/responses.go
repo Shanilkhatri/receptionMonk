@@ -113,7 +113,7 @@ func GetResponse(w http.ResponseWriter, r *http.Request) {
 	// preparing an ajaxResponse
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	var responseCondition models.ResponseCondition
-	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 	if !isOk {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
@@ -121,10 +121,11 @@ func GetResponse(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	responseCondition.TicketId = int64(utility.StrToInt(r.URL.Query().Get("ticketId")))
+
 	if responseCondition.TicketId == 0 {
 		response.Status = "400"
 		response.Message = "Bad request! No ticketId found."
-		utility.RenderJsonResponse(w, r, response, 403)
+		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	// get ticket by Id
@@ -146,7 +147,7 @@ func GetResponse(w http.ResponseWriter, r *http.Request) {
 		// users and owners can only reply to their tickets
 		if ticketStruct.UserId != userDetails.ID {
 			response.Status = "403"
-			response.Message = "Unauthorized access! You are not allowed to make this request"
+			response.Message = "Unauthorized access! You are not allowed to make this request."
 			utility.RenderJsonResponse(w, r, response, 403)
 			return
 		}
@@ -154,6 +155,10 @@ func GetResponse(w http.ResponseWriter, r *http.Request) {
 	result, err := models.Response{}.GetResponses(responseCondition.TicketId)
 	if err != nil {
 		log.Println(err)
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		utility.RenderJsonResponse(w, r, response, 500)
+		return
 	} else if len(result) == 0 {
 		response.Status = "400"
 		response.Message = "No result were found for this search. Either record is not present or you are not authorized to access this users data"
