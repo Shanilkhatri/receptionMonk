@@ -545,7 +545,7 @@ func SaltPlainPassWord(passW string) (string, error) {
 	return hashedPassW, nil
 }
 
-// func for post user to not change empty fields in user struct
+// func for post update to  change empty fields in dest struct with those in src struct
 // -> src is basically the struct we get from tokenPayload with all filled fields from DB or cache
 // -> dest is the userStruct that will come through json and which will also be our final struct
 // -> pass dest using (pass by address "&")
