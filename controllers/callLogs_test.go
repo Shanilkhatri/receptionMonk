@@ -29,6 +29,7 @@ func TestCallLogsPutWithCorrectData(t *testing.T) {
 		"callPlacedAt":  "ghi",
 		"callDuration":  "jkl",
 		"callExtension": "mno",
+		"companyId":     1,
 	}
 	// Marshal the data into JSON format
 	requestBody, err := json.Marshal(jsonData)
@@ -114,6 +115,7 @@ func TestCallLogsPutWithIncorrectData(t *testing.T) {
 		"callPlacedAt":  "ghi",
 		"callDuration":  "jkl",
 		"callExtension": "mno",
+		"companyId":     1,
 	}
 	// Marshal the data into JSON format
 	requestBody, err := json.Marshal(jsonData)
@@ -180,6 +182,7 @@ func TestCallLogsPutWithUnAuthUserType(t *testing.T) {
 		"callPlacedAt":  "ghi",
 		"callDuration":  "jkl",
 		"callExtension": "mno",
+		"companyId":     1,
 	}
 	// Marshal the data into JSON format
 	requestBody, err := json.Marshal(jsonData)
