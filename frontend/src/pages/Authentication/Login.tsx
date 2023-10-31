@@ -55,14 +55,8 @@ const Login = () => {
                     <Link to="/auth/ForgotPassword" className="font-semibold hover:underline hover:text-orange-700 ltr:ml-1 rtl:mr-1">
                         Forgot Password
                     </Link>                    
-                </p>
+                </p>               
                 
-                <p className="text-center font-semibold pb-2">
-                    Don't have an account ?
-                    <Link to="/auth/SignUp" className="font-bold text-orange-700 hover:underline ltr:ml-1 rtl:mr-1 hover:text-gray-900">
-                        Sign Up
-                    </Link>                    
-                </p>
             </div>
         </div>
     );

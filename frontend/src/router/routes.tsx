@@ -7,6 +7,10 @@ const ViewUser = lazy(() => import('../pages/User/ViewUser'));
 const AddExt = lazy(() => import('../pages/Extensions/AddExtension'));
 const EditExt = lazy(() => import('../pages/Extensions/EditExtension'));
 const ViewExt = lazy(() => import('../pages/Extensions/ViewExtension'));
+const AddOrder = lazy(() => import('../pages/Order/AddOrder'));
+const EditOrder = lazy(() => import('../pages/Order/EditOrder'));
+const ViewOrder = lazy(() => import('../pages/Order/ViewOrder'));
+const OrderDetails = lazy(() => import('../pages/Order/OrderDetails'));
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Finance = lazy(() => import('../pages/Finance'));
 const Crypto = lazy(() => import('../pages/Crypto'));
@@ -83,7 +87,6 @@ const ChangePassword = lazy(() => import('../pages/Authentication/ChangePassword
 const ForgotPassword = lazy(() => import('../pages/Authentication/ForgotPassword'));
 const SignIn = lazy(() => import('../pages/Authentication/SignIn'));
 const SignInOTP = lazy(() => import('../pages/Authentication/SignInOTP'));
-const SignUp = lazy(() => import('../pages/Authentication/SignUp'));
 const About = lazy(() => import('../pages/About'));
 const Error = lazy(() => import('../components/Error'));
 const Charts = lazy(() => import('../pages/Charts'));
@@ -144,6 +147,24 @@ const routes = [
     {
         path: '/viewext',
         element: <ViewExt />
+    },
+
+    // Order
+    {
+        path: '/addorder',
+        element: <AddOrder />
+    },
+    {
+        path: '/editorder',
+        element: <EditOrder />
+    },
+    {
+        path: '/vieworder',
+        element: <ViewOrder />
+    },
+    {
+        path: '/orderdetails',
+        element: <OrderDetails />
     },
     
     // analytics page
@@ -480,11 +501,6 @@ const routes = [
     {
         path: '/auth/ForgotPassword',
         element: <ForgotPassword />,
-        layout: 'blank',
-    },
-    {
-        path: '/auth/SignUp',
-        element: <SignUp />,
         layout: 'blank',
     },
    

@@ -6,113 +6,93 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
 import { setPageTitle } from '../../store/themeConfigSlice';
 
-const ViewExt = () => {
+const ViewOrder = () => {
 const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('View Extension'));
+        dispatch(setPageTitle('View Order'));
     });
 
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
     const [items, setItems] = useState([
         {
             id: 1,
-            extname: 'ABC',
-            extuname: 'Laurie Fox',
-            dept: 'Sales',
-            sipsname: 'Server Name 1',
-            sipuname: 'K12002',
-            sippwd: '145236',
-            sipport: 'Port 8080',
+            ordfrom: '14 Dec 2022',
+            ordto: '23 Jan 2023',
+            price: '₹ 1245',
+            buyer: 'Intel',
+            status: { tooltip: 'Paid', color: 'success' },
         },
         {
             id: 2,
-            extname: 'XYZ',
-            extuname: 'Alexander Gray',
-            dept: 'Support',
-            sipsname: 'Server Name 2',
-            sipuname: 'J45782',           
-            sippwd: '232323',
-            sipport: 'Port 8080',
+            ordfrom: '06 May 2019',
+            ordto: '02 June 2019',
+            price: '₹ 5623',
+            buyer: 'HP',
+            status: { tooltip: 'Unpaid', color: 'danger' },     
         },  
         {
             id: 3,
-            extname: 'ABC',
-            extuname: 'Laurie Fox',
-            dept: 'Sales',
-            sipsname: 'Server Name 1',
-            sipuname: 'K12002',
-            sippwd: '145236',
-            sipport: 'Port 8080',
+            ordfrom: '18 Oct 2022',
+            ordto: '20 Nov 2022',
+            price: '₹ 5896',
+            buyer: 'Asus',
+            status: { tooltip: 'Unpaid', color: 'danger' },  
         },
         {
             id: 4,
-            extname: 'XYZ',
-            extuname: 'Alexander Gray',
-            dept: 'Support',
-            sipsname: 'Server Name 2',
-            sipuname: 'J45782',           
-            sippwd: '232323',
-            sipport: 'Port 8080',
+            ordfrom: '12 Feb 2018',
+            ordto: '06 Apr 2018',
+            price: '₹ 7458',
+            buyer: 'Zebronics',
+            status: { tooltip: 'Unpaid', color: 'danger' },   
         },  
         {
             id: 5,
-            extname: 'ABC',
-            extuname: 'Laurie Fox',
-            dept: 'Sales',
-            sipsname: 'Server Name 1',
-            sipuname: 'K12002',
-            sippwd: '145236',
-            sipport: 'Port 8080',
+            ordfrom: '18 Oct 2022',
+            ordto: '20 Nov 2022',
+            price: '₹ 1452',
+            buyer: 'Dell',
+            status: { tooltip: 'Paid', color: 'success' },
         },
         {
             id: 6,
-            extname: 'XYZ',
-            extuname: 'Alexander Gray',
-            dept: 'Support',
-            sipsname: 'Server Name 2',
-            sipuname: 'J45782',           
-            sippwd: '232323',
-            sipport: 'Port 8080',
+            ordfrom: '12 Feb 2018',
+            ordto: '06 Apr 2018',
+            price: '₹ 2563',
+            buyer: 'Lenovo',
+            status: { tooltip: 'Paid', color: 'success' },   
         },  
         {
             id: 7,
-            extname: 'ABC',
-            extuname: 'Laurie Fox',
-            dept: 'Sales',
-            sipsname: 'Server Name 1',
-            sipuname: 'K12002',
-            sippwd: '145236',
-            sipport: 'Port 8080',
+            ordfrom: '12 Feb 2018',
+            ordto: '06 Apr 2018',
+            price: '₹ 8574',
+            buyer: 'HP',
+            status: { tooltip: 'Unpaid', color: 'danger' },  
         },
         {
             id: 8,
-            extname: 'XYZ',
-            extuname: 'Alexander Gray',
-            dept: 'Support',
-            sipsname: 'Server Name 2',
-            sipuname: 'J45782',           
-            sippwd: '232323',
-            sipport: 'Port 8080',
+            ordfrom: '18 Oct 2022',
+            ordto: '20 Nov 2022',
+            price: '₹ 1452',
+            buyer: 'Asus',
+            status: { tooltip: 'Unpaid', color: 'danger' },      
         },       
         {
             id: 9,
-            extname: 'ABC',
-            extuname: 'Laurie Fox',
-            dept: 'Sales',
-            sipsname: 'Server Name 1',
-            sipuname: 'K12002',
-            sippwd: '145236',
-            sipport: 'Port 8080',
+            ordfrom: '06 May 2019',
+            ordto: '02 June 2019',
+            price: '₹ 2563',
+            buyer: 'Dell',
+            status: { tooltip: 'Paid', color: 'success' },
         },
         {
             id: 10,
-            extname: 'XYZ',
-            extuname: 'Alexander Gray',
-            dept: 'Support',
-            sipsname: 'Server Name 2',
-            sipuname: 'J45782',           
-            sippwd: '232323',
-            sipport: 'Port 8080',
+            ordfrom: '14 Dec 2022',
+            ordto: '23 Jan 2023',
+            price: '₹ 8569',
+            buyer: 'Lenovo',
+            status: { tooltip: 'Unpaid', color: 'danger' },     
         },        
     ]);
 
@@ -168,13 +148,11 @@ const dispatch = useDispatch();
         setInitialRecords(() => {
             return items.filter((item) => {
                 return (                    
-                    item.extname.toLowerCase().includes(search.toLowerCase()) ||
-                    item.extuname.toLowerCase().includes(search.toLowerCase()) ||
-                    item.dept.toLowerCase().includes(search.toLowerCase()) ||
-                    item.sipsname.toLowerCase().includes(search.toLowerCase()) ||
-                    item.sipuname.toLowerCase().includes(search.toLowerCase()) ||
-                    item.sippwd.toLowerCase().includes(search.toLowerCase()) ||
-                    item.sipport.toLowerCase().includes(search.toLowerCase())
+                    item.ordfrom.toLowerCase().includes(search.toLowerCase()) ||
+                    item.ordto.toLowerCase().includes(search.toLowerCase()) ||
+                    item.price.toLowerCase().includes(search.toLowerCase()) ||
+                    item.buyer.toLowerCase().includes(search.toLowerCase()) ||
+                    item.status.tooltip.toLowerCase().includes(search.toLowerCase())
                 );
             });
         });
@@ -190,7 +168,7 @@ const dispatch = useDispatch();
             <ul className="flex space-x-2 rtl:space-x-reverse">
                 <li>
                     <Link to="#" className="text-primary hover:underline">
-                        Extension
+                        Order
                     </Link>
                 </li>
                 <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
@@ -200,7 +178,7 @@ const dispatch = useDispatch();
 
             <div className="panel px-0 border-white-light dark:border-[#1b2e4b] py-5">
                 
-                    <div className='text-xl font-bold text-dark dark:text-white text-center py-8'>View Extension</div>
+                    <div className='text-xl font-bold text-dark dark:text-white text-center py-8'>View Order</div>
 
                     <div className="invoice-table">
                         <div className="datatables pagination-padding">
@@ -210,44 +188,34 @@ const dispatch = useDispatch();
                                 columns={[
                                     
                                     {
-                                        accessor: 'Extension name',
+                                        accessor: 'Order From',
                                         sortable: true,
-                                        render: ({ extname, id }) => (
+                                        render: ({ ordfrom, id }) => (
                                             <div className="flex items-center font-semibold">                                                
-                                                <div>{extname}</div>
+                                                <div>{ordfrom}</div>
                                             </div>
                                         ),
                                     },
                                     {
-                                        accessor: 'User name',
+                                        accessor: 'Order Upto',
                                         sortable: true,
-                                        render: ({ extuname, id }) => <div className="font-semibold">{`${extuname}`}</div>,
+                                        render: ({ ordto, id }) => <div className="font-semibold">{`${ordto}`}</div>,
                                     },
                                     {
-                                        accessor: 'department name',
+                                        accessor: 'Order Price',
                                         sortable: true,
-                                        render: ({ dept, id }) => <div className="font-semibold">{`${dept}`}</div>,
+                                        render: ({ price, id }) => <div className="font-semibold">{`${price}`}</div>,
                                     },
                                     {
-                                        accessor: 'SIP Server Name',
+                                        accessor: 'Buyer',
                                         sortable: true,
                                         titleClassName: 'text-right',
-                                        render: ({ sipsname, id }) => <div className="font-semibold">{`${sipsname}`}</div>,
+                                        render: ({ buyer, id }) => <div className="font-semibold">{`${buyer}`}</div>,
                                     },
                                     {
-                                        accessor: 'Sip Username',
+                                        accessor: 'Status',
                                         sortable: true,
-                                        render: ({ sipuname, id }) => <div className="font-semibold">{`${sipuname}`}</div>,
-                                    },
-                                    {
-                                        accessor: 'Sip Password',
-                                        sortable: true,
-                                        render: ({ sippwd, id }) => <div className="font-semibold">{`${sippwd}`}</div>,
-                                    },
-                                    {
-                                        accessor: 'Sip Port',
-                                        sortable: true,
-                                        render: ({ sipport, id }) => <div className="font-semibold">{`${sipport}`}</div>,
+                                        render: ({ status }) => <span className={`badge badge-outline-${status.color} `}>{status.tooltip}</span>,
                                     },
                                     {
                                         accessor: 'action',
@@ -256,7 +224,7 @@ const dispatch = useDispatch();
                                         textAlignment: 'center',
                                         render: ({ id }) => (
                                             <div className="flex gap-4 items-center w-max mx-auto">
-                                                <NavLink to="/editext" className="flex hover:text-info">
+                                                <NavLink to="/editorder" className="flex hover:text-info">
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4.5 h-4.5">
                                                         <path
                                                             opacity="0.5"
@@ -277,7 +245,14 @@ const dispatch = useDispatch();
                                                             strokeWidth="1.5"
                                                         ></path>
                                                     </svg>
-                                                </NavLink>                                               
+                                                </NavLink>     
+
+                                                <NavLink to="/orderdetails" className="flex hover:text-primary">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.5" d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z" stroke="currentColor" stroke-width="1.5"></path><path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                    </svg>
+                                                </NavLink>
+
                                                 {/* <NavLink to="" className="flex"> */}
                                                 <button type="button" className="flex hover:text-danger" onClick={(e) => deleteRow(id)}>
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5">
@@ -324,4 +299,4 @@ const dispatch = useDispatch();
     );
 };
 
-export default ViewExt;
+export default ViewOrder;

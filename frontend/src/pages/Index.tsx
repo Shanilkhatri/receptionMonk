@@ -536,9 +536,9 @@ const Index = () => {
                             <div className="grid col-span-3 shadow-md">
                                 <div className="panel">
                                     <div className="mb-5">
-                                        <h5 className="font-semibold text-lg dark:text-white-light">Graph  Statistics</h5>
+                                        <h5 className="font-semibold text-lg dark:text-white-light">Graph Statistics</h5>
                                     </div>
-                                    <div className="space-y-4">
+                                    <div className="space-y-6">
                                         <div className="flex justify-evenly">
                                             <div>
                                                 <label className="flex items-center cursor-pointer">
