@@ -60,6 +60,12 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		if r.Method == "GET" {
+			if controllers.CheckACL(w, r, []string{"owner"}) {
+				controllers.GetCallLogsDetails(w, r)
+			}
+		}
+
 	case "response":
 		if r.Method == "GET" {
 			if controllers.CheckACL(w, r, []string{"owner", "user"}) {

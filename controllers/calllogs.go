@@ -63,7 +63,7 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
-	log.Println("userDetails: ", userDetails)
+
 	if isOk {
 		queryParams := r.URL.Query()
 
@@ -87,13 +87,13 @@ func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 		if userDetails.AccountType != "owner" {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not authorized to make this request."
-			Utility.RenderJsonResponse(w, r, response, 403)
+			utility.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 		if paramMap["companyId"] != 0 && paramMap["companyId"] != userDetails.CompanyID {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not authorized to make this request."
-			Utility.RenderJsonResponse(w, r, response, 403)
+			utility.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 		param := models.CallLogsCondition{
@@ -109,22 +109,26 @@ func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			response.Status = "500"
 			response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-			Utility.RenderJsonResponse(w, r, response, 500)
+			utility.RenderJsonResponse(w, r, response, 500)
 			return
 		}
 
 		if len(result) == 0 {
 			response.Status = "200"
 			response.Message = "No result were found for this search."
-			Utility.RenderJsonResponse(w, r, response, 200)
+			utility.RenderJsonResponse(w, r, response, 200)
 			return
 		} else {
 			response.Status = "200"
 			response.Message = "Returns all matching  calllogs."
 			response.Payload = result // Set the calllogs data in the response payload
-			Utility.RenderJsonResponse(w, r, response, 200)
+			utility.RenderJsonResponse(w, r, response, 200)
 			return
 		}
 
 	}
+	response.Status = "403"
+	response.Message = "You are not authorized to make this request."
+	utility.RenderJsonResponse(w, r, response, 403)
+
 }
