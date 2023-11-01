@@ -119,3 +119,120 @@ func PostWallet(w http.ResponseWriter, r *http.Request) {
 	response.Message = "Wallet information updated successfully."
 	utility.RenderJsonResponse(w, r, response, 200)
 }
+
+func GetWallet(w http.ResponseWriter, r *http.Request) {
+	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
+	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+
+	if isOk {
+		queryParams := r.URL.Query()
+
+		paramMap := map[string]int64{
+			"id":        0,
+			"companyId": 0,
+		}
+		for paramName := range paramMap {
+			paramValue := queryParams.Get(paramName)
+			if paramValue != "" {
+				paramParsed, err := utility.StrToInt64(paramValue)
+				if err != nil {
+					log.Println(err)
+				} else {
+					paramMap[paramName] = paramParsed
+				}
+			}
+		}
+
+		// Check if the user is authorized to access call logs
+		if userDetails.AccountType != "owner" {
+			response.Status = "403"
+			response.Message = "Unauthorized access! You are not authorized to make this request."
+			utility.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+		if paramMap["companyId"] != 0 && paramMap["companyId"] != userDetails.CompanyID {
+			response.Status = "403"
+			response.Message = "Unauthorized access! You are not authorized to make this request."
+			utility.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+		param := models.WalletCondition{
+			Wallet: models.Wallet{
+				Id:        paramMap["id"],
+				CompanyId: paramMap["companyId"],
+			},
+		}
+
+		parameters := models.Wallet{}.GetParamForFilterWallet(param)
+		result, err := models.Wallet{}.GetWallet(parameters)
+		if err != nil {
+			log.Println(err)
+			response.Status = "500"
+			response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+			utility.RenderJsonResponse(w, r, response, 500)
+			return
+		}
+
+		if len(result) == 0 {
+			response.Status = "200"
+			response.Message = "No result were found for this search."
+			utility.RenderJsonResponse(w, r, response, 200)
+			return
+		} else {
+			response.Status = "200"
+			response.Message = "Fetched wallet transactions successfully."
+			response.Payload = result // Set the calllogs data in the response payload
+			utility.RenderJsonResponse(w, r, response, 200)
+			return
+		}
+
+	}
+	response.Status = "403"
+	response.Message = "You are not authorized to make this request."
+	utility.RenderJsonResponse(w, r, response, 403)
+
+}
+func DeleteWallet(w http.ResponseWriter, r *http.Request) {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+
+	walletId := utility.StrToInt(r.URL.Query().Get("id"))
+	if walletId <= 0 {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	if !isok || userDetails.AccountType != "owner" && userDetails.AccountType != "super-admin" {
+		response.Status = "403"
+		response.Message = "You are not authorized to make this request."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	if userDetails.AccountType == "owner" {
+		// get the ticket he wants to delete and check if the userId matches
+		walletData, err := models.Wallet{}.GetWalletById(int64(walletId))
+		if err != nil {
+			response.Status = "400"
+			response.Message = utility.GetSqlErrorString(err)
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		if walletData.CompanyId != userDetails.CompanyID {
+			response.Status = "403"
+			response.Message = "You are not authorized to make this request."
+			utility.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+	}
+	_, err := models.Wallet{}.DeleteWallet(int64(walletId))
+	if err != nil {
+		response.Status = "400"
+		response.Message = utility.GetSqlErrorString(err)
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	response.Status = "200"
+	response.Message = "Wallet deleted successfully."
+	utility.RenderJsonResponse(w, r, response, 200)
+}
