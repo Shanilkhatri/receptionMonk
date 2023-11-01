@@ -11,6 +11,9 @@ const AddOrder = lazy(() => import('../pages/Order/AddOrder'));
 const EditOrder = lazy(() => import('../pages/Order/EditOrder'));
 const ViewOrder = lazy(() => import('../pages/Order/ViewOrder'));
 const OrderDetails = lazy(() => import('../pages/Order/OrderDetails'));
+const AddWallet = lazy(() => import('../pages/Wallet/AddWallet'));
+const EditWallet = lazy(() => import('../pages/Wallet/EditWallet'));
+const ViewWallet = lazy(() => import('../pages/Wallet/ViewWallet'));
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Finance = lazy(() => import('../pages/Finance'));
 const Crypto = lazy(() => import('../pages/Crypto'));
@@ -166,7 +169,21 @@ const routes = [
         path: '/orderdetails',
         element: <OrderDetails />
     },
-    
+
+    // Wallet
+    {
+        path: '/addwallet',
+        element: <AddWallet />
+    },
+    {
+        path: '/editwallet',
+        element: <EditWallet />
+    },
+    {
+        path: '/viewwallet',
+        element: <ViewWallet />
+    },
+
     // analytics page
     {
         path: '/analytics',
