@@ -73,7 +73,7 @@ func PostWallet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// getting userDetails from the token
-	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
 	// as directed in the documentation, only accountType "owner" can access this route
 	if !isOk || userDetails.AccountType != "owner" {
 		response.Status = "403"
