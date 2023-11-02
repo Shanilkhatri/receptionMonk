@@ -331,6 +331,25 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
+                            
+                            {/* Component */}
+                             <li className="menu py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
+                                <NavLink to="/components/flashes">
+                                    <button type="button" className={`${currentMenu === 'flashes' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('flashes')}>
+                                        <div className="flex items-center">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M19.0001 9.7041V9C19.0001 5.13401 15.8661 2 12.0001 2C8.13407 2 5.00006 5.13401 5.00006 9V9.7041C5.00006 10.5491 4.74995 11.3752 4.28123 12.0783L3.13263 13.8012C2.08349 15.3749 2.88442 17.5139 4.70913 18.0116C9.48258 19.3134 14.5175 19.3134 19.291 18.0116C21.1157 17.5139 21.9166 15.3749 20.8675 13.8012L19.7189 12.0783C19.2502 11.3752 19.0001 10.5491 19.0001 9.7041Z"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                />
+                                                <path opacity="0.5" d="M7.5 19C8.15503 20.7478 9.92246 22 12 22C14.0775 22 15.845 20.7478 16.5 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                            </svg>
+                                            <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('flashes')}</span>
+                                        </div>
+                                    </button>
+                                </NavLink>
+                            </li>
 
                             <h2 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                 <svg className="w-4 h-5 flex-none hidden" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -612,6 +631,9 @@ const Sidebar = () => {
                                         </li>
                                         <li>
                                             <NavLink to="/components/timeline">{t('timeline')}</NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/components/flashes">{t('flashes')}</NavLink>
                                         </li>
                                         <li>
                                             <NavLink to="/components/notifications">{t('notifications')}</NavLink>

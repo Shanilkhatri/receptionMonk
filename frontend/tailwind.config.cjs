@@ -14,8 +14,8 @@ module.exports = {
                     'dark-light': 'rgba(67,97,238,.15)',
                 },
                 secondary: {
-                    DEFAULT: '#805dca',
-                    light: '#ebe4f7',
+                    DEFAULT: '#c8400d',
+                    light: '#edb6a1',
                     'dark-light': 'rgb(128 93 202 / 15%)',
                 },
                 success: {

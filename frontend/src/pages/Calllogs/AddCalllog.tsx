@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
@@ -71,7 +72,14 @@ const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) ===
                                 <button type="button" className="btn btn-outline-dark rounded-xl px-6 font-bold">RESET</button>
                             </div>
                             <div className="flex items-center lg:ml-6 w-1/2">
-                                <button type="submit" className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:border-black font-bold">ADD</button>
+                              
+                                <button 
+                                    type="submit" 
+                                    className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:border-black font-bold" 
+                                >
+                                        ADD
+                                </button>
+                                
                             </div>
                         </div>
                     </div>
