@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { IRootState } from '../../store';
 import { useEffect } from 'react';
 import { setPageTitle } from '../../store/themeConfigSlice';
@@ -13,8 +13,7 @@ const Login = () => {
         dispatch(setPageTitle('Login'));
     });
     const navigate = useNavigate();
-    const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
-
+   
     const submitForm = () => {
         // navigate('/');
         const toast = Swal.mixin({
@@ -43,9 +42,9 @@ const Login = () => {
                         <div><img className="h-20" src="/assets/images/logo/rm.png" alt="logo" /></div>                   
                     </div>
                     <div className="text-center pb-8">
-                    <h1 className="font-bold text-2xl text-black pb-12">Reception <span className="text-orange-700">Monk</span></h1>
-                    <h2 className="font-semibold text-xl mb-3 text-neutral-800">Sign In</h2>
-                 </div>
+                        <h1 className="font-bold text-2xl text-black pb-12">Reception <span className="text-orange-700">Monk</span></h1>
+                        <h2 className="font-semibold text-xl mb-3 text-neutral-800">Sign In</h2>
+                    </div>
                 </div>
 
                 <Formik
