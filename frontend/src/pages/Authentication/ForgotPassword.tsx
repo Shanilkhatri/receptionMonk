@@ -55,8 +55,7 @@ const ForgotPassword = () => {
                 >
                     {({ errors, submitCount, touched })  => (   
                         <Form className="space-y-5">
-                            <p className="mb-7">Enter your email to recover your password</p>
-                           
+                            
                             <div className={submitCount ? (errors.authForgotPassword ? 'has-error' : 'has-success') : ''}>
                                 <label htmlFor="authForgotPassword">Email <span className='text-red-600'>*</span></label>
                                 <Field name="authForgotPassword" type="email" id="authForgotPassword" placeholder="Enter Email Address" className="form-input border border-gray-400 focus:border-orange-400" />
