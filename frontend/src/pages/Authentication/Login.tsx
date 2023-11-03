@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { IRootState } from '../../store';
 import { useEffect } from 'react';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';

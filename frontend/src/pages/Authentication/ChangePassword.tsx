@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../store';
+import { useDispatch} from 'react-redux';
 import { useEffect } from 'react';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';
@@ -13,8 +12,7 @@ const ChangePassword = () => {
         dispatch(setPageTitle('Change Password'));
     });
     const navigate = useNavigate();
-    const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
-
+    
     const submitForm = () => {
         // navigate('/');
         const toast = Swal.mixin({
