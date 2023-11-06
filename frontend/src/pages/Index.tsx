@@ -210,8 +210,8 @@ const Index = () => {
             </ul>
 
             <div className="pt-5">
-                <div className="w-full h-full flex flex-col sm:flex-row gap-6">
-                    <div className="w-full sm:w-2/3"> 
+                <div className="w-full h-full flex flex-col lg:flex-row gap-6">
+                    <div className="w-full 2xl:w-2/3"> 
                         <div className="panel overflow-hidden h-full shadow-md">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -243,73 +243,75 @@ const Index = () => {
                                 </div>
                             </div>
                             <div className="relative mt-5">
-                                <div className="grid grid-cols-3 gap-6 p-2 text-center">                                    
+                                <div className="grid md:grid-cols-3 gap-6 p-2 text-center">                                    
                                     <div className="flex flex-col justify-center items-center">
                                         <img src="/assets/images/profile-34.jpeg" alt="img" className="w-24 h-24 rounded-full object-cover  mb-5" />
                                         <p className="font-semibold text-primary text-2xl">John Miller</p>
                                     </div>
 
-                                    <ul className="flex flex-col max-w-[160px] m-auto space-y-4 font-semibold text-gray-600 dark:text-gray-400">
-                                    <li className="flex items-center gap-2">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
-                                            <path
-                                                opacity="0.5"
-                                                d="M5 8.51464C5 4.9167 8.13401 2 12 2C15.866 2 19 4.9167 19 8.51464C19 12.0844 16.7658 16.2499 13.2801 17.7396C12.4675 18.0868 11.5325 18.0868 10.7199 17.7396C7.23416 16.2499 5 12.0844 5 8.51464Z"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                            <path
-                                                d="M14 9C14 10.1046 13.1046 11 12 11C10.8954 11 10 10.1046 10 9C10 7.89543 10.8954 7 12 7C13.1046 7 14 7.89543 14 9Z"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                            <path
-                                                d="M20.9605 15.5C21.6259 16.1025 22 16.7816 22 17.5C22 19.9853 17.5228 22 12 22C6.47715 22 2 19.9853 2 17.5C2 16.7816 2.37412 16.1025 3.03947 15.5"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                                strokeLinecap="round"
-                                            />
-                                        </svg>
-                                        New York, USA
-                                    </li>
-                                    <li>
-                                        <button className="flex items-center gap-2">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <div className='flex justify-center'>
+                                        <ul className="flex flex-col justify-evenly max-w-[160px] space-y-4 font-semibold text-gray-600 dark:text-gray-400">
+                                        <li className="flex items-center gap-2">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
                                                 <path
                                                     opacity="0.5"
-                                                    d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                                    d="M5 8.51464C5 4.9167 8.13401 2 12 2C15.866 2 19 4.9167 19 8.51464C19 12.0844 16.7658 16.2499 13.2801 17.7396C12.4675 18.0868 11.5325 18.0868 10.7199 17.7396C7.23416 16.2499 5 12.0844 5 8.51464Z"
                                                     stroke="currentColor"
                                                     strokeWidth="1.5"
                                                 />
                                                 <path
-                                                    d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
+                                                    d="M14 9C14 10.1046 13.1046 11 12 11C10.8954 11 10 10.1046 10 9C10 7.89543 10.8954 7 12 7C13.1046 7 14 7.89543 14 9Z"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                />
+                                                <path
+                                                    d="M20.9605 15.5C21.6259 16.1025 22 16.7816 22 17.5C22 19.9853 17.5228 22 12 22C6.47715 22 2 19.9853 2 17.5C2 16.7816 2.37412 16.1025 3.03947 15.5"
                                                     stroke="currentColor"
                                                     strokeWidth="1.5"
                                                     strokeLinecap="round"
                                                 />
                                             </svg>
-                                            John@gmail.com
-                                        </button>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M5.00659 6.93309C5.04956 5.7996 5.70084 4.77423 6.53785 3.93723C7.9308 2.54428 10.1532 2.73144 11.0376 4.31617L11.6866 5.4791C12.2723 6.52858 12.0372 7.90533 11.1147 8.8278M17.067 18.9934C18.2004 18.9505 19.2258 18.2992 20.0628 17.4622C21.4558 16.0692 21.2686 13.8468 19.6839 12.9624L18.5209 12.3134C17.4715 11.7277 16.0947 11.9628 15.1722 12.8853"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                            <path
-                                                opacity="0.5"
-                                                d="M5.00655 6.93311C4.93421 8.84124 5.41713 12.0817 8.6677 15.3323C11.9183 18.5829 15.1588 19.0658 17.0669 18.9935M15.1722 12.8853C15.1722 12.8853 14.0532 14.0042 12.0245 11.9755C9.99578 9.94676 11.1147 8.82782 11.1147 8.82782"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                            />
-                                        </svg>
-                                        <span className="whitespace-nowrap text-primary font-bold" dir="ltr">
-                                            +91 98562 52145
-                                        </span>
-                                    </li>
-                                    </ul>
+                                            New York, USA
+                                        </li>
+                                        <li>
+                                            <button className="flex items-center gap-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        opacity="0.5"
+                                                        d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.5"
+                                                    />
+                                                    <path
+                                                        d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.5"
+                                                        strokeLinecap="round"
+                                                    />
+                                                </svg>
+                                                John@gmail.com
+                                            </button>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M5.00659 6.93309C5.04956 5.7996 5.70084 4.77423 6.53785 3.93723C7.9308 2.54428 10.1532 2.73144 11.0376 4.31617L11.6866 5.4791C12.2723 6.52858 12.0372 7.90533 11.1147 8.8278M17.067 18.9934C18.2004 18.9505 19.2258 18.2992 20.0628 17.4622C21.4558 16.0692 21.2686 13.8468 19.6839 12.9624L18.5209 12.3134C17.4715 11.7277 16.0947 11.9628 15.1722 12.8853"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                />
+                                                <path
+                                                    opacity="0.5"
+                                                    d="M5.00655 6.93311C4.93421 8.84124 5.41713 12.0817 8.6677 15.3323C11.9183 18.5829 15.1588 19.0658 17.0669 18.9935M15.1722 12.8853C15.1722 12.8853 14.0532 14.0042 12.0245 11.9755C9.99578 9.94676 11.1147 8.82782 11.1147 8.82782"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                />
+                                            </svg>
+                                            <span className="whitespace-nowrap text-primary font-bold" dir="ltr">
+                                                +91 98562 52145
+                                            </span>
+                                        </li>
+                                        </ul>
+                                    </div>
 
                                     <div>
                                         <ReactApexChart options={options} series={options.series} type="radialBar" height={200} /> 
@@ -319,7 +321,7 @@ const Index = () => {
                         </div>
                     </div>
 
-                    <div className="w-full sm:w-1/3">         
+                    <div className="w-full 2xl:w-1/3">         
                         <div className="grid h-full col-span-1 row-start-2 gap-6">
                             <div className="panel h-full grid col-span-1 shadow-md">
                                 <div className="flex">  
@@ -338,13 +340,13 @@ const Index = () => {
                                 <div className="flex items-end justify-evenly">
                                     <div className="">
                                         <button type="button" className="flex shadow-[0_0_2px_0_#bfc9d4] bg-[#EBF1F6] rounded-full px-6 py-1 text-white-light place-content-center ltr:mr-2 rtl:ml-2">
-                                            <span className='font-semibold text-lg text-gray-900'>Purchase Plan</span>
+                                            <span className='font-semibold text-gray-900 text-base'>Purchase Plan</span>
                                         </button>
                                     </div>
                                     <div className="">
-                                        <button type="button" className="btn btn-primary rounded shadow-[0_0_1px_0_#bfc9d4] rounded-full  py-1 ps-6 text-white text-base hover:bg-[#4361ee]">
+                                        <button type="button" className="btn btn-primary rounded shadow-[0_0_1px_0_#bfc9d4] rounded-full text-base py-1 ps-6 text-white hover:bg-[#4361ee]">
                                             Recharge Wallet
-                                            <span className='bg-[#EBF1F6] rounded-xl ms-3'>
+                                            <span className='bg-[#EBF1F6] rounded-xl ms-3 font-semibold'>
                                                 <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -407,7 +409,7 @@ const Index = () => {
                                 </div>
                             </div>
 
-                            <div className='flex items-center'>
+                            <div className='flex items-center justify-center'>
                                 <div>
                                     <div className='dark:text-gray-400 pb-3'>Total Received</div>
                                     <div className="text-[#04DC8B] text-3xl">7,929</div>
@@ -432,7 +434,7 @@ const Index = () => {
                                 </div>
                             </div>
 
-                            <div className='flex items-center'>
+                            <div className='flex items-center justify-center'>
                                 <div>
                                     <div className='dark:text-gray-400 pb-3'>Total Missed</div>
                                     <div className="text-[#dc3545] text-3xl">1,419</div>
@@ -482,7 +484,7 @@ const Index = () => {
                                 </div>
                             </div>
 
-                            <div className='flex items-center'>
+                            <div className='flex items-center justify-center'>
                                 <div>
                                     <div className='dark:text-gray-400 pb-3'>Total IVR</div>
                                     <div className="text-[#0dcaf0] text-3xl">5,233</div>
@@ -493,7 +495,7 @@ const Index = () => {
 
                     <div className="panel h-full sm:col-span-2 lg:col-span-1 shadow-md">
                         <div className="flex justify-between dark:text-white-light mb-5">
-                            <h5 className="font-semibold text-lg ">Extensions</h5>
+                            <h5 className="font-semibold text-lg">Extensions</h5>
                         </div>
 
                         <div className="grid sm:grid-cols-2 gap-8 text-sm text-[#515365] font-bold">
@@ -514,7 +516,7 @@ const Index = () => {
                                 </div>
                             </div>
 
-                            <div className='flex items-center'>
+                            <div className='flex items-center justify-center'>
                                 <div>
                                     <div className='dark:text-gray-400 pb-3'>Total Members</div>
                                     <div className="text-[#FD8F01] text-3xl">10,419</div>
@@ -526,14 +528,14 @@ const Index = () => {
 
                 <div className="grid col-span-12 pb-6">
                     <div className="panel h-full bg-secondary-light">
-                        <div className="grid grid-cols-12">
-                            <div className="grid col-span-9">                            
+                        <div className="grid md:grid-cols-12">
+                            <div className="grid md:col-span-9">                            
                                 <div className="p-2">
                                     <ReactApexChart options={uniqueVisitorSeries.options} series={uniqueVisitorSeries.series} type="bar" height={360} />
                                 </div>
                             </div>
 
-                            <div className="grid col-span-3 shadow-md">
+                            <div className="grid md:col-span-3 shadow-md">
                                 <div className="panel">
                                     <div className="mb-5">
                                         <h5 className="font-semibold text-lg dark:text-white-light">Graph Statistics</h5>

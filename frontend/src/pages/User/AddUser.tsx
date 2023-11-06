@@ -26,7 +26,35 @@ const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) ===
                 </li>
             </ul>
 
-            <div className='flex xl:flex-row flex-col gap-2.5 py-5'>
+
+            <div className='panel py-6 mt-8'>
+                <div className='p-4'>
+                    <div className='grid lg:grid-cols-2'>
+                        <div className='grid md:grid-cols-2'>
+                            <div>
+                                <label htmlFor="user-name" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                    Name
+                                </label>
+                            </div>
+                            <div>
+                                    <input id="user-name" type="text" name="user-name" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Name" />        </div>
+                            </div>
+                        <div className='grid  md:grid-cols-2'>
+                            <div>
+                                <label htmlFor="user-email" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                    Email
+                                </label>
+                            </div>
+                            <div>   
+                                <input id="user-email" type="email" name="user-email" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+
+            {/* <div className='flex xl:flex-row flex-col gap-2.5 py-5'>
             <div className="panel px-0 flex-1 py-6 ltr:xl:mr-6 rtl:xl:ml-6">
                 <div className="mt-8 px-4">
                     <div className='text-xl font-bold text-dark dark:text-white text-center'>Add User</div>
@@ -100,40 +128,10 @@ const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) ===
                         <div className="flex items-center lg:ml-6 w-1/2">
                             <button type="submit" className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:border-black font-bold">ADD</button>
                         </div>
-                    </div>
-                    {/*  */}
-                    {/* <div className="flex justify-center flex-col">
-                        <div className="w-full mb-6">   
-                            <div className="mt-4 flex items-center">
-                                <label htmlFor="reciever-name" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                    Name
-                                </label>
-                                <input id="reciever-name" type="text" name="reciever-name" className="form-input flex-1" placeholder="Enter Name" />
-                            </div>
-                            <div className="mt-4 flex items-center">
-                                <label htmlFor="reciever-email" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                    Email
-                                </label>
-                                <input id="reciever-email" type="email" name="reciever-email" className="form-input flex-1" placeholder="Enter Email" />
-                            </div>
-                            <div className="mt-4 flex items-center">
-                                <label htmlFor="reciever-address" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                    Password
-                                </label>
-                                <input id="reciever-address" type="text" name="reciever-address" className="form-input flex-1" placeholder="Enter Password" />
-                            </div>
-                            <div className="mt-4 flex items-center">
-                                <label htmlFor="reciever-number" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                    Phone Number
-                                </label>
-                                <input id="reciever-number" type="text" name="reciever-number" className="form-input flex-1" placeholder="Enter Phone number" />
-                            </div>
-                        </div>
-                    </div> */}
-                    {/*  */}
+                    </div>                    
                 </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };
