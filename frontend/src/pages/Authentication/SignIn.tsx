@@ -6,31 +6,62 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
-
+// Define the type for form values
+interface FormValues {
+    authEmailId: string;
+    // Define other fields if needed
+  }
 const SignIn = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Sign In'));
     });
     const navigate = useNavigate();
-    
-    const submitForm = () => {
-        navigate('/auth/SigninOTP');
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'OTP has been sent to registered mobile number successfully',
-            padding: '10px 20px',
-        });
+
+    const submitForm = async (values:FormValues,{setSubmitting}:any) => {
+        const authEmailId = values.authEmailId
+        // console.log(values) // authEmailId: "hi@gmail"
+        // console.log(authEmailId) // "hi@gmail"
+
+        // use fetch to get to route
+        try {
+            // Send the form data to a server endpoint for validation and processing
+            const response = await fetch('/generateOtp', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(values),
+            });
+            if (response.ok) {
+                // Successful response
+                const responseData = await response.json(); // Parse the response JSON
+                console.log('Response Data:', responseData);
+        
+              }
+        }catch (error) {
+            console.error('Error:', error);
+        }      
+        
+        // navigate('/auth/SigninOTP');
+        // const toast = Swal.mixin({
+        //     toast: true,
+        //     position: 'top',
+        //     showConfirmButton: false,
+        //     timer: 3000,
+        // });
+        // toast.fire({
+        //     icon: 'success',
+        //     title: 'OTP has been sent to registered mobile number successfully',
+        //     padding: '10px 20px',
+        // });
+
+        // setting submit button disabled to false
+        setSubmitting(false)
     };
 
     const SubmittedForm = Yup.object().shape({
-        authPhoneNo: Yup.string().required('It must be 10-digit Number'),
+        authEmailId: Yup.string().email('Invalid Email Address').required('Please enter a valid E-mail'),
     });
 
     return (
@@ -42,40 +73,38 @@ const SignIn = () => {
                     </div>
                     <div className="text-center pb-8">
                         <h1 className="font-bold text-2xl text-black pb-12">Reception <span className="text-orange-700">Monk</span></h1>
-                        <h2 className="font-semibold text-xl mb-3 text-neutral-800">Sign In</h2>
+                        <h2 className="font-semibold text-xl mb-3 text-neutral-800">Login / SignUp</h2>
                     </div>
                 </div>
 
                 <Formik
                     initialValues={{
-                        authPhoneNo: '',
+                        authEmailId: '',
                     }}
                     validationSchema={SubmittedForm}
-                    onSubmit={() => {}}
+                    validateOnChange={true}
+                    validateOnBlur={true}
+                    onSubmit={(values, actions) => {
+                        submitForm(values,actions);
+                      }}
                 >
                     {({ errors, submitCount, touched }) => (
                         <Form className="space-y-5">
-                            <p className="mb-7">Enter your phone number to complete Registration</p>
-                            
-                            <div className={submitCount ? (errors.authPhoneNo ? 'has-error' : 'has-success') : ''}>
-                                <label htmlFor="authPhoneNo">Phone No. <span className='text-red-600'>*</span></label>
-                                <Field name="authPhoneNo" type="text" id="authPhoneNo" placeholder="Enter Phone Number" className="form-input border border-gray-400 focus-border-orange-400" />
-                                
-                                {submitCount ? errors.authPhoneNo ? <div className="text-danger mt-1">{errors.authPhoneNo}</div> : <div className="text-success mt-1">It is fine now!</div> : ''}
+                            {/* <p className="mb-7">Enter your E-mail to Login / SignUp</p> */}
+
+                            <div className={submitCount ? (errors.authEmailId ? 'has-error' : 'has-success') : ''}>
+                                <label htmlFor="authEmailId">E-mail <span className='text-red-600'>*</span></label>
+                                <Field name="authEmailId" type="text" id="authEmailId" placeholder="Enter E-mail" className="form-input border border-gray-400 focus-border-orange-400" />
+
+                                {submitCount ? errors.authEmailId ? <div className="text-danger mt-1">{errors.authEmailId}</div> : <div className="text-success mt-1">It is fine now!</div> : ''}
                             </div>
 
                             <div className="flex justify-center py-6">
                                 <button
                                     type="submit"
                                     className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover-bg-[#282828]"
-                                    onClick=
-                                    {() => {
-                                        if (touched.authPhoneNo && !errors.authPhoneNo) {
-                                            submitForm();
-                                        }
-                                    }}
                                 >
-                                    REGISTER
+                                    SUBMIT
                                 </button>
                             </div>
                         </Form>
