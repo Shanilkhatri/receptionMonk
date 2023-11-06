@@ -39,6 +39,7 @@ const Countdown = lazy(() => import('../pages/Components/Countdown'));
 const Counter = lazy(() => import('../pages/Components/Counter'));
 const SweetAlert = lazy(() => import('../pages/Components/SweetAlert'));
 const Timeline = lazy(() => import('../pages/Components/Timeline'));
+const Flashes = lazy(() => import('../pages/Components/Flashes'));
 const Notification = lazy(() => import('../pages/Components/Notification'));
 const MediaObject = lazy(() => import('../pages/Components/MediaObject'));
 const ListGroup = lazy(() => import('../pages/Components/ListGroup'));
@@ -297,6 +298,10 @@ const routes = [
     {
         path: '/components/notifications',
         element: <Notification />,
+    },
+    {
+        path: '/components/flashes',
+        element: <Flashes />,
     },
     {
         path: '/components/media-object',

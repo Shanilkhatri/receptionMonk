@@ -69,7 +69,7 @@ const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) ===
                         </div>
                         <div className="flex w-full pb-12">
                             <div className="flex items-center lg:justify-end lg:mr-6 w-1/2">                        
-                                <button type="button" className="btn btn-outline-dark rounded-xl px-6 font-bold">RESET</button>
+                                <button type="reset" className="btn btn-outline-dark rounded-xl px-6 font-bold">RESET</button>
                             </div>
                             <div className="flex items-center lg:ml-6 w-1/2">
                               
