@@ -30,7 +30,7 @@ const SignIn = () => {
     };
 
     const SubmittedForm = Yup.object().shape({
-        authPhoneNo: Yup.string().required('It must be 10-digit Number'),
+        authEmailId: Yup.string().email('Invalid Email Address').required('Please enter a valid E-mail'),
     });
 
     return (
@@ -48,20 +48,20 @@ const SignIn = () => {
 
                 <Formik
                     initialValues={{
-                        authPhoneNo: '',
+                        authEmailId: '',
                     }}
                     validationSchema={SubmittedForm}
                     onSubmit={() => {}}
                 >
                     {({ errors, submitCount, touched }) => (
                         <Form className="space-y-5">
-                            <p className="mb-7">Enter your phone number to complete Registration</p>
+                            <p className="mb-7">Enter your E-mail to complete Registration</p>
                             
-                            <div className={submitCount ? (errors.authPhoneNo ? 'has-error' : 'has-success') : ''}>
-                                <label htmlFor="authPhoneNo">Phone No. <span className='text-red-600'>*</span></label>
-                                <Field name="authPhoneNo" type="text" id="authPhoneNo" placeholder="Enter Phone Number" className="form-input border border-gray-400 focus-border-orange-400" />
+                            <div className={submitCount ? (errors.authEmailId ? 'has-error' : 'has-success') : ''}>
+                                <label htmlFor="authEmailId">E-mail <span className='text-red-600'>*</span></label>
+                                <Field name="authEmailId" type="email" id="authEmailId" placeholder="Enter E-mail" className="form-input border border-gray-400 focus-border-orange-400" />
                                 
-                                {submitCount ? errors.authPhoneNo ? <div className="text-danger mt-1">{errors.authPhoneNo}</div> : <div className="text-success mt-1">It is fine now!</div> : ''}
+                                {submitCount ? errors.authEmailId ? <div className="text-danger mt-1">{errors.authEmailId}</div> : <div className="text-success mt-1">It is fine now!</div> : ''}
                             </div>
 
                             <div className="flex justify-center py-6">
@@ -70,7 +70,7 @@ const SignIn = () => {
                                     className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover-bg-[#282828]"
                                     onClick=
                                     {() => {
-                                        if (touched.authPhoneNo && !errors.authPhoneNo) {
+                                        if (touched.authEmailId && !errors.authEmailId) {
                                             submitForm();
                                         }
                                     }}
