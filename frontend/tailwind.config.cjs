@@ -15,7 +15,7 @@ module.exports = {
                 },
                 secondary: {
                     DEFAULT: '#c8400d',
-                    light: '#edb6a1',
+                    light: '#fcf2ee',
                     'dark-light': 'rgb(128 93 202 / 15%)',
                 },
                 success: {
