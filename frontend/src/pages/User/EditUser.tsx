@@ -37,9 +37,9 @@ const dispatch = useDispatch();
         userPassword: Yup.string().required('Please fill User Password'),
         userPhone: Yup.string().required('Please fill User Phone Number'),
         userDob: Yup.string().required('Please fill User DOB'),
-        userAccType: Yup.string().required('Please fill User Type'),
+        userAccType: Yup.string().required('Please select User Type'),
         userCompName: Yup.string().required('Please fill User Company Name'),
-        userStatus: Yup.string().required('Please fill User Status'),
+        userStatus: Yup.string().required('Please select User Status'),
     });
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
@@ -73,7 +73,7 @@ const dispatch = useDispatch();
                 >
                     {({ errors, submitCount, touched })  => (   
                         <Form className="space-y-5">
-                            <div className='panel py-6 mt-8'>
+                            <div className='panel py-6 mt-6'>
                                 <div className='p-4 xl:m-12 lg:m-0 md:m-8 xl:my-18 xl:my-8'>  
                                     <div className='text-xl font-bold text-dark dark:text-white text-center pb-12'>Update User</div>      
                                     <div className='grid lg:grid-cols-2 lg:space-x-12 lg:my-5'>
