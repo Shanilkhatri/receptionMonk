@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"image/png"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"reakgo/models"
 	"reakgo/utility"
@@ -133,4 +135,21 @@ func RegisterTwoFa(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+type SignupDetails struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Otp      string `json:"otp"`
+}
+
+func GenerateOTP() string {
+	rand.Seed(time.Now().UnixNano())
+
+	otp := ""
+	for i := 0; i < 6; i++ {
+		digit := rand.Intn(10) // Generate a random digit (0-9)
+		otp += fmt.Sprint(digit)
+	}
+	return otp
 }
