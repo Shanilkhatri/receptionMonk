@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 interface FormValues {
     authEmailId: string;
     // Define other fields if needed
-  }
+}
 const SignIn = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -18,7 +18,7 @@ const SignIn = () => {
     });
     const navigate = useNavigate();
 
-    const submitForm = async (values:FormValues,{setSubmitting}:any) => {
+    const submitForm = async (values: FormValues, { setSubmitting }: any) => {
         const authEmailId = values.authEmailId
         // console.log(values) // authEmailId: "hi@gmail"
         // console.log(authEmailId) // "hi@gmail"
@@ -27,35 +27,46 @@ const SignIn = () => {
         try {
             // Send the form data to a server endpoint for validation and processing
             const response = await fetch('/generateOtp', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(values),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
             });
             if (response.ok) {
                 // Successful response
-                const responseData = await response.json(); // Parse the response JSON
-                console.log('Response Data:', responseData);
-        
-              }
-        }catch (error) {
-            console.error('Error:', error);
-        }      
-        
-        // navigate('/auth/SigninOTP');
-        // const toast = Swal.mixin({
-        //     toast: true,
-        //     position: 'top',
-        //     showConfirmButton: false,
-        //     timer: 3000,
-        // });
-        // toast.fire({
-        //     icon: 'success',
-        //     title: 'OTP has been sent to registered mobile number successfully',
-        //     padding: '10px 20px',
-        // });
+                navigate('/auth/SigninOTP');
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                toast.fire({
+                    icon: 'success',
+                    title: 'OTP has been sent to registered mobile number successfully',
+                    padding: '10px 20px',
+                });
 
+                // setting submit button disabled to false
+                setSubmitting(false)
+                // const responseData = await response.json(); // Parse the response JSON
+            }else{
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                toast.fire({
+                    icon: 'error', 
+                    title: 'Sending OTP failed. Please try again.',
+                    padding: '10px 20px',
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
         // setting submit button disabled to false
         setSubmitting(false)
     };
@@ -85,8 +96,8 @@ const SignIn = () => {
                     validateOnChange={true}
                     validateOnBlur={true}
                     onSubmit={(values, actions) => {
-                        submitForm(values,actions);
-                      }}
+                        submitForm(values, actions);
+                    }}
                 >
                     {({ errors, submitCount, touched }) => (
                         <Form className="space-y-5">

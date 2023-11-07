@@ -6,31 +6,62 @@ import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
 
+interface FormValues {
+    authSignInOTP1: string
+    authSignInOTP2: string
+    authSignInOTP3: string
+    authSignInOTP4: string
+    authSignInOTP5: string
+    authSignInOTP6: string
 
+    // Define other fields if needed
+}
 const SignInOTP = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('SignIn OTP Verification'));
     });
     const navigate = useNavigate();
-   
-    const submitForm = () => {
-        navigate('/');
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'success',
-            title: 'OTP has been verified successfully',
-            padding: '10px 20px',
-        });
+
+
+    const submitForm = (values: FormValues, { setSubmitting }: any) => {
+        console.log("values: ", values)
+        // navigate('/');
+        // const toast = Swal.mixin({
+        //     toast: true,
+        //     position: 'top',
+        //     showConfirmButton: false,
+        //     timer: 3000,
+        // });
+        // toast.fire({
+        //     icon: 'success',
+        //     title: 'OTP has been verified successfully',
+        //     padding: '10px 20px',
+        // });
+        setSubmitting(false)
     };
 
-    const SubmittedForm = Yup.object().shape({
-        authSignInOTP: Yup.string().required('Please fill all fields'),
+    
+    function hasAnyError(errors:any) {
+        for (let i = 1; i <= 6; i++) {
+            if (errors[`authSignInOTP${i}`]) {
+                document.getElementById(`authSignInOTP${i}`)?.classList.remove("border-gray-400")
+                document.getElementById(`authSignInOTP${i}`)?.classList.add("border-red-400")
+                return true; // has err
+            }else{
+                document.getElementById(`authSignInOTP${i}`)?.classList.remove("border-red-400")
+                document.getElementById(`authSignInOTP${i}`)?.classList.add("border-green-400")
+            }
+        }
+        return false; //no err
+    }
+    const validationSchema = Yup.object().shape({
+        authSignInOTP1: Yup.string().matches(/^\d$/, 'Enter a digit').required('Required'),
+        authSignInOTP2: Yup.string().matches(/^\d$/, 'Enter a digit').required('Required'),
+        authSignInOTP3: Yup.string().matches(/^\d$/, 'Enter a digit').required('Required'),
+        authSignInOTP4: Yup.string().matches(/^\d$/, 'Enter a digit').required('Required'),
+        authSignInOTP5: Yup.string().matches(/^\d$/, 'Enter a digit').required('Required'),
+        authSignInOTP6: Yup.string().matches(/^\d$/, 'Enter a digit').required('Required'),
     });
 
     return (
@@ -38,64 +69,70 @@ const SignInOTP = () => {
             <div className="panel sm:w-[480px] m-6 max-w-lg w-full shadow-md">
                 <div className='text-center'>
                     <div className="flex justify-center">
-                        <div><img className="h-20" src="/assets/images/logo/rm.png" alt="logo" /></div>                   
+                        <div><img className="h-20" src="/assets/images/logo/rm.png" alt="logo" /></div>
                     </div>
                     <div className="text-center pb-8">
                         <h1 className="font-bold text-2xl text-black pb-12">Reception <span className="text-orange-700">Monk</span></h1>
                         <h2 className="font-semibold text-xl mb-3 text-neutral-800">OTP</h2>
                     </div>
-                </div> 
+                </div>
 
-                 <Formik
+                <Formik
                     initialValues={{
-                        authSignInOTP: '',
+                        authSignInOTP1: '',
+                        authSignInOTP2: '',
+                        authSignInOTP3: '',
+                        authSignInOTP4: '',
+                        authSignInOTP5: '',
+                        authSignInOTP6: '',
                     }}
-                    validationSchema={SubmittedForm}
-                    onSubmit={() => {}}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, actions) => {
+                        submitForm(values, actions);
+                    }}
                 >
-                    {({ errors, submitCount, touched })  => (   
+                    {({ errors, submitCount, touched }) => (
                         <Form className="space-y-5">
                             <p className="mb-7 text-center">Enter 6-digit OTP to complete Registration</p>
-                            <div className={submitCount ? (errors.authSignInOTP ? 'has-error' : 'has-success') : ''}>
+                            <div className={submitCount && (errors.authSignInOTP1 || errors.authSignInOTP2 || errors.authSignInOTP3 || errors.authSignInOTP4 || errors.authSignInOTP5 || errors.authSignInOTP6) ? 'has-error' : ''}>
                                 <div className="grid grid-cols-6 gap-4 m-8">
-                                    <div>
-                                        <Field name="authSignInOTP1" type="text" className="form-input border border-gray-400 focus:border-orange-400 text-center" tabIndex={1} />
-                                    </div>
-                                    <div>
-                                        <Field name="authSignInOTP2" type="text" className="form-input border border-gray-400 focus:border-orange-400 text-center" tabIndex={2} />
-                                    </div>
-                                    <div>
-                                        <Field name="authSignInOTP3" type="text" className="form-input border border-gray-400 focus:border-orange-400 text-center" tabIndex={3} />
-                                    </div>
-                                    <div>
-                                        <Field name="authSignInOTP4" type="text" className="form-input border border-gray-400 focus:border-orange-400 text-center" tabIndex={4} />
-                                    </div>
-                                    <div>
-                                        <Field name="authSignInOTP5" type="text" className="form-input border border-gray-400 focus:border-orange-400 text-center" tabIndex={5} />
-                                    </div>
-                                    <div>
-                                        <Field name="authSignInOTP6" type="text" className="form-input border border-gray-400 focus:border-orange-400 text-center" tabIndex={6} />
-                                    </div>
-                                </div>
-                                {/* {submitCount ? errors.authSignInOTP ? <div className="text-danger mx-8">{errors.authSignInOTP}</div> : <div className="text-success mt-1">It is fine!</div> : ''} */}
-                            </div>
+                                    {Array.from({ length: 6 }, (_, i) => (
+                                        <div key={i}>
+                                            <Field
+                                                id = {`authSignInOTP${i + 1}`}
+                                                name={`authSignInOTP${i + 1}`}
+                                                maxLength="1"
+                                                type="text"
+                                                className="form-input border border-gray-400 focus:border-orange-400 text-center"
+                                                tabIndex={i + 1}
+                                            // initialValue={undefined}
+                                            />
 
+                                        </div>
+
+                                    ))}
+                                </div>
+                                {submitCount >= 0 && hasAnyError(errors) && (
+                                    <div className="text-danger mx-8">
+                                        Please fill all the fields correctly with numbers.
+                                    </div>
+                                )}
+                                {/* {submitCount >= 0 && !hasAnyError(errors) && } */}
+                                
+
+                            </div>
                             <div className="flex justify-center py-6">
                                 <button
                                     type="submit"
                                     className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828]"
-                                    onClick={() => {
-                                        if (touched.authSignInOTP && !errors.authSignInOTP) {
-                                            submitForm();
-                                        }                                        
-                                    }}
+
                                 >
-                                        SUBMIT
+                                    SUBMIT
                                 </button>
                             </div>
                         </Form>
                     )}
-                </Formik>      
+                </Formik>
             </div>
         </div>
     );
