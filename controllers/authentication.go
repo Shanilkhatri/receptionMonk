@@ -153,3 +153,17 @@ func GenerateOTP() string {
 	}
 	return otp
 }
+
+func EmailSend(otp string, email string) bool {
+	userEmailId := []string{email} // set email address
+	data := make(map[string]interface{})
+	data["subject"] = "OTP"
+	data["email"] = email
+	data["opt"] = otp
+
+	//if email success return true.
+	if utility.SendEmail(userEmailId, "EmailForOtp", data) {
+		return true
+	}
+	return false
+}
