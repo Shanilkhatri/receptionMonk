@@ -151,3 +151,33 @@ func (auth Authentication) GetAuthenticationByToken(token string) (*Authenticati
 	}
 	return &authO, nil
 }
+
+func (user Authentication) GetUserByEmailIds(email string) (Authentication, error) {
+	var selectedRow Authentication
+	if EmailExistOrNot(email) {
+		err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE email = ?", email)
+		return selectedRow, err
+	} else {
+		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (email) VALUES (:Email)", map[string]interface{}{"Email": selectedRow.Email})
+		// Check error
+		if err != nil {
+			log.Println(err)
+			return selectedRow, err
+		} else {
+			return selectedRow, nil
+		}
+	}
+
+}
+
+func EmailExistOrNot(email string) bool {
+	var countMatchId int64
+	err := utility.Db.QueryRow("SELECT count(*) FROM authentication WHERE email = ?", email).Scan(&countMatchId)
+	//check error
+	if err != nil {
+		log.Println(err)
+		return false
+	} else {
+		return countMatchId > 0
+	}
+}
