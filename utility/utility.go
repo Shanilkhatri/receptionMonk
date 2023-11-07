@@ -612,3 +612,16 @@ func StrToInt(num string) int {
 	}
 	return 0
 }
+
+func DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string) bool {
+	session, err := Store.Get(r, os.Getenv("SESSION_NAME"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return false
+	}
+	// Remove the value from the session
+	delete(session.Values, KeyName)
+	session.Save(r, w)
+	fmt.Fprintln(w, "Value removed from the session")
+	return false
+}
