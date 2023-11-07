@@ -26,7 +26,7 @@ const submitForm = () => {
     });
     toast.fire({
         icon: 'success',
-        title: 'Extension added successfully',
+        title: 'Extension Added Successfully',
         padding: '10px 20px',
     });
 };
