@@ -36,7 +36,7 @@ const SubmittedForm = Yup.object().shape({
     orderTo: Yup.string().required('Please fill order expiry date'),
     orderAmount: Yup.string().required('Please fill order price'),
     orderBuyerName: Yup.string().required('Please fill buyer name'),
-    userStatus: Yup.string().required('Please select user status'),   
+    userStatus: Yup.string().required('Please select order status'),   
 });
 
 const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;

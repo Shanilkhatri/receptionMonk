@@ -32,11 +32,11 @@ const submitForm = () => {
 };
 
 const SubmittedForm = Yup.object().shape({
-    callFrom: Yup.string().required('Please fill call from detail'),
-    callTo: Yup.string().required('Please fill call to detail'),
-    callPlacedAt: Yup.string().required('Please fill call place detail'),
-    callDuration: Yup.string().required('Please fill call duration'),
-    callExtension: Yup.string().required('Please fill call extension (if applicable)'),   
+    callFrom: Yup.string().required('Please fill Call From (e.g. Company, or Person name)'),
+    callTo: Yup.string().required('Please fill Call To (e.g. Company, or Person name)'),
+    callPlacedAt: Yup.string().required('Please fill Call Placed At (e.g., Office, Home)'),
+    callDuration: Yup.string().required('Please fill Call Duration (e.g., Hours, Min and Sec)'),
+    callExtension: Yup.string().required('Please fill Call Extension'),   
 });
 
 const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;

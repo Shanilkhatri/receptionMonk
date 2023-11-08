@@ -33,10 +33,10 @@ const submitForm = () => {
 
 const SubmittedForm = Yup.object().shape({
     extName: Yup.string().required('Please fill Extension Name'),
-    extUserName: Yup.string().required('Please select User Name'),
+    extUserName: Yup.string().required('Please select Extention User'),
     extDept: Yup.string().required('Please fill Department'),
-    extSipServer: Yup.string().required('Please fill User Extension Sip Server'),
-    extSipUserName: Yup.string().required('Please fill Extension User Name'),
+    extSipServer: Yup.string().required('Please fill Extension Sip Server'),
+    extSipUserName: Yup.string().required('Please fill Extension Sip User Name'),
     extSipPwd: Yup.string().required('Please fill Extension Sip Password'),
     extSipPort: Yup.string().required('Please fill Extension Sip Port'),
 });
