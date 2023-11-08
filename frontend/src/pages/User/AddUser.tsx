@@ -63,124 +63,85 @@ const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) ===
                     <div className="mt-8 px-4">          
                         <div className='text-xl font-bold text-dark dark:text-white text-center'>Add User</div>                      
         
-                            <div className="flex justify-between lg:flex-row flex-col">
-                                <div className="lg:w-1/2 w-full m-8">  
-                                    <div className="flex items-center my-8">
-                                        <label htmlFor="userName" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Name
-                                        </label>
-                                        <input id="user-email" type="email" name="user-email" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
-                                    </div>
-                                    <div className="my-8 flex items-center">
-                                        <label htmlFor="user-email" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Email
-                                        </label>
-                                        <input id="user-email" type="email" name="user-email" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
-                                    </div>
-                                    <div className="my-8 flex items-center">
-                                        <label htmlFor="pwd" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Password
-                                        </label>
-                                        <input id="pwd" type="text" name="pwd" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
-                                    </div>
-                                    <div className="my-8 flex items-center">
-                                        <label htmlFor="phn-number" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Phone Number
-                                        </label>
-                                        <input id="phn-number" type="text" name="phn-number" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Phone number" />
-                                    </div>
+                        <div className="flex justify-between lg:flex-row flex-col">
+                            <div className="lg:w-1/2 w-full m-8">  
+                                <div className="flex items-center my-8">
+                                    <label htmlFor="userName" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Name
+                                    </label>
+                                    <input id="user-email" type="email" name="user-email" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
                                 </div>
-                                <div className="lg:w-1/2 w-full m-8">
-                                    <div className="flex items-center my-8">
-                                        <label htmlFor="dob" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Date of Birth
-                                        </label>
-                                        <input id="dob" type="date" name="dob" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Account Number" />
-                                    </div>
-                                    <div className="flex items-center my-8">
-                                        <label htmlFor="acctype" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Account Type
-                                        </label>
-                                        <select id="acctype" name="acctype" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
-                                            <option value="">Select</option>
-                                            <option value="United States">User</option>
-                                            <option value="United Kingdom">Owner</option>                   
-                                        </select>
-                                    </div>
-                                    <div className="flex items-center my-8">
-                                        <label htmlFor="comp-name" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Company Name
-                                        </label>
-                                        <input id="comp-name" type="text" name="comp-name" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Company Name" />
-                                    </div>                            
-                                    <div className="flex items-center my-8">
-                                        <label htmlFor="status" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
-                                            Status
-                                        </label>
-                                        <select id="status" name="status" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
-                                            <option value="">Select</option>
-                                            <option value="United States">Active</option>
-                                            <option value="United Kingdom">Pending</option>
-                                            <option value="Canada">Deactive</option>                                  
-                                        </select>
-                                    </div>
+                                <div className="my-8 flex items-center">
+                                    <label htmlFor="user-email" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Email
+                                    </label>
+                                    <input id="user-email" type="email" name="user-email" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Email" />
+                                </div>
+                                <div className="my-8 flex items-center">
+                                    <label htmlFor="pwd" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Password
+                                    </label>
+                                    <input id="pwd" type="text" name="pwd" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Password" />
+                                </div>
+                                <div className="my-8 flex items-center">
+                                    <label htmlFor="phn-number" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Phone Number
+                                    </label>
+                                    <input id="phn-number" type="text" name="phn-number" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Phone number" />
                                 </div>
                             </div>
-                            <div className="flex w-full pb-12">
-                                <div className="flex items-center lg:justify-end lg:mr-6 w-1/2">                        
-                                    <button type="reset" className="btn btn-outline-dark rounded-xl px-6 font-bold">RESET</button>
+                            <div className="lg:w-1/2 w-full m-8">
+                                <div className="flex items-center my-8">
+                                    <label htmlFor="dob" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Date of Birth
+                                    </label>
+                                    <input id="dob" type="date" name="dob" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Account Number" />
                                 </div>
-                                <div className="flex items-center lg:ml-6 w-1/2">
-                                    <button                                 
-                                        type="submit" 
-                                        className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:border-black font-bold"
-                                    >
-                                        ADD
-                                    </button>
+                                <div className="flex items-center my-8">
+                                    <label htmlFor="acctype" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Account Type
+                                    </label>
+                                    <select id="acctype" name="acctype" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
+                                        <option value="">Select</option>
+                                        <option value="United States">User</option>
+                                        <option value="United Kingdom">Owner</option>                   
+                                    </select>
+                                </div>
+                                <div className="flex items-center my-8">
+                                    <label htmlFor="comp-name" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Company Name
+                                    </label>
+                                    <input id="comp-name" type="text" name="comp-name" className="form-input flex-1 border border-gray-400 focus:border-orange-400" placeholder="Enter Company Name" />
+                                </div>                            
+                                <div className="flex items-center my-8">
+                                    <label htmlFor="status" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">
+                                        Status
+                                    </label>
+                                    <select id="status" name="status" className="form-select flex-1 border border-gray-400 focus:border-orange-400">
+                                        <option value="">Select</option>
+                                        <option value="United States">Active</option>
+                                        <option value="United Kingdom">Pending</option>
+                                        <option value="Canada">Deactive</option>                                  
+                                    </select>
                                 </div>
                             </div>
-                            
-                         {/* <Formik
-                                initialValues={{
-                                    userName: '',
-                                }}
-                                validationSchema={SubmittedForm}
-                                onSubmit={() => {}}
-                            >
-                                {({ errors, submitCount, touched }) => (
-                                    <Form className="space-y-5">
-                                        <div className="mt-8 px-4">
-                                            <div className="flex justify-between lg:flex-row flex-col">
-                                                <div className="lg:w-1/2 w-full m-8"> 
-                                                    <div className={submitCount ? (errors.userName ? 'has-error' : 'has-success') : ''}>
-                                                        <div className="flex items-center my-8">   
-                                                            <label htmlFor="userName" className="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">Full Name </label>
-                                                            <Field name="userName" type="text" id="userName" placeholder="Enter User Name" className="form-input border border-gray-400 focus:border-orange-400" /><br />
-                                                            {submitCount ? errors.userName ? <div className="text-danger mt-1">{errors.userName}</div> : <div className="text-success mt-1">Looks Good!</div> : ''}
-                                                        
-                                                        </div>
-
-                                                    </div> 
-                                                    <button
-                                                        type="submit"
-                                                        className="btn btn-primary !mt-6"
-                                                        onClick={() => {
-                                                            if (touched.userName && !errors.userName) {
-                                                                submitForm();
-                                                            }
-                                                        }}
-                                                    >
-                                                        Submit Form
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Form>
-                                )}
-                            </Formik> */}   
+                        </div>
+                        <div className="flex w-full pb-12">
+                            <div className="flex items-center lg:justify-end lg:mr-6 w-1/2">                        
+                                <button type="reset" className="btn btn-outline-dark rounded-xl px-6 font-bold">RESET</button>
+                            </div>
+                            <div className="flex items-center lg:ml-6 w-1/2">
+                                <button                                 
+                                    type="submit" 
+                                    className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:border-black font-bold"
+                                >
+                                    ADD
+                                </button>
+                            </div>
+                        </div>                         
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
     );
 };

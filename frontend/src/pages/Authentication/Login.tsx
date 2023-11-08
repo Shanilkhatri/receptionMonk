@@ -58,7 +58,7 @@ const Login = () => {
                         <Form className="space-y-5">
                             <div className={submitCount ? (errors.authEmail ? 'has-error' : 'has-success') : ''}>
                                 <label htmlFor="authEmail">Email <span className='text-red-600'>*</span></label>
-                                <Field name="authEmail" type="email" id="authEmail" placeholder="Enter Email Address" className="form-input border border-gray-400 focus:border-orange-400" />
+                                <Field name="authEmail" type="text" id="authEmail" placeholder="Enter Email Address" className="form-input border border-gray-400 focus:border-orange-400" />
 
                                 {submitCount ? errors.authEmail ? <div className="text-danger mt-1">{errors.authEmail}</div> : <div className="text-success mt-1">It is fine!</div> : ''}
                             </div>
