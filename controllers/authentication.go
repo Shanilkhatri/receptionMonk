@@ -195,12 +195,13 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	utility.SessionSet(w, r, utility.Session{Key: "otp", Value: otp})
 	log.Println("otp", otp)
 	utility.SessionSet(w, r, utility.Session{Key: "email", Value: signupDetails.Email})
+
 	boolType := EmailSend(otp, signupDetails.Email)
 	if boolType {
 		response.Status = "200"
-		response.Message = "New Password has been sent, Please check your inbox"
+		response.Message = "New OTP has been sent, Please check your inbox"
 	} else {
-		response.Message = "Password reset email couldn't be sent at the moment, Please try again."
+		response.Message = "OTP email couldn't be sent at the moment, Please try again."
 	}
 	utility.RenderJsonResponse(w, r, response, 200)
 	return false
