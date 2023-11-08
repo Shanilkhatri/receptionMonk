@@ -224,9 +224,11 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		return true
 	}
 
+	//checking otp if correct or not.
 	if otpSession == signupDetails.Otp {
 		utility.DeleteSessionValues(w, r, "otp")
 
+		//fetch user details or insert email.
 		data, err := models.Authentication{}.GetUserByEmailIds(signupDetails.Email)
 		if err != nil {
 			response.Status = "500"
