@@ -220,6 +220,7 @@ func StrictParseDataFromJson(r *http.Request, structure interface{}) error {
 	if err != nil {
 		return err
 	}
+
 	return err
 
 }
@@ -324,8 +325,9 @@ func RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
 	// we take the statusCode as an arguement and send it as a http response
 	log.Println("statusCode: ", statusCode)
 	switch statusCode {

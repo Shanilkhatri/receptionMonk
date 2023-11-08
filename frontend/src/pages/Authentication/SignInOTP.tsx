@@ -5,7 +5,7 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
-
+import store from '../../store';
 interface FormValues {
     authSignInOTP1: string
     authSignInOTP2: string
@@ -23,22 +23,40 @@ const SignInOTP = () => {
     });
     const navigate = useNavigate();
 
-
-    const submitForm = (values: FormValues, { setSubmitting }: any) => {
+    // submitting otp
+    const submitForm = async(values: FormValues, { setSubmitting }: any) => {
         console.log("values: ", values)
-        // navigate('/');
-        // const toast = Swal.mixin({
-        //     toast: true,
-        //     position: 'top',
-        //     showConfirmButton: false,
-        //     timer: 3000,
-        // });
-        // toast.fire({
-        //     icon: 'success',
-        //     title: 'OTP has been verified successfully',
-        //     padding: '10px 20px',
-        // });
+        var otpToSend = ""
+        for ( var keys in values){
+            if (values.hasOwnProperty(keys)) {
+               otpToSend +=  values[keys as keyof FormValues]
+            }
+        }
+        
         setSubmitting(false)
+        var jsonObj = {
+            "otp" : otpToSend,
+            "email": store.getState().themeConfig.email  // email at redux-store
+        }
+       
+        const response = await fetch("http://localhost:4000/matchotp",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // adding header for email-verf-token
+                'emailVerfToken': store.getState().themeConfig.emailVerfToken
+            },
+            body: JSON.stringify(jsonObj),
+            
+        });
+
+        if(response.ok){
+            // otp is validated successfully
+            // next we'll get a token from server which 
+            // will be stored in cookies pointing to other info about the user
+        }
+
+
     };
 
     

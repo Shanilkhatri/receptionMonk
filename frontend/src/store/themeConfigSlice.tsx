@@ -35,6 +35,8 @@ const defaultState = {
 };
 
 const initialState = {
+    emailVerfToken : "",
+    email : "",
     theme: localStorage.getItem('theme') || themeConfig.theme,
     menu: localStorage.getItem('menu') || themeConfig.menu,
     layout: localStorage.getItem('layout') || themeConfig.layout,
@@ -135,9 +137,15 @@ const themeConfigSlice = createSlice({
         setPageTitle(state, { payload }) {
             document.title = `${payload} | Reception Monk`;
         },
+        setEmail(state,{payload}){
+            state.email = payload
+        },
+        setEmailVerToken(state,{payload}){
+            state.emailVerfToken = payload
+        }
     },
 });
 
-export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle } = themeConfigSlice.actions;
+export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle, setEmail, setEmailVerToken } = themeConfigSlice.actions;
 
 export default themeConfigSlice.reducer;

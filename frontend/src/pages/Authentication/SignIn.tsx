@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { IRootState } from '../../store';
 import { useEffect } from 'react';
-import { setPageTitle } from '../../store/themeConfigSlice';
+import { setEmailVerToken, setPageTitle } from '../../store/themeConfigSlice';
+import { setEmail } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
@@ -20,20 +21,28 @@ const SignIn = () => {
 
     const submitForm = async (values: FormValues, { setSubmitting }: any) => {
         const authEmailId = values.authEmailId
-        // console.log(values) // authEmailId: "hi@gmail"
+        console.log(JSON.stringify(values)) // authEmailId: "hi@gmail"
         // console.log(authEmailId) // "hi@gmail"
 
         // use fetch to get to route
         try {
             // Send the form data to a server endpoint for validation and processing
-            const response = await fetch('/generateOtp', {
+            const response = await fetch('http://localhost:4000/loginbyemail', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(values),
+                
             });
+            const responseData = await response.json(); // Parse the response JSON
+            console.log("responseData.payload",responseData.Payload)
             if (response.ok) {
+                // dispatch now to set email in state
+                dispatch(setEmail(authEmailId));
+                // dispatch now to set emailVerfToken in state
+                dispatch(setEmailVerToken(responseData.Payload));
+
                 // Successful response
                 navigate('/auth/SigninOTP');
                 const toast = Swal.mixin({
@@ -44,14 +53,14 @@ const SignIn = () => {
                 });
                 toast.fire({
                     icon: 'success',
-                    title: 'OTP has been sent to registered mobile number successfully',
+                    title: 'OTP has been sent to registered E-mail successfully',
                     padding: '10px 20px',
                 });
 
                 // setting submit button disabled to false
                 setSubmitting(false)
-                // const responseData = await response.json(); // Parse the response JSON
-            }else{
+                
+                }else{
                 const toast = Swal.mixin({
                     toast: true,
                     position: 'top',

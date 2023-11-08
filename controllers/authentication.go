@@ -161,7 +161,6 @@ func EmailSend(otp string, email string) bool {
 	data["subject"] = "OTP"
 	data["email"] = email
 	data["opt"] = otp
-
 	//if email success return true.
 	if utility.SendEmail(userEmailId, "EmailForOtp", data) {
 		return true
@@ -176,7 +175,8 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	err := utility.StrictParseDataFromJson(r, &signupDetails)
 	log.Println("signupDetails: ", signupDetails)
 	if err != nil {
-		utility.Logger(err)
+		log.Println("error: ", err)
+		// utility.Logger(err)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		utility.RenderJsonResponse(w, r, response, 400)
@@ -197,13 +197,16 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	utility.SessionSet(w, r, utility.Session{Key: "email", Value: signupDetails.Email})
 
 	boolType := EmailSend(otp, signupDetails.Email)
+	boolType = true
 	if boolType {
 		response.Status = "200"
 		response.Message = "New OTP has been sent, Please check your inbox"
-	} else {
-		response.Message = "OTP email couldn't be sent at the moment, Please try again."
+		response.Payload = "54ye8yr897347rehdf558f84675r8w"
+		utility.RenderJsonResponse(w, r, response, 200)
+		return false
 	}
-	utility.RenderJsonResponse(w, r, response, 200)
+	response.Message = "OTP email couldn't be sent at the moment, Please try again."
+	utility.RenderJsonResponse(w, r, response, 500)
 	return false
 
 }

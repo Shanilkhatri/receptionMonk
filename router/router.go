@@ -74,10 +74,14 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		}
 	//call this endpoint when user enter email.
 	case "loginbyemail":
-		controllers.LoginByEmail(w, r)
+		if r.Method == "POST" {
+			controllers.LoginByEmail(w, r)
+		}
 		//call this endpoint when user enter otp and submit.
 	case "matchotp":
-		controllers.MatchOtp(w, r)
+		if r.Method == "POST" {
+			controllers.MatchOtp(w, r)
+		}
 	}
 
 }
