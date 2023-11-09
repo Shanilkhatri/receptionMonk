@@ -262,7 +262,7 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	if data.Otp == signupDetails.Otp {
 		currentTime := time.Now().Unix() // data.EpochCurrent
 		// Check if the current time is within 10 minutes from the expiration time.
-		log.Println("currentTime <= data.EpochExpired", currentTime, data.EpochExpired, currentTime <= data.EpochExpired)
+
 		if currentTime <= data.EpochExpired {
 			fmt.Println("OTP is still valid")
 			response.Status = "200"
