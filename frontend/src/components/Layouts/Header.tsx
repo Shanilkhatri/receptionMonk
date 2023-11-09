@@ -44,10 +44,16 @@ const Header = () => {
         navigate('/');
     };
 
+    const [tabs, setTabs] = useState<string>('home');
+    const toggleTabs = (name: string) => {
+        setTabs(name);
+    };
+
     const [setupmodal, setupModal] = useState(false);    
     const [qrmodal, qrModal] = useState(false);
     const [confmodal, confModal] = useState(false);
     const [signupmodal, signupModal] = useState(false);
+    const [wizardmodal, wizardModal] = useState(false);
 
     const openQRModal = () => {
         setupModal(false); 
@@ -261,6 +267,24 @@ const Header = () => {
                                             <span className="font-semibold bg-success-light dark:bg-success rounded text-success px-1 ltr:ml-auto rtl:mr-auto whitespace-pre dark:text-white/80 ltr:mr-2 rtl:ml-2">
                                                 100%                                          
                                             </span>
+                                        </div>
+                                    </li>
+
+                                    {/* Wizard */}
+                                    <li>
+                                        <div className='flex items-center py-3 px-5'>
+                                            <div>
+                                                <span className="grid place-content-center w-9 h-9 rounded-full bg-success-light dark:bg-success text-success dark:text-warning-light">
+                                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.5 8.5C14.5 9.88071 13.3807 11 12 11C10.6193 11 9.5 9.88071 9.5 8.5C9.5 7.11929 10.6193 6 12 6C13.3807 6 14.5 7.11929 14.5 8.5Z" fill="#000000"/>
+                                                        <path d="M15.5812 16H8.50626C8.09309 16 7.87415 15.5411 8.15916 15.242C9.00598 14.3533 10.5593 13 12.1667 13C13.7899 13 15.2046 14.3801 15.947 15.2681C16.2011 15.5721 15.9774 16 15.5812 16Z" fill="#000000" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <circle cx="12" cy="12" r="10" stroke="#000000" stroke-width="2"/>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <span className="px-3 dark:text-gray-500">
+                                                <div className="font-semibold  dark:text-white-light/90 hover:cursor-pointer hover:underline underline-offset-4 decoration-dotted" onClick={() => wizardModal(true)}>Wizard</div>
+                                            </span>                                           
                                         </div>
                                     </li>
                                 </ul>
@@ -617,6 +641,657 @@ const Header = () => {
                                 </Dialog>
                             </Transition>
                             {/* SIGNUP MODAL END */}
+
+                            {/* WIZARD MODAL START */}
+                                <Transition appear show={wizardmodal} as={Fragment}>
+                                    <Dialog as="div" open={wizardmodal} onClose={() => wizardModal(false)}>
+                                        <Transition.Child
+                                            as={Fragment}
+                                            enter="ease-out duration-300"
+                                            enterFrom="opacity-0"
+                                            enterTo="opacity-100"
+                                            leave="ease-in duration-200"
+                                            leaveFrom="opacity-100"
+                                            leaveTo="opacity-0"
+                                        >
+                                            <div className="fixed inset-0" />
+                                        </Transition.Child>
+                                        <div className="fixed inset-0 z-[999] bg-[black]/60">
+                                            <div className="flex min-h-screen items-start justify-center px-4">
+                                                <Transition.Child
+                                                    as={Fragment}
+                                                    enter="ease-out duration-300"
+                                                    enterFrom="opacity-0 scale-95"
+                                                    enterTo="opacity-100 scale-100"
+                                                    leave="ease-in duration-200"
+                                                    leaveFrom="opacity-100 scale-100"
+                                                    leaveTo="opacity-0 scale-95"
+                                                >
+                                                    <Dialog.Panel className="panel my-8 w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                                                        <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+                                                            <h5 className="text-lg font-bold">Widgets</h5>
+                                                            <button onClick={() => wizardModal(false)} type="button" className="text-white-dark hover:text-dark">
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    width="20"
+                                                                    height="20"
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                >
+                                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <div className="p-5">
+                                                            {/*  */}
+                                                            <div>
+                                                                <ul className="sm:flex font-semibold border-b border-[#ebedf2] dark:border-[#191e3a] mb-5 whitespace-nowrap overflow-y-auto">
+                                                                    
+                                                                    <li className="inline-block">
+                                                                        <button
+                                                                            onClick={() => toggleTabs('home')}
+                                                                            className={`flex gap-2 p-4 border-b border-transparent hover:border-primary hover:text-primary ${tabs === 'home' ? '!border-primary text-primary' : ''}`}
+                                                                        >
+                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                                                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                                                                                <path d="M12 6V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                                                                <path
+                                                                                    d="M15 9.5C15 8.11929 13.6569 7 12 7C10.3431 7 9 8.11929 9 9.5C9 10.8807 10.3431 12 12 12C13.6569 12 15 13.1193 15 14.5C15 15.8807 13.6569 17 12 17C10.3431 17 9 15.8807 9 14.5"
+                                                                                    stroke="currentColor"
+                                                                                    strokeWidth="1.5"
+                                                                                    strokeLinecap="round"
+                                                                                />
+                                                                            </svg>
+                                                                            User Profile
+                                                                        </button>
+                                                                    </li>
+                                                                    <li className="inline-block">
+                                                                        <button
+                                                                            onClick={() => toggleTabs('payment-details')}
+                                                                            className={`flex gap-2 p-4 border-b border-transparent hover:border-primary hover:text-primary ${tabs === 'payment-details' ? '!border-primary text-primary' : ''}`}
+                                                                        >
+                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                                                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                                                                                <path d="M12 6V18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                                                                <path
+                                                                                    d="M15 9.5C15 8.11929 13.6569 7 12 7C10.3431 7 9 8.11929 9 9.5C9 10.8807 10.3431 12 12 12C13.6569 12 15 13.1193 15 14.5C15 15.8807 13.6569 17 12 17C10.3431 17 9 15.8807 9 14.5"
+                                                                                    stroke="currentColor"
+                                                                                    strokeWidth="1.5"
+                                                                                    strokeLinecap="round"
+                                                                                />
+                                                                            </svg>
+                                                                            Payment Details
+                                                                        </button>
+                                                                    </li>
+                                                                    <li className="inline-block">
+                                                                        <button
+                                                                            onClick={() => toggleTabs('info')}
+                                                                            className={`flex gap-2 p-4 border-b border-transparent hover:border-primary hover:text-primary ${tabs === 'info' ? '!border-primary text-primary' : ''}`}
+                                                                        >
+                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                                                                <path
+                                                                                    opacity="0.5"
+                                                                                    d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z"
+                                                                                    stroke="currentColor"
+                                                                                    strokeWidth="1.5"
+                                                                                />
+                                                                                <path d="M12 15L12 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                                                            </svg>
+                                                                            General Information
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            
+                                                            {tabs === 'home' ? (
+                                                                <div>
+                                                                    <form className="border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-4 mb-5 bg-white dark:bg-black">
+                                                                        <h6 className="text-lg font-bold mb-5">Profile Information <span className='text-red-600'>*</span></h6>
+                                                                        <div className="flex flex-col sm:flex-row">
+                                                                            <div className="ltr:sm:mr-4 rtl:sm:ml-4 w-full sm:w-2/12 mb-5">
+                                                                                <img src="/assets//images/profile-34.jpeg" alt="img" className="w-20 h-20 md:w-32 md:h-32 rounded-full object-cover mx-auto" />
+                                                                            </div>
+                                                                            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                                                                <div>
+                                                                                    <label htmlFor="name">Full Name</label>
+                                                                                    <input id="name" type="text" placeholder="Jimmy Turner" className="form-input" />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label htmlFor="profession">Profession</label>
+                                                                                    <input id="profession" type="text" placeholder="Web Developer" className="form-input" />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label htmlFor="country">Country</label>
+                                                                                    <select defaultValue="United States" id="country" className="form-select text-white-dark">
+                                                                                        <option value="All Countries">All Countries</option>
+                                                                                        <option value="United States">United States</option>
+                                                                                        <option value="India">India</option>
+                                                                                        <option value="Japan">Japan</option>
+                                                                                        <option value="China">China</option>
+                                                                                        <option value="Brazil">Brazil</option>
+                                                                                        <option value="Norway">Norway</option>
+                                                                                        <option value="Canada">Canada</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label htmlFor="address">Address</label>
+                                                                                    <input id="address" type="text" placeholder="New York" className="form-input" />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label htmlFor="location">Location</label>
+                                                                                    <input id="location" type="text" placeholder="Location" className="form-input" />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label htmlFor="phone">Phone</label>
+                                                                                    <input id="phone" type="text" placeholder="+1 (530) 555-12121" className="form-input" />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label htmlFor="email">Email</label>
+                                                                                    <input id="email" type="email" placeholder="Jimmy@gmail.com" className="form-input" />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label htmlFor="web">Website</label>
+                                                                                    <input id="web" type="text" placeholder="Enter URL" className="form-input" />
+                                                                                </div>                                                                                
+                                                                                <div className="sm:col-span-2 mt-3 flex justify-center">
+                                                                                    <button type="button" className="btn btn-secondary rounded-full">
+                                                                                        Save
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                   
+                                                                </div>
+                                                            ) : (
+                                                                ''
+                                                            )}
+                                                            {tabs === 'payment-details' ? (
+                                                                <div>
+                                                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+                                                                        <div className="panel">
+                                                                            <div className="mb-5">
+                                                                                <h5 className="font-semibold text-lg mb-4">Billing Address</h5>
+                                                                                <p>
+                                                                                    Changes to your <span className="text-primary">Billing</span> information will take effect starting with scheduled payment and will be refelected on your next
+                                                                                    invoice.
+                                                                                </p>
+                                                                            </div>
+                                                                            <div className="mb-5">
+                                                                                <div className="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                                                                    <div className="flex items-start justify-between py-3">
+                                                                                        <h6 className="text-[#515365] font-bold dark:text-white-dark text-[15px]">
+                                                                                            Address #1
+                                                                                            <span className="block text-white-dark dark:text-white-light font-normal text-xs mt-1">2249 Caynor Circle, New Brunswick, New Jersey</span>
+                                                                                        </h6>
+                                                                                        <div className="flex items-start justify-between ltr:ml-auto rtl:mr-auto">
+                                                                                            <button className="btn btn-dark">Edit</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                                                                    <div className="flex items-start justify-between py-3">
+                                                                                        <h6 className="text-[#515365] font-bold dark:text-white-dark text-[15px]">
+                                                                                            Address #2
+                                                                                            <span className="block text-white-dark dark:text-white-light font-normal text-xs mt-1">4262 Leverton Cove Road, Springfield, Massachusetts</span>
+                                                                                        </h6>
+                                                                                        <div className="flex items-start justify-between ltr:ml-auto rtl:mr-auto">
+                                                                                            <button className="btn btn-dark">Edit</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <div className="flex items-start justify-between py-3">
+                                                                                        <h6 className="text-[#515365] font-bold dark:text-white-dark text-[15px]">
+                                                                                            Address #3
+                                                                                            <span className="block text-white-dark dark:text-white-light font-normal text-xs mt-1">2692 Berkshire Circle, Knoxville, Tennessee</span>
+                                                                                        </h6>
+                                                                                        <div className="flex items-start justify-between ltr:ml-auto rtl:mr-auto">
+                                                                                            <button className="btn btn-dark">Edit</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button className="btn btn-primary">Add Address</button>
+                                                                        </div>
+                                                                        <div className="panel">
+                                                                            <div className="mb-5">
+                                                                                <h5 className="font-semibold text-lg mb-4">Payment History</h5>
+                                                                                <p>
+                                                                                    Changes to your <span className="text-primary">Payment Method</span> information will take effect starting with scheduled payment and will be refelected on your
+                                                                                    next invoice.
+                                                                                </p>
+                                                                            </div>
+                                                                            <div className="mb-5">
+                                                                                <div className="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                                                                    <div className="flex items-start justify-between py-3">
+                                                                                        <div className="flex-none ltr:mr-4 rtl:ml-4">
+                                                                                            <img src="/assets/images/card-americanexpress.svg" alt="img" />
+                                                                                        </div>
+                                                                                        <h6 className="text-[#515365] font-bold dark:text-white-dark text-[15px]">
+                                                                                            Mastercard
+                                                                                            <span className="block text-white-dark dark:text-white-light font-normal text-xs mt-1">XXXX XXXX XXXX 9704</span>
+                                                                                        </h6>
+                                                                                        <div className="flex items-start justify-between ltr:ml-auto rtl:mr-auto">
+                                                                                            <button className="btn btn-dark">Edit</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                                                                    <div className="flex items-start justify-between py-3">
+                                                                                        <div className="flex-none ltr:mr-4 rtl:ml-4">
+                                                                                            <img src="/assets/images/card-mastercard.svg" alt="img" />
+                                                                                        </div>
+                                                                                        <h6 className="text-[#515365] font-bold dark:text-white-dark text-[15px]">
+                                                                                            American Express
+                                                                                            <span className="block text-white-dark dark:text-white-light font-normal text-xs mt-1">XXXX XXXX XXXX 310</span>
+                                                                                        </h6>
+                                                                                        <div className="flex items-start justify-between ltr:ml-auto rtl:mr-auto">
+                                                                                            <button className="btn btn-dark">Edit</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <div className="flex items-start justify-between py-3">
+                                                                                        <div className="flex-none ltr:mr-4 rtl:ml-4">
+                                                                                            <img src="/assets/images/card-visa.svg" alt="img" />
+                                                                                        </div>
+                                                                                        <h6 className="text-[#515365] font-bold dark:text-white-dark text-[15px]">
+                                                                                            Visa
+                                                                                            <span className="block text-white-dark dark:text-white-light font-normal text-xs mt-1">XXXX XXXX XXXX 5264</span>
+                                                                                        </h6>
+                                                                                        <div className="flex items-start justify-between ltr:ml-auto rtl:mr-auto">
+                                                                                            <button className="btn btn-dark">Edit</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button className="btn btn-primary">Add Payment Method</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                                                                        <div className="panel">
+                                                                            <div className="mb-5">
+                                                                                <h5 className="font-semibold text-lg mb-4">Add Billing Address</h5>
+                                                                                <p>
+                                                                                    Changes your New <span className="text-primary">Billing</span> Information.
+                                                                                </p>
+                                                                            </div>
+                                                                            <div className="mb-5">
+                                                                                <form>
+                                                                                    <div className="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                                        <div>
+                                                                                            <label htmlFor="billingName">Name</label>
+                                                                                            <input id="billingName" type="text" placeholder="Enter Name" className="form-input" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <label htmlFor="billingEmail">Email</label>
+                                                                                            <input id="billingEmail" type="email" placeholder="Enter Email" className="form-input" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="mb-5">
+                                                                                        <label htmlFor="billingAddress">Address</label>
+                                                                                        <input id="billingAddress" type="text" placeholder="Enter Address" className="form-input" />
+                                                                                    </div>
+                                                                                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-5">
+                                                                                        <div className="md:col-span-2">
+                                                                                            <label htmlFor="billingCity">City</label>
+                                                                                            <input id="billingCity" type="text" placeholder="Enter City" className="form-input" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <label htmlFor="billingState">State</label>
+                                                                                            <select id="billingState" className="form-select text-white-dark">
+                                                                                                <option>Choose...</option>
+                                                                                                <option>...</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <label htmlFor="billingZip">Zip</label>
+                                                                                            <input id="billingZip" type="text" placeholder="Enter Zip" className="form-input" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <button type="button" className="btn btn-primary">
+                                                                                        Add
+                                                                                    </button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="panel">
+                                                                            <div className="mb-5">
+                                                                                <h5 className="font-semibold text-lg mb-4">Add Payment Method</h5>
+                                                                                <p>
+                                                                                    Changes your New <span className="text-primary">Payment Method </span>
+                                                                                    Information.
+                                                                                </p>
+                                                                            </div>
+                                                                            <div className="mb-5">
+                                                                                <form>
+                                                                                    <div className="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                                        <div>
+                                                                                            <label htmlFor="payBrand">Card Brand</label>
+                                                                                            <select id="payBrand" className="form-select text-white-dark">
+                                                                                                <option value="Mastercard">Mastercard</option>
+                                                                                                <option value="American Express">American Express</option>
+                                                                                                <option value="Visa">Visa</option>
+                                                                                                <option value="Discover">Discover</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <label htmlFor="payNumber">Card Number</label>
+                                                                                            <input id="payNumber" type="text" placeholder="Card Number" className="form-input" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                                        <div>
+                                                                                            <label htmlFor="payHolder">Holder Name</label>
+                                                                                            <input id="payHolder" type="text" placeholder="Holder Name" className="form-input" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <label htmlFor="payCvv">CVV/CVV2</label>
+                                                                                            <input id="payCvv" type="text" placeholder="CVV" className="form-input" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                                        <div>
+                                                                                            <label htmlFor="payExp">Card Expiry</label>
+                                                                                            <input id="payExp" type="text" placeholder="Card Expiry" className="form-input" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <button type="button" className="btn btn-primary">
+                                                                                        Add
+                                                                                    </button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                ''
+                                                            )}  
+
+                                                            {tabs === 'info' ? (
+                                                                <div>
+                                                                   <div className="pt-5">
+                                                                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
+                                                                            {/* profile details */}
+                                                                            <div className="panel">
+                                                                                <div className="mb-5">
+                                                                                    <div className="flex flex-col justify-center items-center">
+                                                                                        <img src="/assets/images/profile-34.jpeg" alt="img" className="w-24 h-24 rounded-full object-cover  mb-5" />
+                                                                                        <p className="font-semibold text-primary text-xl">Jimmy Turner</p>
+                                                                                    </div>
+                                                                                    <ul className="mt-5 flex flex-col max-w-[160px] m-auto space-y-4 font-semibold text-white-dark">
+                                                                                        <li className="flex items-center gap-2">
+                                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                                                                                <path
+                                                                                                    d="M2.3153 12.6978C2.26536 12.2706 2.2404 12.057 2.2509 11.8809C2.30599 10.9577 2.98677 10.1928 3.89725 10.0309C4.07094 10 4.286 10 4.71612 10H15.2838C15.7139 10 15.929 10 16.1027 10.0309C17.0132 10.1928 17.694 10.9577 17.749 11.8809C17.7595 12.057 17.7346 12.2706 17.6846 12.6978L17.284 16.1258C17.1031 17.6729 16.2764 19.0714 15.0081 19.9757C14.0736 20.6419 12.9546 21 11.8069 21H8.19303C7.04537 21 5.9263 20.6419 4.99182 19.9757C3.72352 19.0714 2.89681 17.6729 2.71598 16.1258L2.3153 12.6978Z"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                />
+                                                                                                <path opacity="0.5" d="M17 17H19C20.6569 17 22 15.6569 22 14C22 12.3431 20.6569 11 19 11H17.5" stroke="currentColor" strokeWidth="1.5" />
+                                                                                                <path
+                                                                                                    opacity="0.5"
+                                                                                                    d="M10.0002 2C9.44787 2.55228 9.44787 3.44772 10.0002 4C10.5524 4.55228 10.5524 5.44772 10.0002 6"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                    strokeLinecap="round"
+                                                                                                    strokeLinejoin="round"
+                                                                                                />
+                                                                                                <path
+                                                                                                    d="M4.99994 7.5L5.11605 7.38388C5.62322 6.87671 5.68028 6.0738 5.24994 5.5C4.81959 4.9262 4.87665 4.12329 5.38382 3.61612L5.49994 3.5"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                    strokeLinecap="round"
+                                                                                                    strokeLinejoin="round"
+                                                                                                />
+                                                                                                <path
+                                                                                                    d="M14.4999 7.5L14.6161 7.38388C15.1232 6.87671 15.1803 6.0738 14.7499 5.5C14.3196 4.9262 14.3767 4.12329 14.8838 3.61612L14.9999 3.5"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                    strokeLinecap="round"
+                                                                                                    strokeLinejoin="round"
+                                                                                                />
+                                                                                            </svg>{' '}
+                                                                                            Web Developer
+                                                                                        </li>
+                                                                                        <li className="flex items-center gap-2">
+                                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                                                                                <path
+                                                                                                    d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12V14C22 17.7712 22 19.6569 20.8284 20.8284C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V12Z"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                />
+                                                                                                <path opacity="0.5" d="M7 4V2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                                                                                <path opacity="0.5" d="M17 4V2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                                                                                <path opacity="0.5" d="M2 9H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                                                                            </svg>
+                                                                                            Jan 20, 1989
+                                                                                        </li>
+                                                                                        <li className="flex items-center gap-2">
+                                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                                                                                <path
+                                                                                                    opacity="0.5"
+                                                                                                    d="M5 8.51464C5 4.9167 8.13401 2 12 2C15.866 2 19 4.9167 19 8.51464C19 12.0844 16.7658 16.2499 13.2801 17.7396C12.4675 18.0868 11.5325 18.0868 10.7199 17.7396C7.23416 16.2499 5 12.0844 5 8.51464Z"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                />
+                                                                                                <path
+                                                                                                    d="M14 9C14 10.1046 13.1046 11 12 11C10.8954 11 10 10.1046 10 9C10 7.89543 10.8954 7 12 7C13.1046 7 14 7.89543 14 9Z"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                />
+                                                                                                <path
+                                                                                                    d="M20.9605 15.5C21.6259 16.1025 22 16.7816 22 17.5C22 19.9853 17.5228 22 12 22C6.47715 22 2 19.9853 2 17.5C2 16.7816 2.37412 16.1025 3.03947 15.5"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                    strokeLinecap="round"
+                                                                                                />
+                                                                                            </svg>
+                                                                                            New York, USA
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <button className="flex items-center gap-2">
+                                                                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                    <path
+                                                                                                        opacity="0.5"
+                                                                                                        d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                                                                                        stroke="currentColor"
+                                                                                                        strokeWidth="1.5"
+                                                                                                    />
+                                                                                                    <path
+                                                                                                        d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
+                                                                                                        stroke="currentColor"
+                                                                                                        strokeWidth="1.5"
+                                                                                                        strokeLinecap="round"
+                                                                                                    />
+                                                                                                </svg>
+                                                                                                <span className="text-primary">Jimmy@gmail.com</span>
+                                                                                            </button>
+                                                                                        </li>
+                                                                                        <li className="flex items-center gap-2">
+                                                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                <path
+                                                                                                    d="M5.00659 6.93309C5.04956 5.7996 5.70084 4.77423 6.53785 3.93723C7.9308 2.54428 10.1532 2.73144 11.0376 4.31617L11.6866 5.4791C12.2723 6.52858 12.0372 7.90533 11.1147 8.8278M17.067 18.9934C18.2004 18.9505 19.2258 18.2992 20.0628 17.4622C21.4558 16.0692 21.2686 13.8468 19.6839 12.9624L18.5209 12.3134C17.4715 11.7277 16.0947 11.9628 15.1722 12.8853"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                />
+                                                                                                <path
+                                                                                                    opacity="0.5"
+                                                                                                    d="M5.00655 6.93311C4.93421 8.84124 5.41713 12.0817 8.6677 15.3323C11.9183 18.5829 15.1588 19.0658 17.0669 18.9935M15.1722 12.8853C15.1722 12.8853 14.0532 14.0042 12.0245 11.9755C9.99578 9.94676 11.1147 8.82782 11.1147 8.82782"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                />
+                                                                                            </svg>
+                                                                                            <span className="whitespace-nowrap" dir="ltr">
+                                                                                                +1 (530) 555-12121
+                                                                                            </span>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                    <ul className="mt-7 flex items-center justify-center gap-2">
+                                                                                        <li>
+                                                                                            <button className="btn btn-info flex items-center justify-center rounded-full w-10 h-10 p-0">
+                                                                                                <svg
+                                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                                    width="24px"
+                                                                                                    height="24px"
+                                                                                                    viewBox="0 0 24 24"
+                                                                                                    fill="none"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                    strokeLinecap="round"
+                                                                                                    strokeLinejoin="round"
+                                                                                                    className="w-5 h-5"
+                                                                                                >
+                                                                                                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                                                                                                </svg>
+                                                                                            </button>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <button className="btn btn-danger flex items-center justify-center rounded-full w-10 h-10 p-0">
+                                                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                                                                                                    <path
+                                                                                                        d="M3.33946 16.9997C6.10089 21.7826 12.2168 23.4214 16.9997 20.66C18.9493 19.5344 20.3765 17.8514 21.1962 15.9286C22.3875 13.1341 22.2958 9.83304 20.66 6.99972C19.0242 4.1664 16.2112 2.43642 13.1955 2.07088C11.1204 1.81935 8.94932 2.21386 6.99972 3.33946C2.21679 6.10089 0.578039 12.2168 3.33946 16.9997Z"
+                                                                                                        stroke="currentColor"
+                                                                                                        strokeWidth="1.5"
+                                                                                                    />
+                                                                                                    <path
+                                                                                                        opacity="0.5"
+                                                                                                        d="M16.9497 20.5732C16.9497 20.5732 16.0107 13.9821 14.0004 10.5001C11.99 7.01803 7.05018 3.42681 7.05018 3.42681M7.57711 20.8175C9.05874 16.3477 16.4525 11.3931 21.8635 12.5801M16.4139 3.20898C14.926 7.63004 7.67424 12.5123 2.28857 11.4516"
+                                                                                                        stroke="currentColor"
+                                                                                                        strokeWidth="1.5"
+                                                                                                        strokeLinecap="round"
+                                                                                                    />
+                                                                                                </svg>
+                                                                                            </button>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                            <button className="btn btn-dark flex items-center justify-center rounded-full w-10 h-10 p-0">
+                                                                                                <svg
+                                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                                    width="24px"
+                                                                                                    height="24px"
+                                                                                                    viewBox="0 0 24 24"
+                                                                                                    fill="none"
+                                                                                                    stroke="currentColor"
+                                                                                                    strokeWidth="1.5"
+                                                                                                    strokeLinecap="round"
+                                                                                                    strokeLinejoin="round"
+                                                                                                    className="w-5 h-5"
+                                                                                                >
+                                                                                                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                                                                                </svg>
+                                                                                            </button>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            {/* payment details */}
+                                                                            <div className="panel">
+                                                                                <div className="flex items-center justify-between mb-5">
+                                                                                    <h5 className="font-semibold text-lg dark:text-white-light">Card Details</h5>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <div className="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                                                                        <div className="flex items-center justify-between py-2">
+                                                                                            <div className="flex-none">
+                                                                                                <img src="/assets/images/upi-icon.svg" alt="img" />
+                                                                                            </div>
+                                                                                            <div className="flex items-center justify-between flex-auto ltr:ml-4 rtl:mr-4">
+                                                                                                <h6 className="text-[#515365] font-semibold dark:text-white-dark">
+                                                                                                    UPI
+                                                                                                    <span className="block text-white-dark dark:text-white-light">Unified Payment Interface</span>
+                                                                                                </h6>
+                                                                                                <span className="badge bg-success ltr:ml-auto rtl:mr-auto">Primary</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className="flex items-center justify-between py-2">
+                                                                                            <div className="flex-none">
+                                                                                                <img src="/assets/images/card-americanexpress.svg" alt="img" />
+                                                                                            </div>
+                                                                                            <div className="flex items-center justify-between flex-auto ltr:ml-4 rtl:mr-4">
+                                                                                                <h6 className="text-[#515365] font-semibold dark:text-white-dark">
+                                                                                                    American Express
+                                                                                                    <span className="block text-white-dark dark:text-white-light">Expires on 12/2025</span>
+                                                                                                </h6>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                                                                        <div className="flex items-center justify-between py-2">
+                                                                                            <div className="flex-none">
+                                                                                                <img src="/assets/images/card-mastercard.svg" alt="img" />
+                                                                                            </div>
+                                                                                            <div className="flex items-center justify-between flex-auto ltr:ml-4 rtl:mr-4">
+                                                                                                <h6 className="text-[#515365] font-semibold dark:text-white-dark">
+                                                                                                    Mastercard
+                                                                                                    <span className="block text-white-dark dark:text-white-light">Expires on 03/2025</span>
+                                                                                                </h6>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <div className="flex items-center justify-between py-2">
+                                                                                            <div className="flex-none">
+                                                                                                <img src="/assets/images/card-visa.svg" alt="img" />
+                                                                                            </div>
+                                                                                            <div className="flex items-center justify-between flex-auto ltr:ml-4 rtl:mr-4">
+                                                                                                <h6 className="text-[#515365] font-semibold dark:text-white-dark">
+                                                                                                    Visa
+                                                                                                    <span className="block text-white-dark dark:text-white-light">Expires on 10/2025</span>
+                                                                                                </h6>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            {/* plan details */}
+                                                                            <div className="panel">
+                                                                                <div className="flex items-center mb-10">
+                                                                                    <h5 className="font-semibold text-lg dark:text-white-light">Plan Details</h5>                                                                                    
+                                                                                </div>
+                                                                                <div className="group">
+                                                                                    <ul className="list-inside list-disc text-white-dark font-semibold mb-7 space-y-5">
+                                                                                        <li>Full Backup</li>
+                                                                                        <li>Unlimited Reports</li>
+                                                                                        <li>1 Years Data Storage</li>
+                                                                                    </ul>
+                                                                                    <div className="flex items-center justify-between mb-4 font-semibold">
+                                                                                        <p className="flex items-center rounded-full bg-dark px-2 py-1 text-xs text-white-light font-semibold">
+                                                                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr:mr-1 rtl:ml-1">
+                                                                                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                                                                                                <path d="M12 8V12L14.5 14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                                            </svg>
+                                                                                            5 Days Left
+                                                                                        </p>
+                                                                                        <p className="text-info">₹ 99 / month</p>
+                                                                                    </div>                                                                                    
+                                                                                </div>
+                                                                                <div className='flex justify-center mt-12'>
+                                                                                    <button className="btn btn-secondary rounded-full">Renew Now</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                ''
+                                                            )}
+                                                            {/*  */}
+                                                        </div>
+                                                    </Dialog.Panel>
+                                                </Transition.Child>
+                                            </div>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                            {/* WIZARD MODAL END */}
 
                         </div>                                
 
