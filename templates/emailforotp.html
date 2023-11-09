@@ -1,0 +1,67 @@
+{{define "emailforotp"}}
+{{template "emailheader"}}
+
+<body style="background-color: #f9f9f9; margin: 0px; padding: 0px; font-family: sans-serif;">
+    
+    <div style="background-color: #ffffff; margin: 0px auto; max-width: 600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width: 100%;">
+            <tr>
+                <td style="border: #dddddd solid 1px; border-top: 0px; direction:ltr; padding: 20px; vertical-align: top;">
+                    <div style="font-size: 16px; text-align:left; direction:ltr; display: inline-block; vertical-align: bottom; width: 100%;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align: bottom; width:100%;">
+                            <tr>
+                                <td align="center" style="padding: 2rem 3rem; background-color: #0e0e77;">
+                                    <img src="https://reak.in/img/logo/light/1x.png" style="border:0; display:block; outline:none;" width="50%" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="word-break: break-word; padding: 36px 12px 18px;"> 
+                                    <div>
+                                        <div style="text-align:left; line-height: 1.5; letter-spacing: 0.5px; padding-top: 8px;">
+                                            <p  style="text-align: center;"><h3>Confirm verification code</h3></p>                                            
+                                        </div>
+                                        <div style="text-align:left; letter-spacing: 1px; padding: 16px 0 16px;">
+                                            <h6>Hello {{.Email}},</h6>
+                                        </div>
+                                        
+                                        <div style="text-align:left; line-height: 1.5; letter-spacing: 0.5px;">
+                                            <p>
+                                                Please enter the following code on the login page.
+                                            </p>
+                                            <p style="text-align: center;">
+                                                <strong style="letter-spacing: 1px; ">OTP</strong>
+                                                {{.otp}}
+                                            </p>
+                                            
+                                            <div style="text-align: center; padding: 24px; letter-spacing: 1px">
+                                                <a href="{{.app_url_link}}" target="_blank" style="padding:0.75rem 36px; background-color:#0e0e77; font-weight: 500; color: white; border-radius: .3rem; text-decoration: none; cursor: pointer; text-transform: uppercase; font-weight: 600;">8967</a>
+                                            </div>
+                                            <p>
+                                                If you have any questions or need further assistance, please don't hesitate to contact our support team.
+                                            </p>
+                                        </div>
+                                        <div style="padding: 1rem; letter-spacing: 1px; letter-spacing: 0.5px">
+                                            <p>
+                                                <strong>Regards,</strong>
+                                            </p>
+                                            <p>
+                                                REAK INFOTECH 
+                                            </p>
+                                        </div>
+                                    </div>                                    
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>               
+            </tr>
+        </table>
+    </div>
+
+    {{template "emailfooter" .}}    
+
+
+</body>
+</html>
+{{end}}
