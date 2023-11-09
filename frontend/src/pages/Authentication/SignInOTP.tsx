@@ -20,53 +20,85 @@ const SignInOTP = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('SignIn OTP Verification'));
+        // if state doesn't have email we throw user back to login
+        if (store.getState().themeConfig.email == "") {
+            navigate("/auth/SignIn")
+        }
     });
     const navigate = useNavigate();
 
     // submitting otp
-    const submitForm = async(values: FormValues, { setSubmitting }: any) => {
+    const submitForm = async (values: FormValues, { setSubmitting }: any) => {
         console.log("values: ", values)
         var otpToSend = ""
-        for ( var keys in values){
+        for (var keys in values) {
             if (values.hasOwnProperty(keys)) {
-               otpToSend +=  values[keys as keyof FormValues]
+                otpToSend += values[keys as keyof FormValues]
             }
         }
+
         
-        setSubmitting(false)
         var jsonObj = {
-            "otp" : otpToSend,
+            "otp": otpToSend,
             "email": store.getState().themeConfig.email  // email at redux-store
         }
-       
-        const response = await fetch("http://localhost:4000/matchotp",{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // adding header for email-verf-token
-                'emailVerfToken': store.getState().themeConfig.emailVerfToken
-            },
-            body: JSON.stringify(jsonObj),
-            
-        });
 
-        if(response.ok){
+        // const response = await fetch("http://localhost:4000/matchotp", {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         // adding header for email-verf-token
+        //         'emailVerfToken': store.getState().themeConfig.emailVerfToken
+        //     },
+        //     body: JSON.stringify(jsonObj),
+
+        // });
+
+        // if (response.ok) {
+        // if (true) {
+
             // otp is validated successfully
             // next we'll get a token from server which 
             // will be stored in cookies pointing to other info about the user
-        }
+            var exampleToken = "sduer78y2348uryuehy732y4efdhjn"
+            // example user data that we'll get in response
+            var userDataToEncrypt = {
+                username: "mary_kom",
+                email: "john@example.com",
+                role: "user",
+                passwordHash:"",
+            };
 
+            // stringifying the data
+            var dataString = JSON.stringify(userDataToEncrypt);
+            // Setting it into cookies with an expiry time of 6 months (in seconds)
+            var expirationDate = new Date();
+            expirationDate.setMonth(expirationDate.getMonth() + 6);
 
+            // setting token into cookies with expiry time 6months or 12
+            // -> right now we won't use "secure" & "httpOnly" flags as we want to read cookies
+
+            // for production:
+            // -> document.cookie = "myCookie=myValue; secure; HttpOnly; path=/; SameSite=Strict";
+
+            // for development :
+            document.cookie = `exampleToken=${exampleToken}; secure;  expires=${expirationDate.toUTCString()}; path=/`;
+            document.cookie = `exampleData=${dataString}; expires=${expirationDate.toUTCString()}; path=/`;
+
+        // }
+
+        navigate("/");
+        setSubmitting(false)
     };
 
-    
-    function hasAnyError(errors:any) {
+
+    function hasAnyError(errors: any) {
         for (let i = 1; i <= 6; i++) {
             if (errors[`authSignInOTP${i}`]) {
                 document.getElementById(`authSignInOTP${i}`)?.classList.remove("border-gray-400")
                 document.getElementById(`authSignInOTP${i}`)?.classList.add("border-red-400")
                 return true; // has err
-            }else{
+            } else {
                 document.getElementById(`authSignInOTP${i}`)?.classList.remove("border-red-400")
                 document.getElementById(`authSignInOTP${i}`)?.classList.add("border-green-400")
             }
@@ -117,7 +149,7 @@ const SignInOTP = () => {
                                     {Array.from({ length: 6 }, (_, i) => (
                                         <div key={i}>
                                             <Field
-                                                id = {`authSignInOTP${i + 1}`}
+                                                id={`authSignInOTP${i + 1}`}
                                                 name={`authSignInOTP${i + 1}`}
                                                 maxLength="1"
                                                 type="text"
@@ -136,7 +168,7 @@ const SignInOTP = () => {
                                     </div>
                                 )}
                                 {/* {submitCount >= 0 && !hasAnyError(errors) && } */}
-                                
+
 
                             </div>
                             <div className="flex justify-center py-6">
