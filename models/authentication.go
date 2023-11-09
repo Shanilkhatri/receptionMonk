@@ -152,19 +152,37 @@ func (auth Authentication) GetAuthenticationByToken(token string) (*Authenticati
 	return &authO, nil
 }
 
-func (user Authentication) GetUserByEmailIds(email string) (Authentication, error) {
-	var selectedRow Authentication
-	if EmailExistOrNot(email) {
-		err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE email = ?", email)
-		return selectedRow, err
-	} else {
-		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (email) VALUES (:Email)", map[string]interface{}{"Email": selectedRow.Email})
+type SignupDetails struct {
+	Email        string `json:"authEmailId"`
+	Password     string `json:"password"`
+	Otp          string `json:"authSignInOTP"`
+	EmailToken   string
+	EpochCurrent int64
+	EpochExpired int64
+}
+
+func (user Authentication) GetUserByEmailIds(data SignupDetails) (bool, error) {
+
+	var selectedRow SignupDetails
+	if EmailExistOrNot(data.Email) {
+		//update data
+		queryOfauth, err := utility.Db.NamedExec("UPDATE `authentication` SET `emailToken`=:EmailToken,otp=:Otp,epoch=:Epoch WHERE email=:Email ", map[string]interface{}{"EmailToken": data.EmailToken, "OTP": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email})
 		// Check error
 		if err != nil {
 			log.Println(err)
-			return selectedRow, err
+			return false, err
+		}
+		Rowefffect, _ := queryOfauth.RowsAffected()
+		return Rowefffect > 0, err
+
+	} else {
+		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (emailToken,otp,epoch,email) VALUES (:EmailToken,:Otp,:Epoch,:Email)", map[string]interface{}{"EmailToken": selectedRow.EmailToken, "Otp": selectedRow.Otp, "EpochCurrent": selectedRow.EpochCurrent, "EpochExpired": selectedRow.EpochExpired, "Email": selectedRow.Email})
+		// Check error
+		if err != nil {
+			log.Println(err)
+			return false, err
 		} else {
-			return selectedRow, nil
+			return true, nil
 		}
 	}
 
@@ -181,3 +199,28 @@ func EmailExistOrNot(email string) bool {
 		return countMatchId > 0
 	}
 }
+func (auth Authentication) GetUserDetailsByEmail(email string) (SignupDetails, error) {
+	var selectedRow SignupDetails
+
+	err := utility.Db.Get(&selectedRow, "SELECT currenttime,expiredtime,otp FROM authentication WHERE email = ?", email)
+
+	return selectedRow, err
+}
+
+// func (user Authentication) GetUserByEmailIds(data SignupDetails) (Authentication, error) {
+// 	var selectedRow Authentication
+// 	if EmailExistOrNot(data.Email) {
+// 		err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE email = ?", data.Email)
+// 		return selectedRow, err
+// 	} else {
+// 		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (email) VALUES (:Email)", map[string]interface{}{"Email": selectedRow.Email})
+// 		// Check error
+// 		if err != nil {
+// 			log.Println(err)
+// 			return selectedRow, err
+// 		} else {
+// 			return selectedRow, nil
+// 		}
+// 	}
+
+// }
