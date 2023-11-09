@@ -137,30 +137,27 @@ func RegisterTwoFa(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type SignupDetails struct {
-	Email    string `json:"authEmailId"`
-	Password string `json:"password"`
-	Otp      string `json:"authSignInOTP"`
-}
-
 // Generate Otp .
-func GenerateOTP() string {
+func GenerateOTP() (string, int64, int64) {
 	rand.Seed(time.Now().UnixNano())
 	otp := ""
 	for i := 0; i < 6; i++ {
 		digit := rand.Intn(10) // Generate a random digit (0-9).
 		otp += fmt.Sprint(digit)
 	}
-	return otp
+	currentTime := time.Now().Unix()
+	expirationTime := time.Now().Add(10 * time.Minute).Unix()
+	return otp, expirationTime, currentTime
 }
 
 // sendEmail.
-func EmailSend(otp string, email string) bool {
-	userEmailId := []string{email} // set email address.
+func EmailSend(otp string, signupData models.SignupDetails) bool {
+	userEmailId := []string{signupData.Email} // set email address.
 	data := make(map[string]interface{})
 	data["subject"] = "OTP"
-	data["email"] = email
+	data["email"] = signupData.Email
 	data["opt"] = otp
+	data["currentTime"] = signupData.EpochCurrent
 
 	//if email success return true.
 	if utility.SendEmail(userEmailId, "EmailForOtp", data) {
@@ -172,7 +169,7 @@ func EmailSend(otp string, email string) bool {
 // login by email.
 func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-	var signupDetails SignupDetails
+	var signupDetails models.SignupDetails
 	err := utility.StrictParseDataFromJson(r, &signupDetails)
 	log.Println("signupDetails: ", signupDetails)
 	if err != nil {
@@ -189,33 +186,50 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-	//otp generate.
-	otp := GenerateOTP()
 	//otp set in session.
-	utility.SessionSet(w, r, utility.Session{Key: "otp", Value: otp})
+	// utility.SessionSet(w, r, utility.Session{Key: "otp", Value: otp})
+	// utility.SessionSet(w, r, utility.Session{Key: "email", Value: signupDetails.Email})
+	//otp generate.
+	otp, expirationTime, currentTime := GenerateOTP()
+
 	log.Println("otp", otp)
-	utility.SessionSet(w, r, utility.Session{Key: "email", Value: signupDetails.Email})
+	signupDetails.EpochCurrent = currentTime
+	signupDetails.EpochExpired = expirationTime
+	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
 
-	boolType := EmailSend(otp, signupDetails.Email)
-	if boolType {
-		response.Status = "200"
-		response.Message = "New OTP has been sent, Please check your inbox"
-	} else {
-		response.Message = "OTP email couldn't be sent at the moment, Please try again."
+	boolValues, err := models.Authentication{}.GetUserByEmailIds(signupDetails)
+	if err != nil {
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return true
 	}
-	utility.RenderJsonResponse(w, r, response, 200)
-	return false
+	log.Println("boolValues", boolValues)
 
+	if boolValues {
+		boolType := EmailSend(otp, signupDetails)
+		if boolType {
+			response.Status = "200"
+			response.Message = "New OTP has been sent, Please check your inbox"
+			response.Payload = GenerateEmailToken(emailToken)
+			utility.RenderJsonResponse(w, r, response, 200)
+			return false
+		} else {
+			response.Message = "OTP email couldn't be sent at the moment, Please try again."
+			utility.RenderJsonResponse(w, r, response, 500)
+		}
+	}
+	return false
 }
 
 // call this function only for otp submit.
 func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-	otpSession := fmt.Sprintf("%v", utility.SessionGet(r, "otp"))
-
-	var signupDetails SignupDetails
+	// otpSession := fmt.Sprintf("%v", utility.SessionGet(r, "otp"))
+	emailToken := r.Header.Get("emailVerfToken")
+	var signupDetails models.SignupDetails
 	err := utility.StrictParseDataFromJson(r, &signupDetails)
-	log.Println("signupDetails: ", signupDetails)
+	log.Println("signupDetails: ", signupDetails, emailToken)
 	if err != nil {
 		utility.Logger(err)
 		response.Status = "400"
@@ -224,18 +238,23 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		return true
 	}
 
+	data, err := models.Authentication{}.GetUserDetailsByEmail(signupDetails.Email)
+	if err != nil {
+		log.Println(err)
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+	// Check if the current time is within 10 minutes from the expiration time.
+	if data.EpochCurrent <= data.EpochExpired {
+		fmt.Println("OTP is still valid")
+	} else {
+		fmt.Println("OTP has expired")
+	}
 	//checking otp if correct or not.
-	if otpSession == signupDetails.Otp {
-		utility.DeleteSessionValues(w, r, "otp")
-
-		//fetch user details or insert email.
-		data, err := models.Authentication{}.GetUserByEmailIds(signupDetails.Email)
-		if err != nil {
-			response.Status = "500"
-			response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-			utility.RenderJsonResponse(w, r, response, 400)
-			return true
-		}
+	if data.Otp == signupDetails.Otp {
+		// utility.DeleteSessionValues(w, r, "otp")
 
 		response.Status = "200"
 		response.Message = "Login success."
@@ -248,4 +267,13 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	response.Message = "Please Insert Correct Opt."
 	utility.RenderJsonResponse(w, r, response, 400)
 	return false
+}
+
+func GenerateEmailToken(userid string) string {
+	newPasswordHash, err := bcrypt.GenerateFromPassword([]byte(userid), 10)
+	if err != nil {
+		//critical error checking
+		utility.Logger(err)
+	}
+	return string(newPasswordHash)
 }
