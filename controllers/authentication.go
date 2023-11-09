@@ -218,6 +218,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 			response.Message = "OTP email couldn't be sent at the moment, Please try again."
 			utility.RenderJsonResponse(w, r, response, 500)
 		}
+
 	}
 	return false
 }

@@ -165,8 +165,9 @@ func (user Authentication) GetUserByEmailIds(data SignupDetails) (bool, error) {
 
 	var selectedRow SignupDetails
 	if EmailExistOrNot(data.Email) {
+		log.Println("hi update")
 		//update data
-		queryOfauth, err := utility.Db.NamedExec("UPDATE `authentication` SET `emailToken`=:EmailToken,otp=:Otp,epoch=:Epoch WHERE email=:Email ", map[string]interface{}{"EmailToken": data.EmailToken, "OTP": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email})
+		queryOfauth, err := utility.Db.NamedExec("UPDATE `authentication` SET `emailToken`=:EmailToken,otp=:Otp,epochcurrent=:EpochCurrent WHERE email=:Email ", map[string]interface{}{"EmailToken": data.EmailToken, "Otp": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email})
 		// Check error
 		if err != nil {
 			log.Println(err)
@@ -176,7 +177,8 @@ func (user Authentication) GetUserByEmailIds(data SignupDetails) (bool, error) {
 		return Rowefffect > 0, err
 
 	} else {
-		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (emailToken,otp,epoch,email) VALUES (:EmailToken,:Otp,:Epoch,:Email)", map[string]interface{}{"EmailToken": selectedRow.EmailToken, "Otp": selectedRow.Otp, "EpochCurrent": selectedRow.EpochCurrent, "EpochExpired": selectedRow.EpochExpired, "Email": selectedRow.Email})
+		log.Println("insert ")
+		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (emailToken,otp,epochcurrent,email,password) VALUES (:EmailToken,:Otp,:EpochCurrent,:Email,:Password)", map[string]interface{}{"EmailToken": selectedRow.EmailToken, "Otp": selectedRow.Otp, "EpochCurrent": selectedRow.EpochCurrent, "EpochExpired": selectedRow.EpochExpired, "Email": selectedRow.Email, "Password": selectedRow.Password})
 		// Check error
 		if err != nil {
 			log.Println(err)
