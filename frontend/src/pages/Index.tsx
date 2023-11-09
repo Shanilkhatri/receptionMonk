@@ -7,11 +7,16 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { setPageTitle } from '../store/themeConfigSlice';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import Utility from '../utility/utility';
+// object of class utility
+const utility = new Utility()
 
 const Index = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Homepage'));
+        // integrate a condition here that if token is empty we go straight to login
+        console.log("exampleToken: ",utility.getCookieValue("exampleToken"))
     });
 
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
@@ -19,8 +24,6 @@ const Index = () => {
 
     // radialbar graph    
     const [loading] = useState(false);
-
-   
     const [options, setOptions] = useState({
         series: [75],
         chart: {
@@ -72,7 +75,7 @@ const Index = () => {
                         fontSize: '16px',
                     },
                     value: {
-                        formatter: function (val) {
+                        formatter: function (val:any) {
                             return parseInt(val);
                         },
                         color: '#000',
