@@ -156,8 +156,8 @@ type SignupDetails struct {
 	Email        string `json:"authEmailId"`
 	Password     string `json:"password"`
 	Otp          string `json:"authSignInOTP"`
-	EmailToken   string
-	EpochCurrent int64
+	EmailToken   string `json:"emailVerToken"`
+	EpochCurrent int64  `json:"epochcurrent"`
 	EpochExpired int64
 }
 
