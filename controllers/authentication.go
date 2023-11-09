@@ -145,10 +145,10 @@ func GenerateOTP() (string, int64, int64) {
 		digit := rand.Intn(10) // Generate a random digit (0-9).
 		otp += fmt.Sprint(digit)
 	}
-	log.Println("otp", otp)
+
 	currentTime := time.Now().Unix()
 	expirationTime := time.Now().Add(10 * time.Minute).Unix()
-	log.Println("expirationTime", expirationTime)
+
 	return otp, expirationTime, currentTime
 }
 
@@ -250,26 +250,21 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-	log.Println("emailToken == data.EmailToken ", emailToken == data.EmailToken, emailToken, data.EmailToken)
-	emailToken = "$2a$10$Tcuu/9hX.ItYMrXVZiku/.0L0bgY/t55dvdyTNEFrIx23ysAurJXq"
+
 	if emailToken != data.EmailToken {
 		response.Status = "400"
 		response.Message = "Email token not valid."
 		utility.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-	log.Println("otpsseresssesese", data.Otp, "second", signupDetails.Otp, data.Otp == signupDetails.Otp)
-	//checking otp if correct or not.
 
+	//checking otp if correct or not.
 	if data.Otp == signupDetails.Otp {
-		log.Println("hi")
 		currentTime := time.Now().Unix() // data.EpochCurrent
-		log.Println("hi")
 		// Check if the current time is within 10 minutes from the expiration time.
 		log.Println("currentTime <= data.EpochExpired", currentTime, data.EpochExpired, currentTime <= data.EpochExpired)
 		if currentTime <= data.EpochExpired {
 			fmt.Println("OTP is still valid")
-			log.Println("hi")
 			response.Status = "200"
 			response.Message = "Login success."
 			response.Payload = data
@@ -277,7 +272,6 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 			return true
 		} else {
 			fmt.Println("OTP has expired")
-			log.Println("hi")
 			response.Status = "403"
 			response.Message = "Please 121Insert Correct Opt."
 			utility.RenderJsonResponse(w, r, response, 403)
@@ -292,6 +286,7 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 
 }
 
+// generate Email Token.
 func GenerateEmailToken(userid string) string {
 	newPasswordHash, err := bcrypt.GenerateFromPassword([]byte(userid), 10)
 	if err != nil {
@@ -300,6 +295,7 @@ func GenerateEmailToken(userid string) string {
 	return string(newPasswordHash)
 }
 
+// only for test emailforotp template run.
 func Add(w http.ResponseWriter, r *http.Request) {
 	utility.RenderTemplate(w, r, "emailforotp", nil)
 }
