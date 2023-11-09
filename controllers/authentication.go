@@ -160,7 +160,7 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 	data["currentTime"] = signupData.EpochCurrent
 
 	//if email success return true.
-	if utility.SendEmail(userEmailId, "EmailForOtp", data) {
+	if utility.SendEmail(userEmailId, "emailforotp", data) {
 		return true
 	}
 	return false
@@ -246,21 +246,33 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-	// Check if the current time is within 10 minutes from the expiration time.
-	if data.EpochCurrent <= data.EpochExpired {
-		fmt.Println("OTP is still valid")
-	} else {
-		fmt.Println("OTP has expired")
+
+	if emailToken == data.EmailToken {
+		response.Status = "400"
+		response.Message = "Email token not valid."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return true
 	}
+
 	//checking otp if correct or not.
 	if data.Otp == signupDetails.Otp {
 		// utility.DeleteSessionValues(w, r, "otp")
-
-		response.Status = "200"
-		response.Message = "Login success."
-		response.Payload = data
-		utility.RenderJsonResponse(w, r, response, 200)
-		return true
+		currentTime := time.Now().Unix() // data.EpochCurrent
+		// Check if the current time is within 10 minutes from the expiration time.
+		if currentTime <= data.EpochExpired {
+			fmt.Println("OTP is still valid")
+			response.Status = "200"
+			response.Message = "Login success."
+			response.Payload = data
+			utility.RenderJsonResponse(w, r, response, 200)
+			return true
+		} else {
+			fmt.Println("OTP has expired")
+			response.Status = "403"
+			response.Message = "Please Insert Correct Opt."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return false
+		}
 	}
 
 	response.Status = "403"
@@ -272,8 +284,11 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 func GenerateEmailToken(userid string) string {
 	newPasswordHash, err := bcrypt.GenerateFromPassword([]byte(userid), 10)
 	if err != nil {
-		//critical error checking
-		utility.Logger(err)
+		log.Println(err)
 	}
 	return string(newPasswordHash)
+}
+
+func Add(w http.ResponseWriter, r *http.Request) {
+	utility.RenderTemplate(w, r, "emailforotp", nil)
 }
