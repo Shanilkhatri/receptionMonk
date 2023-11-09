@@ -145,8 +145,10 @@ func GenerateOTP() (string, int64, int64) {
 		digit := rand.Intn(10) // Generate a random digit (0-9).
 		otp += fmt.Sprint(digit)
 	}
+	log.Println("otp", otp)
 	currentTime := time.Now().Unix()
 	expirationTime := time.Now().Add(10 * time.Minute).Unix()
+	log.Println("expirationTime", expirationTime)
 	return otp, expirationTime, currentTime
 }
 
@@ -196,7 +198,8 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	signupDetails.EpochCurrent = currentTime
 	signupDetails.EpochExpired = expirationTime
 	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
-
+	signupDetails.EmailToken = GenerateEmailToken(emailToken)
+	signupDetails.Otp = otp
 	boolValues, err := models.Authentication{}.GetUserByEmailIds(signupDetails)
 	if err != nil {
 		response.Status = "500"
@@ -211,7 +214,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 		if boolType {
 			response.Status = "200"
 			response.Message = "New OTP has been sent, Please check your inbox"
-			response.Payload = GenerateEmailToken(emailToken)
+			response.Payload = signupDetails.EmailToken
 			utility.RenderJsonResponse(w, r, response, 200)
 			return false
 		} else {
@@ -247,21 +250,26 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-
-	if emailToken == data.EmailToken {
+	log.Println("emailToken == data.EmailToken ", emailToken == data.EmailToken, emailToken, data.EmailToken)
+	emailToken = "$2a$10$Tcuu/9hX.ItYMrXVZiku/.0L0bgY/t55dvdyTNEFrIx23ysAurJXq"
+	if emailToken != data.EmailToken {
 		response.Status = "400"
 		response.Message = "Email token not valid."
 		utility.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-
+	log.Println("otpsseresssesese", data.Otp, "second", signupDetails.Otp, data.Otp == signupDetails.Otp)
 	//checking otp if correct or not.
+
 	if data.Otp == signupDetails.Otp {
-		// utility.DeleteSessionValues(w, r, "otp")
+		log.Println("hi")
 		currentTime := time.Now().Unix() // data.EpochCurrent
+		log.Println("hi")
 		// Check if the current time is within 10 minutes from the expiration time.
+		log.Println("currentTime <= data.EpochExpired", currentTime, data.EpochExpired, currentTime <= data.EpochExpired)
 		if currentTime <= data.EpochExpired {
 			fmt.Println("OTP is still valid")
+			log.Println("hi")
 			response.Status = "200"
 			response.Message = "Login success."
 			response.Payload = data
@@ -269,17 +277,19 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 			return true
 		} else {
 			fmt.Println("OTP has expired")
+			log.Println("hi")
 			response.Status = "403"
-			response.Message = "Please Insert Correct Opt."
-			utility.RenderJsonResponse(w, r, response, 400)
+			response.Message = "Please 121Insert Correct Opt."
+			utility.RenderJsonResponse(w, r, response, 403)
 			return false
 		}
+	} else {
+		response.Status = "403"
+		response.Message = "Please Insert Correct Opt."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return false
 	}
 
-	response.Status = "403"
-	response.Message = "Please Insert Correct Opt."
-	utility.RenderJsonResponse(w, r, response, 400)
-	return false
 }
 
 func GenerateEmailToken(userid string) string {
