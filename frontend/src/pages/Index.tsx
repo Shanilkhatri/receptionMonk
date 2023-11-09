@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import ReactApexChart from 'react-apexcharts';
@@ -13,10 +13,14 @@ const utility = new Utility()
 
 const Index = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     useEffect(() => {
         dispatch(setPageTitle('Homepage'));
         // integrate a condition here that if token is empty we go straight to login
         console.log("exampleToken: ",utility.getCookieValue("exampleToken"))
+        if(utility.getCookieValue("exampleToken")==null){
+            navigate("/auth/SignIn")
+        }
     });
 
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
