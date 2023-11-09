@@ -45,10 +45,11 @@ const Sidebar = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location]);
     
-    const logoImage = themeConfig.theme === 'light' ? (
-        <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_light.svg" alt="logo" />
-      ) : (
+    const logoImage = (themeConfig.theme === 'light' || themeConfig.theme === 'system') ? (
         <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_dark.svg" alt="logo" />
+
+      ) : (
+        <img className="h-20 ml-[5px] flex-none" src="/assets/images/logo/logo_light.svg" alt="logo" />
       );
 
 

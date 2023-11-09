@@ -61,10 +61,10 @@ const Header = () => {
 
     const { t } = useTranslation();
 
-    const logoImage = themeConfig.theme === 'light' ? (
-        <img className="w-24 ltr:-ml-1 rtl:-mr-1 inline" src="/assets/images/logo/logo_light.svg" alt="logo" />
+    const logoImage = (themeConfig.theme === 'light' || themeConfig.theme === 'system') ? (
+            <img className="w-24 ltr:-ml-1 rtl:-mr-1 inline" src="/assets/images/logo/logo_dark.svg" alt="logo" />
       ) : (
-        <img className="w-24 ltr:-ml-1 rtl:-mr-1 inline" src="/assets/images/logo/logo_dark.svg" alt="logo" />
+        <img className="w-24 ltr:-ml-1 rtl:-mr-1 inline" src="/assets/images/logo/logo_light.svg" alt="logo" />
       );
 
     return (
