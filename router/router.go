@@ -79,9 +79,8 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		}
 		//call this endpoint when user enter otp and submit.
 	case "matchotp":
-		if r.Method == "POST" {
-			controllers.MatchOtp(w, r)
-		}
+		controllers.MatchOtp(w, r)
+		// controllers.Add(w, r)
 	}
 
 }
