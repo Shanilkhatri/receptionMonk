@@ -156,9 +156,9 @@ func GenerateOTP() (string, int64, int64) {
 func EmailSend(otp string, signupData models.SignupDetails) bool {
 	userEmailId := []string{signupData.Email} // set email address.
 	data := make(map[string]interface{})
-	data["subject"] = "OTP"
+	data["subject"] = "OTP verification"
 	data["email"] = signupData.Email
-	data["opt"] = otp
+	data["otp"] = otp
 	data["currentTime"] = signupData.EpochCurrent
 
 	//if email success return true.
@@ -205,7 +205,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	if err != nil {
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-		utility.RenderJsonResponse(w, r, response, 400)
+		utility.RenderJsonResponse(w, r, response, 500)
 		return true
 	}
 	log.Println("boolValues", boolValues)
@@ -219,6 +219,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 			utility.RenderJsonResponse(w, r, response, 200)
 			return false
 		} else {
+			log.Println("Otp not sent!!")
 			response.Message = "OTP email couldn't be sent at the moment, Please try again."
 			utility.RenderJsonResponse(w, r, response, 500)
 		}
@@ -234,9 +235,8 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	emailToken := r.Header.Get("emailVerfToken")
 	var signupDetails models.SignupDetails
 	err := utility.StrictParseDataFromJson(r, &signupDetails)
-	log.Println("signupDetails: ", signupDetails, emailToken)
 	if err != nil {
-		utility.Logger(err)
+		// utility.Logger(err)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		utility.RenderJsonResponse(w, r, response, 400)
@@ -248,7 +248,7 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		log.Println(err)
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-		utility.RenderJsonResponse(w, r, response, 400)
+		utility.RenderJsonResponse(w, r, response, 500)
 		return true
 	}
 
@@ -258,7 +258,6 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-
 	//checking otp if correct or not.
 	if data.Otp == signupDetails.Otp {
 		currentTime := time.Now().Unix() // data.EpochCurrent
@@ -268,13 +267,26 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 			fmt.Println("OTP is still valid")
 			response.Status = "200"
 			response.Message = "Login success."
-			response.Payload = data
+			// generate a token for header auth and send in payload
+			// -> using the same function to generate main token
+			// -> that we used for email verf token
+			// -> mainAuthToken = bcryptOf(data.email + data.otp)
+			data.Token = GenerateEmailToken(data.Email + data.Otp)
+			// saving the token in db
+			_, err := models.Authentication{}.GetUserByEmailIds(data)
+			if err != nil {
+				response.Status = "500"
+				response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+				utility.RenderJsonResponse(w, r, response, 500)
+				return true
+			}
+			response.Payload = data.Token
 			utility.RenderJsonResponse(w, r, response, 200)
 			return true
 		} else {
 			fmt.Println("OTP has expired")
 			response.Status = "403"
-			response.Message = "Please 121Insert Correct Opt."
+			response.Message = "Please Insert Correct Opt."
 			utility.RenderJsonResponse(w, r, response, 403)
 			return false
 		}

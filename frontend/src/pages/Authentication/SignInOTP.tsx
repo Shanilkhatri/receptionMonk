@@ -40,37 +40,29 @@ const SignInOTP = () => {
         
         var jsonObj = {
             "otp": otpToSend,
-            "email": store.getState().themeConfig.email  // email at redux-store
+            "authEmailId": store.getState().themeConfig.email  // email at redux-store
         }
 
-        // const response = await fetch("http://localhost:4000/matchotp", {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         // adding header for email-verf-token
-        //         'emailVerfToken': store.getState().themeConfig.emailVerfToken
-        //     },
-        //     body: JSON.stringify(jsonObj),
+        const response = await fetch("http://localhost:4000/matchotp", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // adding header for email-verf-token
+                'emailVerfToken': store.getState().themeConfig.emailVerfToken
+            },
+            body: JSON.stringify(jsonObj),
 
-        // });
-
-        // if (response.ok) {
+        });
+        var responseData = await response.json() // wait for response > json
+        console.log("response data: ",responseData.Payload)
+        console.log("response code: ",response.ok)
+        if (response.ok) {
         // if (true) {
 
             // otp is validated successfully
             // next we'll get a token from server which 
             // will be stored in cookies pointing to other info about the user
-            var exampleToken = "sduer78y2348uryuehy732y4efdhjn"
-            // example user data that we'll get in response
-            var userDataToEncrypt = {
-                username: "mary_kom",
-                email: "john@example.com",
-                role: "user",
-                passwordHash:"",
-            };
-
-            // stringifying the data
-            var dataString = JSON.stringify(userDataToEncrypt);
+            
             // Setting it into cookies with an expiry time of 6 months (in seconds)
             var expirationDate = new Date();
             expirationDate.setMonth(expirationDate.getMonth() + 6);
@@ -82,10 +74,10 @@ const SignInOTP = () => {
             // -> document.cookie = "myCookie=myValue; secure; HttpOnly; path=/; SameSite=Strict";
 
             // for development :
-            document.cookie = `exampleToken=${exampleToken}; secure;  expires=${expirationDate.toUTCString()}; path=/`;
-            document.cookie = `exampleData=${dataString}; expires=${expirationDate.toUTCString()}; path=/`;
+            document.cookie = `exampleToken=${responseData.Payload}; secure;  expires=${expirationDate.toUTCString()}; path=/`;
+            // document.cookie = `exampleData=${dataString}; expires=${expirationDate.toUTCString()}; path=/`;
 
-        // }
+        }
 
         navigate("/");
         setSubmitting(false)

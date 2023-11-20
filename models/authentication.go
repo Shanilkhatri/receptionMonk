@@ -29,8 +29,12 @@ type Authentication struct {
 	AccountType           string `json:"accountType" db:"accountType"`
 	CompanyID             int    `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
-	Token                 string
-	TokenTimestamp        int64 `db:"tokenTimestamp"`
+	Token                 string `json:"token" db:"token"`
+	TokenTimestamp        int64  `db:"tokenTimestamp"`
+	EmailToken            string `json:"emailToken" db:"emailToken"`
+	Otp                   string `json:"otp" db:"otp"`
+	EpochCurrent          int64  `db:"epochcurrent"`
+	EpochExpired          int64  `db:"epochexpired"`
 }
 
 type TwoFactor struct {
@@ -86,7 +90,7 @@ func (auth Authentication) TokenVerify(token string, newPassword string) (bool, 
 }
 
 func (auth Authentication) ChangePassword(newPassword string, id int32) (bool, error) {
-	query, err := utility.Db.Prepare("UPDATE authentication SET password = ? WHERE id = ?")
+	query, err := utility.Db.Prepare("UPDATE authentication SET passwordHash = ? WHERE id = ?")
 	if err != nil {
 		log.Println("MySQL Query Failed")
 	}
@@ -153,21 +157,22 @@ func (auth Authentication) GetAuthenticationByToken(token string) (*Authenticati
 }
 
 type SignupDetails struct {
-	Email        string `json:"authEmailId"`
-	Password     string `json:"password"`
-	Otp          string `json:"authSignInOTP"`
-	EmailToken   string `json:"emailVerToken"`
-	EpochCurrent int64  `json:"epochcurrent"`
-	EpochExpired int64
+	Email        string `json:"authEmailId" db:"email"`
+	PasswordHash string `json:"passwordHash" db:"passwordHash"`
+	Otp          string `json:"otp" db:"otp"`
+	EmailToken   string `json:"emailVerToken" db:"emailToken"`
+	EpochCurrent int64  `json:"epochcurrent" db:"epochcurrent"`
+	EpochExpired int64  `db:"epochexpired"`
+	Token        string `json:"token" db:"token"`
 }
 
 func (user Authentication) GetUserByEmailIds(data SignupDetails) (bool, error) {
 	log.Println("data", data)
-	var selectedRow SignupDetails
+	log.Println("email exists: ", EmailExistOrNot(data.Email))
 	if EmailExistOrNot(data.Email) {
 		log.Println("hi update")
 		//update data
-		queryOfauth, err := utility.Db.NamedExec("UPDATE `authentication` SET `emailToken`=:EmailToken,`otp`=:Otp,`epochcurrent`=:EpochCurrent,`epochexpired`=:EpochExpired WHERE `email`=:Email ", map[string]interface{}{"EmailToken": data.EmailToken, "Otp": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email})
+		queryOfauth, err := utility.Db.NamedExec("UPDATE `authentication` SET `emailToken`=:EmailToken,`otp`=:Otp,`epochcurrent`=:EpochCurrent,`epochexpired`=:EpochExpired, `token`=:Token WHERE `email`=:Email ", map[string]interface{}{"EmailToken": data.EmailToken, "Otp": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email, "Token": data.Token})
 		// Check error
 		if err != nil {
 			log.Println(err)
@@ -177,8 +182,8 @@ func (user Authentication) GetUserByEmailIds(data SignupDetails) (bool, error) {
 		return Rowefffect > 0, err
 
 	} else {
-		log.Println("insert ")
-		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (emailToken,otp,epochcurrent,epochexpired,email,password) VALUES (:EmailToken,:Otp,:EpochCurrent,:Email,:Password)", map[string]interface{}{"EmailToken": selectedRow.EmailToken, "Otp": selectedRow.Otp, "EpochCurrent": selectedRow.EpochCurrent, "EpochExpired": selectedRow.EpochExpired, "Email": selectedRow.Email, "Password": selectedRow.Password})
+		log.Println("insert :", data)
+		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (emailToken,otp,epochcurrent,epochexpired,email,passwordHash,token) VALUES (:EmailToken,:Otp,:EpochCurrent,:EpochExpired,:Email,:PasswordHash,:Token)", map[string]interface{}{"EmailToken": data.EmailToken, "Otp": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email, "PasswordHash": data.PasswordHash, "Token": data.Token})
 		// Check error
 		if err != nil {
 			log.Println(err)
@@ -204,8 +209,9 @@ func EmailExistOrNot(email string) bool {
 func (auth Authentication) GetUserDetailsByEmail(email string) (SignupDetails, error) {
 	var selectedRow SignupDetails
 
-	err := utility.Db.Get(&selectedRow, "SELECT emailtoken, otp,epochcurrent,epochexpired,email FROM authentication WHERE email = ?", email)
-
+	log.Println("email: ", email)
+	err := utility.Db.Get(&selectedRow, "SELECT emailToken, otp,epochcurrent,epochexpired,email FROM `authentication` WHERE email = ?", email)
+	log.Println("selectedRow: ", selectedRow)
 	return selectedRow, err
 }
 
