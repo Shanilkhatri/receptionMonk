@@ -78,8 +78,7 @@ const Index = () => {
             navigate("/auth/SignIn")
             return
         }
-        navigate("/")
-        return
+        
     }
     const [isModalOpen, setModalOpen] = useState(false);
 
