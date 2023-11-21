@@ -77,6 +77,7 @@ func VerifyToken(r *http.Request, w http.ResponseWriter) error {
 			// Fails would be rare, but if it happens kind of defeat the purpose as JSON unmarshall would also crash
 			utility.Cache.Set(data.Token, jsonData)
 			r.Header.Add("tokenPayload", string(jsonData))
+			w.Header().Add("tokenPayload", string(jsonData))
 			return err
 		} else {
 			return err
