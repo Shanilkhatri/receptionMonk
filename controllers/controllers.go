@@ -45,11 +45,22 @@ func CheckACL(w http.ResponseWriter, r *http.Request, allowedAccess []string) bo
 		}
 	} else {
 		// Token based Auth
-		err := models.VerifyToken(r)
+		err := models.VerifyToken(r, w)
 		if err != nil {
 			http.Error(w, "403 Forbidden", http.StatusForbidden)
 			return false
 		}
 	}
+	return true
+}
+func CheckACLFrontend(w http.ResponseWriter, r *http.Request) bool {
+	// Check if Token is provided else we continue with Session based auth management
+	// Token based Auth
+	err := models.VerifyTokenFrontend(r, w)
+	if err != nil {
+		utility.RenderJsonResponse(w, r, "", 403)
+		return false
+	}
+	utility.RenderJsonResponse(w, r, "", 200)
 	return true
 }

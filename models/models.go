@@ -49,7 +49,7 @@ func GenerateCache() {
 	}
 }
 
-func VerifyToken(r *http.Request) error {
+func VerifyToken(r *http.Request, w http.ResponseWriter) error {
 	authToken := r.Header.Get("Authorization")
 	userToken := strings.Split(authToken, " ")
 	if len(userToken) != 2 || strings.ToLower(userToken[0]) != "bearer" {
@@ -77,6 +77,44 @@ func VerifyToken(r *http.Request) error {
 			// Fails would be rare, but if it happens kind of defeat the purpose as JSON unmarshall would also crash
 			utility.Cache.Set(data.Token, jsonData)
 			r.Header.Add("tokenPayload", string(jsonData))
+			return err
+		} else {
+			return err
+		}
+	}
+}
+func VerifyTokenFrontend(r *http.Request, w http.ResponseWriter) error {
+	authToken := r.Header.Get("Authorization")
+	userToken := strings.Split(authToken, " ")
+	if len(userToken) != 2 || strings.ToLower(userToken[0]) != "bearer" {
+		return fmt.Errorf("invalid authorization header format")
+	}
+
+	if entry, err := utility.Cache.Get(userToken[1]); err == nil {
+
+		// Set JSON Payload to the header so the users can use the same
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("tokenPayload", string(entry))
+		w.Header().Set("Access-Control-Expose-Headers", "tokenPayload")
+		// r.Header.Add("tokenPayload", string(entry))
+		return err
+	} else {
+		// Pull Record from DB and add to Cache
+
+		// PS : Adding DB failsafe opens up a DDoS security issue that people can keep trying with random tokens
+		// and crash the server easily by blocking DB pool connections
+
+		data, err := Authentication.GetAuthenticationByToken(Authentication{}, userToken[1])
+		if err != nil {
+			return err
+		}
+		jsonData, err := json.Marshal(data)
+		if err == nil {
+			// Rehydrate if we got the JSON conversion done
+			// Fails would be rare, but if it happens kind of defeat the purpose as JSON unmarshall would also crash
+			utility.Cache.Set(data.Token, jsonData)
+			// r.Header.Add("tokenPayload", string(jsonData))
+			w.Header().Add("tokenPayload", string(jsonData))
 			return err
 		} else {
 			return err

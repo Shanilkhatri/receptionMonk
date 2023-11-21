@@ -128,7 +128,7 @@ func cacheTemplates() *template.Template {
 func handler(w http.ResponseWriter, r *http.Request) {
 	router.Routes(w, r)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, emailVerfToken")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, emailVerfToken,Authorization,tokenPayload")
 	w.Header().Set("Content-Security-Policy", "default-src 'self'")
 	w.Header().Set("Access-Control-Allow-Methods", "*")
 }

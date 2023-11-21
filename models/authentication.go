@@ -35,6 +35,7 @@ type Authentication struct {
 	Otp                   string `json:"otp" db:"otp"`
 	EpochCurrent          int64  `db:"epochcurrent"`
 	EpochExpired          int64  `db:"epochexpired"`
+	IsWizardComplete      bool   `json:"iswizardcomplete" db:"iswizardcomplete"`
 }
 
 type TwoFactor struct {

@@ -83,6 +83,10 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 			controllers.MatchOtp(w, r)
 		}
 		// controllers.Add(w, r)
+	case "tokencheckfrontend":
+		if r.Method == "GET" {
+			controllers.CheckACLFrontend(w, r)
+		}
 	}
 
 }
