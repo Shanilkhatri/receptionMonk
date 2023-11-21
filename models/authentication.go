@@ -8,6 +8,7 @@ import (
 
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,7 +31,6 @@ type Authentication struct {
 	CompanyID             int    `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
 	Token                 string `json:"token" db:"token"`
-	TokenTimestamp        int64  `db:"tokenTimestamp"`
 	EmailToken            string `json:"emailToken" db:"emailToken"`
 	Otp                   string `json:"otp" db:"otp"`
 	EpochCurrent          int64  `db:"epochcurrent"`
@@ -181,7 +181,6 @@ func (user Authentication) GetUserByEmailIds(data SignupDetails) (bool, error) {
 		}
 		Rowefffect, _ := queryOfauth.RowsAffected()
 		return Rowefffect > 0, err
-
 	} else {
 		log.Println("insert :", data)
 		_, err := utility.Db.NamedExec("INSERT INTO `authentication` (emailToken,otp,epochcurrent,epochexpired,email,passwordHash,token) VALUES (:EmailToken,:Otp,:EpochCurrent,:EpochExpired,:Email,:PasswordHash,:Token)", map[string]interface{}{"EmailToken": data.EmailToken, "Otp": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email, "PasswordHash": data.PasswordHash, "Token": data.Token})
@@ -233,3 +232,14 @@ func (auth Authentication) GetUserDetailsByEmail(email string) (SignupDetails, e
 // 	}
 
 // }
+func (user Authentication) UpdateCompanyIdByEmail(id int64, companyId int64, tx *sqlx.Tx) (bool, error) {
+	//update data
+	queryOfauth, err := tx.NamedExec("UPDATE `authentication` SET `companyId`=:CompanyId  WHERE `id`=:Id ", map[string]interface{}{"CompanyId": companyId, "Id": id})
+	// Check error
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	Rowefffect, _ := queryOfauth.RowsAffected()
+	return Rowefffect > 0, err
+}
