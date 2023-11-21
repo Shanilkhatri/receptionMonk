@@ -13,7 +13,7 @@ import (
 )
 
 func IsValidUserStruct(userStruct models.Users) bool {
-	if userStruct.Name != "" && userStruct.Email != "" && userStruct.PasswordHash != "" && userStruct.DOB != "" && userStruct.CompanyID != 0 && userStruct.AccountType != "" && userStruct.TwoFactorKey != "" && userStruct.TwoFactorRecoveryCode != "" && userStruct.Status != "" {
+	if userStruct.Name != "" && userStruct.Email != "" && userStruct.PasswordHash != "" && userStruct.DOB != "" && userStruct.AccountType != "" && userStruct.TwoFactorKey != "" && userStruct.TwoFactorRecoveryCode != "" && userStruct.Status != "" {
 		return true
 	}
 	return false
@@ -156,15 +156,14 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 
 func PostUser(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-
 	var userStruct models.Users
 	err := utility.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		utility.Logger(err)
+		// utility.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-
+		return
 	}
 	// date format check
 	if !utility.CheckDateFormat(userStruct.DOB) {
@@ -183,7 +182,13 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	}
 	var userDetails models.Users
 	// integrate token check and return if mismatch found with status 400
-	isok, userDetailsType := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
+	if !isok {
+		response.Status = "403"
+		response.Message = "Unauthorized access! You are not allowed to make this request"
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
 	flag := utility.CopyFieldsBetweenDiffStructType(userDetailsType, &userDetails)
 	if !flag {
 		log.Println("error during copy data at: CopyFieldsBetweenDiffStructType")
@@ -192,13 +197,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	if !isok {
-		response.Status = "403"
-		response.Message = "Unauthorized access! You are not allowed to make this request"
-		utility.RenderJsonResponse(w, r, response, 403)
-		return
-	}
-	if userStruct.ID == 0 {
+	if userStruct.Email == "" {
 		response.Status = "400"
 		response.Message = "Bad request! Cannot update data because of missing unique identifier"
 		utility.RenderJsonResponse(w, r, response, 400)
@@ -212,9 +211,11 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// this step is to get user incase a user with higher access rights tries to update other user
-	if userDetails.AccountType == "owner" || userDetails.AccountType == "super-admin" && userStruct.AccountType != "super-admin" && userStruct.ID != userDetails.ID {
+	if userDetails.AccountType == "owner" || userDetails.AccountType == "super-admin" && userStruct.AccountType != "super-admin" && userStruct.Email != userDetails.Email {
 		// we need to get user details now
-		row, err := models.Users{}.GetUserById(userStruct.ID)
+		// row, err := models.Users{}.GetUserById(userStruct.ID)
+		//switch to email id not with the primary id
+		row, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
 			log.Println("error: ", err)
 			utility.Logger(err)
@@ -223,8 +224,9 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			utility.RenderJsonResponse(w, r, response, 400)
 			return
 		}
+		userDetails = CopyStructValues(row)
 		//else assigning userdetails the row we just bought
-		userDetails = row
+		// userDetails = row
 	}
 	// check for passwordHash if empty
 	if userStruct.PasswordHash == "" {
@@ -244,11 +246,11 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	// check for twoFactory key/recoverCode
 	if userStruct.TwoFactorKey == "" && userStruct.TwoFactorRecoveryCode == "" {
 		// only for now random twofactorkey and recovery code (to be deleted when integrated with ORM)
-		userStruct.TwoFactorRecoveryCode, err = Utility.GenerateRandomString(16)
+		userStruct.TwoFactorRecoveryCode, err = utility.GenerateRandomString(16)
 		if err != nil {
 			log.Println("error in generating random string for TwoFactorRecoveryCode")
 		}
-		userStruct.TwoFactorKey, err = Utility.GenerateRandomString(16)
+		userStruct.TwoFactorKey, err = utility.GenerateRandomString(16)
 		if err != nil {
 			log.Println("error in generating random string for TwoFactorKey")
 		}
@@ -266,7 +268,6 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	// fill it with updated data
 	if IsValidUserStruct(userStruct) {
 		// call the ORM update function to update the user details
-		log.Println("Begin post User...")
 		tx := utility.Db.MustBegin()
 		updateRow, err := models.Users{}.PostUser(userStruct)
 		if err != nil {
@@ -402,4 +403,20 @@ func DeleteUserData(w http.ResponseWriter, r *http.Request) bool {
 	response.Message = "User deleted successfully."
 	utility.RenderJsonResponse(w, r, response, 200)
 	return false
+}
+func CopyStructValues(st1 models.Authentication) models.Users {
+	st2 := models.Users{
+		ID:                    int64(st1.ID),
+		Name:                  st1.Name,
+		Email:                 st1.Email,
+		PasswordHash:          st1.PasswordHash,
+		TwoFactorKey:          st1.TwoFactorKey,
+		TwoFactorRecoveryCode: st1.TwoFactorRecoveryCode,
+		DOB:                   st1.DOB,
+		AccountType:           st1.AccountType,
+		CompanyID:             int64(st1.CompanyID),
+		Status:                st1.Status,
+		// Add other fields as needed
+	}
+	return st2
 }
