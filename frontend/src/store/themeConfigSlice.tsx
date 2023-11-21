@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import i18next from 'i18next';
 import themeConfig from '../theme.config';
-
+import Utility from '../utility/utility';
+const utility = new Utility
 const defaultState = {
     isDarkMode: false,
     mainLayout: 'app',
@@ -35,8 +36,9 @@ const defaultState = {
 };
 
 const initialState = {
-    emailVerfToken : "",
-    email : "",
+    
+    emailVerfToken: "",
+    email: "",
     theme: localStorage.getItem('theme') || themeConfig.theme,
     menu: localStorage.getItem('menu') || themeConfig.menu,
     layout: localStorage.getItem('layout') || themeConfig.layout,
@@ -137,10 +139,17 @@ const themeConfigSlice = createSlice({
         setPageTitle(state, { payload }) {
             document.title = `${payload} | Reception Monk`;
         },
-        setEmail(state,{payload}){
-            state.email = payload
+        setEmail(state, { payload }) {
+            if (payload == "") {
+                var stringyfiedObj = utility.getCookieValue("whoami") || ""
+                console.log("jsonObj: ", stringyfiedObj)
+                var jsonObj = JSON.parse(stringyfiedObj)
+                state.email = jsonObj.email
+            }else {
+                state.email = payload
+            }
         },
-        setEmailVerToken(state,{payload}){
+        setEmailVerToken(state, { payload }) {
             state.emailVerfToken = payload
         }
     },

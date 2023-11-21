@@ -60,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, hasCloseBtn = true, onClose, chil
 
   return (
     <dialog ref={modalRef} open={isOpen} className="modal">
-      {hasCloseBtn && <button onClick={handleClose} className="modal-close-btn">Close</button>}
+      {hasCloseBtn}
       {children}
     </dialog>
   );
