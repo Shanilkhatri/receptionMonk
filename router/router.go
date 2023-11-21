@@ -87,6 +87,17 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			controllers.CheckACLFrontend(w, r)
 		}
+	case "company":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin"}) {
+				controllers.PostCompany(w, r)
+			}
+		}
+		if r.Method == "PUT" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin"}) {
+				controllers.PutCompany(w, r)
+			}
+		}
 	}
 
 }
