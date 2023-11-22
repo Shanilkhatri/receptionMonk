@@ -36,7 +36,8 @@ const defaultState = {
 };
 
 const initialState = {
-    
+    hydrateCookie: "",
+    dob:"",
     emailVerfToken: "",
     email: "",
     theme: localStorage.getItem('theme') || themeConfig.theme,
@@ -142,7 +143,6 @@ const themeConfigSlice = createSlice({
         setEmail(state, { payload }) {
             if (payload == "") {
                 var stringyfiedObj = utility.getCookieValue("whoami") || ""
-                console.log("jsonObj: ", stringyfiedObj)
                 var jsonObj = JSON.parse(stringyfiedObj)
                 state.email = jsonObj.email
             }else {
@@ -151,10 +151,28 @@ const themeConfigSlice = createSlice({
         },
         setEmailVerToken(state, { payload }) {
             state.emailVerfToken = payload
+        },
+        setDob(state,{payload}){
+            if (payload == "") {
+                var stringyfiedObj = utility.getCookieValue("whoami") || ""
+                var jsonObj = JSON.parse(stringyfiedObj)
+                state.dob = jsonObj.dob
+            }else {
+                state.dob = payload
+            }
+        },
+        setHydrateCookie(state,{payload}){
+            if (payload == "") {
+                var stringyfiedObj = utility.getCookieValue("whoami") || ""
+                var jsonObj = JSON.parse(stringyfiedObj)
+                state.hydrateCookie = jsonObj
+            }else {
+                state.hydrateCookie = payload
+            }
         }
     },
 });
 
-export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle, setEmail, setEmailVerToken } = themeConfigSlice.actions;
+export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle, setEmail, setEmailVerToken,setDob,setHydrateCookie } = themeConfigSlice.actions;
 
 export default themeConfigSlice.reducer;

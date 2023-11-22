@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
 import ReactApexChart from 'react-apexcharts';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { setPageTitle,setEmail } from '../store/themeConfigSlice';
+import { setPageTitle, setEmail, setHydrateCookie } from '../store/themeConfigSlice';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import Utility from '../utility/utility';
@@ -17,7 +17,7 @@ const Index = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     useEffect(() => {
-        dispatch(setEmail(store.getState().themeConfig.email));
+        
         dispatch(setPageTitle('Homepage'));
         // integrate a condition here that if token is empty we go straight to login
         console.log("exampleToken: ", utility.getCookieValue("exampleToken"))
@@ -25,6 +25,7 @@ const Index = () => {
         if (utility.getCookieValue("exampleToken") == null) {
             navigate("/auth/SignIn")
         } else {
+            console.log(store.getState().themeConfig.hydrateCookie)
             calling_token_check(utility.getCookieValue("exampleToken"))
         }
     });
@@ -46,13 +47,15 @@ const Index = () => {
         var tokenData = response.headers.get("tokenPayload") || ""
         var tokenPayload = JSON.parse(tokenData)
         document.cookie = `whoami=${JSON.stringify(tokenPayload)}; secure; path=/`;
+        dispatch(setEmail(store.getState().themeConfig.email));
+        dispatch(setHydrateCookie(store.getState().themeConfig.hydrateCookie))
         console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
         if (tokenPayload.iswizardcomplete == false) {
             handleOpenModal()
         }
 
     }
-    async function saveUserDetails(){
+    async function saveUserDetails() {
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
         const email = (document.getElementById('recipient-email') as HTMLInputElement)?.value;
@@ -63,7 +66,7 @@ const Index = () => {
             passwordHash,
             email,
             dob,
-          };      
+        };
         const response = await fetch("http://localhost:4000/users", {
             method: 'POST',
             headers: {
@@ -72,18 +75,21 @@ const Index = () => {
             },
             body: JSON.stringify(userData),
         });
-        var responseData = await response.json() // wait for response > json
-        console.log("response data: ",responseData)
+        // var responseData = await response.json() // wait for response > json
+        console.log("response data: ", response.ok)
         if (!response.ok) {
             navigate("/auth/SignIn")
             return
+        } else if (response.ok) {
+            handleCloseModal()
         }
-        
+
     }
     const [isModalOpen, setModalOpen] = useState(false);
 
     const handleOpenModal = () => {
         setModalOpen(true);
+        console.log("modal value", isModalOpen)
     };
 
     const handleCloseModal = () => {
@@ -271,30 +277,29 @@ const Index = () => {
 
     return (
         <div>{
-            <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={true}>
-                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-lg">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
-                            </div>
-                            <div className="modal-body">
-                                <form>
-                                    <input type="text" className="form-control" id="recipient-name" />
-                                    <input type="password" className="form-control" id="recipient-password"/>
-                                    <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
-                                    <input type="date" className="form-control" id="recipient-dob"/>
-                                    <button type="button" className="btn btn-primary" onClick={saveUserDetails} data-mdb-ripple-init>
-                                        Save
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Modal>
-
-        }
+            <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
+                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                     <div className="modal-dialog modal-lg">
+                         <div className="modal-content">
+                             <div className="modal-header">
+                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
+                             </div>
+                             <div className="modal-body">
+                                 <form>
+                                     <input type="text" className="form-control" id="recipient-name" />
+                                     <input type="password" className="form-control" id="recipient-password"/>
+                                     <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
+                                     <input type="date" className="form-control" id="recipient-dob"/>
+                                     <button type="button" className="btn btn-primary" onClick={saveUserDetails} data-mdb-ripple-init>
+                                         Save
+                                     </button>
+                                 </form>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </Modal>
+}
             {
                 <div>
                     <ul className="flex space-x-2 rtl:space-x-reverse">
@@ -446,11 +451,11 @@ const Index = () => {
                                                 <button type="button" className="btn btn-secondary rounded shadow-[0_0_1px_0_#c8400d] rounded-full text-base py-1 px-2 sm:px-6 text-white hover:bg-dark">
                                                     Recharge Wallet
                                                     {/* <span className='bg-[#EBF1F6] rounded-xl ms-3 font-semibold'>
-                                                <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                                </svg>
-                                            </span> */}
+                                            <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                        </span> */}
                                                 </button>
                                             </div>
                                         </div>
@@ -556,26 +561,26 @@ const Index = () => {
                                                     <g>
                                                         <g>
                                                             <path fill="#ffffff" d="M147.62,166.667c-57.767,0-104.762,46.995-104.762,104.762v23.81h209.524v-23.81
-                                                C252.382,213.662,205.387,166.667,147.62,166.667z M189.782,186.162c-13.552,29.305-33.367,71.714-41.9,89.029l-42.4-89.043
-                                                c12.724-6.314,26.995-9.957,42.138-9.957C162.772,176.19,177.053,179.838,189.782,186.162z M196.901,193.467l11.948,51.771
-                                                l-49.533,28.305C165.796,260.395,176.958,236.6,196.901,193.467z M136.786,274.038l-50.396-28.795l11.976-51.886L136.786,274.038z
-                                                M52.382,271.429c0-29.786,13.762-56.395,35.238-73.871l-12.1,52.438l62.505,35.719H52.382V271.429z M242.858,285.714h-85.643
-                                                l62.509-35.719l-12.105-52.438c21.476,17.476,35.238,44.086,35.238,73.871v14.286H242.858z"/>
+                                            C252.382,213.662,205.387,166.667,147.62,166.667z M189.782,186.162c-13.552,29.305-33.367,71.714-41.9,89.029l-42.4-89.043
+                                            c12.724-6.314,26.995-9.957,42.138-9.957C162.772,176.19,177.053,179.838,189.782,186.162z M196.901,193.467l11.948,51.771
+                                            l-49.533,28.305C165.796,260.395,176.958,236.6,196.901,193.467z M136.786,274.038l-50.396-28.795l11.976-51.886L136.786,274.038z
+                                            M52.382,271.429c0-29.786,13.762-56.395,35.238-73.871l-12.1,52.438l62.505,35.719H52.382V271.429z M242.858,285.714h-85.643
+                                            l62.509-35.719l-12.105-52.438c21.476,17.476,35.238,44.086,35.238,73.871v14.286H242.858z"/>
                                                             <path fill="#ffffff" d="M207.001,138.095h12.048c7.876,0,14.286-6.41,14.286-14.286v-14.286h-9.524v14.286
-                                                c0,2.624-2.133,4.762-4.762,4.762h-5.548c6.514-11.224,10.31-24.21,10.31-38.095c0-42.01-34.181-76.19-76.19-76.19
-                                                s-76.19,34.181-76.19,76.19s34.181,76.19,76.19,76.19C171.615,166.667,193.025,155.49,207.001,138.095z M80.953,90.476
-                                                c0-36.762,29.905-66.667,66.667-66.667s66.667,29.905,66.667,66.667c0,14.162-4.471,27.286-12.033,38.095h-31.7
-                                                c-1.971-5.529-7.21-9.524-13.41-9.524h-19.048c-7.876,0-14.286,6.41-14.286,14.286s6.41,14.286,14.286,14.286h19.048
-                                                c6.2,0,11.438-3.995,13.41-9.524h23.638c-12.029,11.762-28.457,19.048-46.567,19.048
-                                                C110.858,157.143,80.953,127.238,80.953,90.476z M161.906,133.333c0,2.624-2.133,4.762-4.762,4.762h-19.048
-                                                c-2.629,0-4.762-2.138-4.762-4.762s2.133-4.762,4.762-4.762h19.048C159.772,128.571,161.906,130.71,161.906,133.333z"/>
+                                            c0,2.624-2.133,4.762-4.762,4.762h-5.548c6.514-11.224,10.31-24.21,10.31-38.095c0-42.01-34.181-76.19-76.19-76.19
+                                            s-76.19,34.181-76.19,76.19s34.181,76.19,76.19,76.19C171.615,166.667,193.025,155.49,207.001,138.095z M80.953,90.476
+                                            c0-36.762,29.905-66.667,66.667-66.667s66.667,29.905,66.667,66.667c0,14.162-4.471,27.286-12.033,38.095h-31.7
+                                            c-1.971-5.529-7.21-9.524-13.41-9.524h-19.048c-7.876,0-14.286,6.41-14.286,14.286s6.41,14.286,14.286,14.286h19.048
+                                            c6.2,0,11.438-3.995,13.41-9.524h23.638c-12.029,11.762-28.457,19.048-46.567,19.048
+                                            C110.858,157.143,80.953,127.238,80.953,90.476z M161.906,133.333c0,2.624-2.133,4.762-4.762,4.762h-19.048
+                                            c-2.629,0-4.762-2.138-4.762-4.762s2.133-4.762,4.762-4.762h19.048C159.772,128.571,161.906,130.71,161.906,133.333z"/>
                                                             <path fill="#ffffff" d="M147.62,9.524c34.414,0,65.138,21.814,76.457,54.281l8.995-3.133
-                                                C220.415,24.381,186.077,0,147.62,0c-38.452,0-72.79,24.381-85.448,60.667l8.995,3.138C82.487,31.338,113.211,9.524,147.62,9.524z
-                                                "/>
+                                            C220.415,24.381,186.077,0,147.62,0c-38.452,0-72.79,24.381-85.448,60.667l8.995,3.138C82.487,31.338,113.211,9.524,147.62,9.524z
+                                            "/>
                                                             <path fill="#333333" d="M71.43,123.81h-4.762c-18.376,0-33.333-14.957-33.333-33.333s14.957-33.333,33.333-33.333h4.762
-                                                V123.81z"/>
+                                            V123.81z"/>
                                                             <path fill="#333333" d="M228.572,123.81h-4.762V57.143h4.762c18.376,0,33.333,14.957,33.333,33.333
-                                                S246.949,123.81,228.572,123.81z"/>
+                                            S246.949,123.81,228.572,123.81z"/>
                                                         </g>
                                                     </g>
                                                 </svg>
