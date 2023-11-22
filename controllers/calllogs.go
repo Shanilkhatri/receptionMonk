@@ -62,7 +62,7 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 
 func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 
 	if isOk {
 		queryParams := r.URL.Query()

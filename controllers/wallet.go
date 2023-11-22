@@ -73,7 +73,7 @@ func PostWallet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// getting userDetails from the token
-	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	// as directed in the documentation, only accountType "owner" can access this route
 	if !isOk || userDetails.AccountType != "owner" {
 		response.Status = "403"
@@ -202,7 +202,7 @@ func DeleteWallet(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok || userDetails.AccountType != "owner" && userDetails.AccountType != "super-admin" {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request."

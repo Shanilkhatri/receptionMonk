@@ -68,7 +68,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		// tokenPayload check
-		isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+		isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 		if isok {
 			if userStruct.AccountType == "owner" && userDetails.AccountType == "owner" {
 				response.Status = "403"
@@ -360,7 +360,7 @@ func DeleteUserData(w http.ResponseWriter, r *http.Request) bool {
 		return true
 	}
 
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok || userDetails.AccountType == "user" {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request."

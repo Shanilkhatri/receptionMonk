@@ -23,7 +23,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 	// var filter models.GetOrderFilter
 	//  get params from query
 	// get Prod Id from url
-	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	log.Println("userDetails: ", userDetails)
 	if isOk {
 		queryParams := r.URL.Query()

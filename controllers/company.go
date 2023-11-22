@@ -157,7 +157,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 	utility.RenderJsonResponse(w, r, response, 200)
 }
 
-// isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+// isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 // if !isok || userDetails.AccountType == "user" {
 // 	response.Status = "403"
 // 	response.Message = "You are not authorized to make this request."
