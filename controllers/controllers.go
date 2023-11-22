@@ -35,11 +35,11 @@ func CheckACL(w http.ResponseWriter, r *http.Request, allowedAccess []string) bo
 	apiToken := r.Header.Get("Authorization")
 	if apiToken == "" {
 		// API Token not found, Switching to session based auth
-		userType := Utility.SessionGet(r, "type")
+		userType := utility.SessionGet(r, "type")
 		if userType == nil {
 			userType = "guest"
 		}
-		if !Utility.StringInArray(fmt.Sprintf("%v", userType), allowedAccess) {
+		if !utility.StringInArray(fmt.Sprintf("%v", userType), allowedAccess) {
 			utility.RenderJsonResponse(w, r, "", 403)
 			return false
 		}

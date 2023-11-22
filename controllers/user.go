@@ -48,8 +48,16 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 403)
 		return
 	}
-	userType := Utility.SessionGet(r, "type")
-	if userType == nil {
+	ok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	if !ok {
+		utility.Logger(err)
+		response.Status = "403"
+		response.Message = "You cannot register the company because you are not an owner."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	userType := userDetails.AccountType
+	if userType == "" {
 		userType = "guest"
 	}
 
