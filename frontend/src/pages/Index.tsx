@@ -52,7 +52,7 @@ const Index = () => {
         dispatch(setHydrateCookie(""))
         console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
         
-        if (tokenPayload.iswizardcomplete == false) {
+        if (tokenPayload.iswizardcomplete != "completed") {
             handleOpenModal()
             // handleCloseModal()
         }

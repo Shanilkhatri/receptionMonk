@@ -91,7 +91,7 @@ type FrontendUserStruct struct {
 	Email            string `json:"email" db:"email"`
 	AccountType      string `json:"accountType" db:"accountType"`
 	Dob              string `json:"dob" db:"dob"`
-	IsWizardComplete bool   `json:"iswizardcomplete" db:"iswizardcomplete"`
+	IsWizardComplete string `json:"iswizardcomplete" db:"iswizardcomplete"`
 	CompanyId        int64  `json:"companyId" db:"companyId"`
 }
 
