@@ -162,25 +162,12 @@ const themeConfigSlice = createSlice({
             }
         },
         setHydrateCookie(state,{payload}){
-            console.log("payload: ",payload)
             if (payload == "") {
                 var stringyfiedObj = utility.getCookieValue("whoami") || ""
                 var jsonObj = JSON.parse(stringyfiedObj)
-                state.hydrateCookie.name = jsonObj.name
-                state.hydrateCookie.email = jsonObj.email
-                state.hydrateCookie.accountType = jsonObj.accountType
-                state.hydrateCookie.dob = jsonObj.dob
-                state.hydrateCookie.iswizardcomplete = jsonObj.iswizardcomplete
-                state.hydrateCookie.companyId = jsonObj.companyId
-
+                state.hydrateCookie = jsonObj
             }else {
-                // state.hydrateCookie = payload
-                state.hydrateCookie.name = payload.name
-                state.hydrateCookie.email = payload.email
-                state.hydrateCookie.accountType = payload.accountType
-                state.hydrateCookie.dob = payload.dob
-                state.hydrateCookie.iswizardcomplete = payload.iswizardcomplete
-                state.hydrateCookie.companyId = payload.companyId
+                state.hydrateCookie = payload
             }
         }
     },
