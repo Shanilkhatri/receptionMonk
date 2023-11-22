@@ -10,6 +10,7 @@ import 'tippy.js/dist/tippy.css';
 import Utility from '../utility/utility';
 import Modal from './modal';
 import store from '../store';
+import env from "react-dotenv";
 // object of class utility
 const utility = new Utility()
 
