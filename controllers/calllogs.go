@@ -21,7 +21,7 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// tokenPayload check
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	// only owner can enter call logs
 	if !isok || userDetails.AccountType != "owner" {
 		response.Status = "403"
