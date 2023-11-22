@@ -17,7 +17,7 @@ type Company struct {
 	ContactEmail  string `json:"contactEmail" db:"contactEmail"`
 }
 
-func (comp Company) PutCompany(company Company, tx *sqlx.Tx) (int64, error) {
+func (Company) PutCompany(company Company, tx *sqlx.Tx) (int64, error) {
 	var insterid int64
 	rows, err := tx.NamedExec("INSERT INTO `company` (id,name,gstin,address,contactNumber,contactEmail) VALUES ( :Id,:Name,:Gstin,:Address,:ContactNumber,:ContactEmail)", map[string]interface{}{"Id": company.Id, "Name": company.Name, "Gstin": company.Gstin, "Address": company.Address, "ContactNumber": company.ContactNumber, "ContactEmail": company.ContactEmail})
 	// Check error
@@ -33,7 +33,7 @@ func (comp Company) PutCompany(company Company, tx *sqlx.Tx) (int64, error) {
 	return rows.LastInsertId()
 }
 
-func (comp Company) PostCompany(company Company, tx *sqlx.Tx) (bool, error) {
+func (Company) PostCompany(company Company, tx *sqlx.Tx) (bool, error) {
 	userData, err := tx.NamedExec("UPDATE company SET name=:Name,gstin=:Gstin,address =:Address,contactNumber=:ContactNumber,contactEmail=:ContactEmail WHERE id=:Id", map[string]interface{}{"Id": company.Id, "Name": company.Name, "Gstin": company.Gstin, "Address": company.Address, "ContactNumber": company.ContactNumber, "ContactEmail": company.ContactEmail})
 	// Check error
 	if err != nil {
@@ -47,4 +47,11 @@ func (comp Company) PostCompany(company Company, tx *sqlx.Tx) (bool, error) {
 		return Rowefffect > 0, err
 	}
 	return false, err
+}
+func (Company) GetCompanyById(Id int64) (Company, error) {
+	var selectedRow Company
+
+	err := utility.Db.Get(&selectedRow, "SELECT * FROM company WHERE id = ?", Id)
+
+	return selectedRow, err
 }

@@ -292,16 +292,6 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			utility.RenderJsonResponse(w, r, response, 400)
 			return
 		}
-		err = tx.Commit()
-		if err != nil {
-			log.Println(err)
-			tx.Rollback()
-			response.Status = "400"
-			response.Message = "Unable to update user at the moment! Please try again."
-			utility.RenderJsonResponse(w, r, response, 400)
-			return
-
-		}
 		response.Status = "200"
 		response.Message = "Record successfully updated"
 		response.Payload = []interface{}{userStruct}
@@ -313,6 +303,16 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			response.Message = "Unable to hydrate cache! Please try again."
 			utility.RenderJsonResponse(w, r, response, 400)
 			return
+		}
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			tx.Rollback()
+			response.Status = "400"
+			response.Message = "Unable to update user at the moment! Please try again."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+
 		}
 		jsonData, _ := json.Marshal(userData)
 		utility.Cache.Set(userData.Token, jsonData)

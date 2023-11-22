@@ -98,6 +98,11 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 				controllers.PutCompany(w, r)
 			}
 		}
+		if r.Method == "GET" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin"}) {
+				controllers.GetCompany(w, r)
+			}
+		}
 	}
 
 }

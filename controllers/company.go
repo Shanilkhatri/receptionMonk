@@ -177,3 +177,24 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 // } else {
 
 // }
+func GetCompany(w http.ResponseWriter, r *http.Request) {
+	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
+	CompanyID := int64(utility.StrToInt(r.URL.Query().Get("CompanyId")))
+	if CompanyID > 0 {
+		companyStruct, err := models.Company{}.GetCompanyById(CompanyID)
+		if err != nil {
+			utility.Logger(err)
+			response.Status = "400"
+			response.Message = "Unable to get company details at the moment! Please try again."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		response.Status = "200"
+		response.Message = "company details updated successfully."
+		response.Payload = companyStruct
+		utility.RenderJsonResponse(w, r, response, 200)
+	}
+	response.Status = "400"
+	response.Message = "company Id not found! Please check and try again."
+	utility.RenderJsonResponse(w, r, response, 400)
+}
