@@ -92,6 +92,7 @@ type FrontendUserStruct struct {
 	AccountType      string `json:"accountType" db:"accountType"`
 	Dob              string `json:"dob" db:"dob"`
 	IsWizardComplete bool   `json:"iswizardcomplete" db:"iswizardcomplete"`
+	CompanyId        int64  `json:"companyId" db:"companyId"`
 }
 
 func getNonConfDataForFrontEnd(entry []byte) ([]byte, error) {
@@ -108,6 +109,7 @@ func getNonConfDataForFrontEnd(entry []byte) ([]byte, error) {
 	dataToSend.AccountType = data.AccountType
 	dataToSend.Dob = data.DOB
 	dataToSend.IsWizardComplete = data.IsWizardComplete
+	dataToSend.CompanyId = data.CompanyID
 
 	jsonResponse, err := json.Marshal(dataToSend)
 	if err != nil {

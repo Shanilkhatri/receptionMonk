@@ -24,7 +24,7 @@ func PutTicket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// after parsing data we are now checking who is raising the ticket
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
@@ -89,7 +89,7 @@ func PostTicket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// validation only employee & super-admin can update ticket
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok || userDetails.AccountType != "employee" && userDetails.AccountType != "super-admin" {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request."
@@ -172,7 +172,7 @@ func GetTicket(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	//  get params from query
-	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	log.Println("userDetails: ", userDetails)
 	if isOk {
 		queryParams := r.URL.Query()
@@ -266,7 +266,7 @@ func DeleteTicket(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request."

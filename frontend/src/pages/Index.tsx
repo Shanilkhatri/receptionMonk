@@ -10,6 +10,7 @@ import 'tippy.js/dist/tippy.css';
 import Utility from '../utility/utility';
 import Modal from './modal';
 import store from '../store';
+
 // object of class utility
 const utility = new Utility()
 
@@ -48,42 +49,35 @@ const Index = () => {
         var tokenPayload = JSON.parse(tokenData)
         document.cookie = `whoami=${JSON.stringify(tokenPayload)}; secure; path=/`;
         dispatch(setEmail(store.getState().themeConfig.email));
-        dispatch(setHydrateCookie(store.getState().themeConfig.hydrateCookie))
+        dispatch(setHydrateCookie(""))
         console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
+        
         if (tokenPayload.iswizardcomplete == false) {
             handleOpenModal()
+            // handleCloseModal()
         }
 
     }
     async function saveUserDetails() {
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
-        const email = (document.getElementById('recipient-email') as HTMLInputElement)?.value;
+        const email = store.getState().themeConfig.email
         const dob = (document.getElementById('recipient-dob') as HTMLInputElement)?.value;
-
         const userData = {
             name,
             passwordHash,
             email,
             dob,
+            "companyId":store.getState().themeConfig.hydrateCookie.companyId
         };
-        const response = await fetch("http://localhost:4000/users", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`
-            },
-            body: JSON.stringify(userData),
-        });
-        // var responseData = await response.json() // wait for response > json
-        console.log("response data: ", response.ok)
-        if (!response.ok) {
-            navigate("/auth/SignIn")
-            return
-        } else if (response.ok) {
-            handleCloseModal()
-        }
-
+        
+       const ok=await utility.sendRequestPutOrPost(userData, "users", "POST")
+       if (ok){
+        //do what you want if successfully added the data 
+        console.log("SuccessFully added")
+       }else{
+        navigate("/auth/SignIn")
+       }
     }
     const [isModalOpen, setModalOpen] = useState(false);
 

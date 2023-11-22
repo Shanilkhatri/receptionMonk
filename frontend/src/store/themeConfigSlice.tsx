@@ -36,7 +36,7 @@ const defaultState = {
 };
 
 const initialState = {
-    hydrateCookie: "",
+    hydrateCookie: { "name": "", "email": "", "accountType": "", "dob": "", "iswizardcomplete": false, "companyId": 0 },
     dob:"",
     emailVerfToken: "",
     email: "",

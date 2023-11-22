@@ -49,8 +49,16 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 403)
 		return
 	}
-	userType := Utility.SessionGet(r, "type")
-	if userType == nil {
+	ok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	if !ok {
+		utility.Logger(err)
+		response.Status = "403"
+		response.Message = "You cannot register the company because you are not an owner."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	userType := userDetails.AccountType
+	if userType == "" {
 		userType = "guest"
 	}
 
@@ -69,7 +77,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		// tokenPayload check
-		isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+		isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 		if isok {
 			if userStruct.AccountType == "owner" && userDetails.AccountType == "owner" {
 				response.Status = "403"
@@ -372,7 +380,7 @@ func DeleteUserData(w http.ResponseWriter, r *http.Request) bool {
 		return true
 	}
 
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok || userDetails.AccountType == "user" {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request."

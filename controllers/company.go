@@ -12,7 +12,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 	//decode json (new decoder)
 	var companyStruct models.Company
 	err := utility.StrictParseDataFromJson(r, &companyStruct)
-	log.Println("companyStruct: ", companyStruct)
+	log.Println("put companyStruct: ", companyStruct)
 	if err != nil {
 		utility.Logger(err)
 		log.Println("Unable to decode json")
@@ -21,8 +21,17 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	userType := Utility.SessionGet(r, "type")
-	if userType == nil {
+	ok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	if !ok {
+		utility.Logger(err)
+		response.Status = "403"
+		response.Message = "You cannot register the company because you are not an owner."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	userType := userDetails.AccountType
+	// userType := utility.SessionGet(r, "type")
+	if userType == "" {
 		userType = "guest"
 	}
 	if userType != "owner" {
@@ -44,14 +53,6 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		utility.Logger(err)
 		tx.Rollback()
 		utility.RenderJsonResponse(w, r, response, 400)
-		return
-	}
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
-	if !isok || userDetails.AccountType == "user" {
-		response.Status = "403"
-		response.Message = "You are not authorized to make this request."
-		tx.Rollback()
-		utility.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	ok, err3 := models.Authentication{}.UpdateCompanyIdByEmail(userDetails.ID, companyId, tx)
@@ -85,16 +86,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	err = tx.Commit()
-	if err != nil {
-		log.Println(err)
-		utility.Logger(err)
-		tx.Rollback()
-		response.Status = "400"
-		response.Message = "Unable to add company details at the moment! Please try again."
-		utility.RenderJsonResponse(w, r, response, 400)
-		return
-	}
+
 	response.Status = "200"
 	response.Message = "company details added successfully."
 	utility.RenderJsonResponse(w, r, response, 200)
@@ -114,8 +106,16 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	userType := Utility.SessionGet(r, "type")
-	if userType == nil {
+	ok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	if !ok {
+		utility.Logger(err)
+		response.Status = "403"
+		response.Message = "You cannot register the company because you are not an owner."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	userType := userDetails.AccountType
+	if userType == "" {
 		userType = "guest"
 	}
 	if userType != "owner" {
@@ -154,7 +154,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 	utility.RenderJsonResponse(w, r, response, 200)
 }
 
-// isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+// isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 // if !isok || userDetails.AccountType == "user" {
 // 	response.Status = "403"
 // 	response.Message = "You are not authorized to make this request."

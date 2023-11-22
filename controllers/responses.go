@@ -24,7 +24,7 @@ func PutResponse(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// after parsing data we are now checking who is raising the ticket
-	isok, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
@@ -113,7 +113,7 @@ func GetResponse(w http.ResponseWriter, r *http.Request) {
 	// preparing an ajaxResponse
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	var responseCondition models.ResponseCondition
-	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isOk {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
