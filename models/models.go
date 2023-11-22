@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
 	"reakgo/utility"
 	"strings"
 )
@@ -74,14 +75,47 @@ func VerifyToken(r *http.Request, w http.ResponseWriter) error {
 		jsonData, err := json.Marshal(data)
 		if err == nil {
 			// Rehydrate if we got the JSON conversion done
-			// Fails would be rare, but if it happens kind of defeat the purpose as JSON unmarshall would also crash
+			// Fails would be rare, but if it happens kind of defeat the purpose as JSON unmarshal would also crash
 			utility.Cache.Set(data.Token, jsonData)
 			r.Header.Add("tokenPayload", string(jsonData))
+			// w.Header().Add("tokenPayload", string(jsonData))
 			return err
 		} else {
 			return err
 		}
 	}
+}
+
+type FrontendUserStruct struct {
+	Name             string `json:"name" db:"name"`
+	Email            string `json:"email" db:"email"`
+	AccountType      string `json:"accountType" db:"accountType"`
+	Dob              string `json:"dob" db:"dob"`
+	IsWizardComplete bool   `json:"iswizardcomplete" db:"iswizardcomplete"`
+}
+
+func getNonConfDataForFrontEnd(entry []byte) ([]byte, error) {
+	var data Authentication
+	var dataToSend FrontendUserStruct
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(entry, &data); err != nil {
+		log.Println("err in unmarshal: ", err)
+		return nil, err
+	}
+	// setting data to be sent in front end
+	dataToSend.Name = data.Name
+	dataToSend.Email = data.Email
+	dataToSend.AccountType = data.AccountType
+	dataToSend.Dob = data.DOB
+	dataToSend.IsWizardComplete = data.IsWizardComplete
+
+	jsonResponse, err := json.Marshal(dataToSend)
+	if err != nil {
+		// Handle marshal error
+		log.Println("err in marshal: ", err)
+		return nil, err
+	}
+	return jsonResponse, nil
 }
 func VerifyTokenFrontend(r *http.Request, w http.ResponseWriter) error {
 	authToken := r.Header.Get("Authorization")
@@ -91,10 +125,14 @@ func VerifyTokenFrontend(r *http.Request, w http.ResponseWriter) error {
 	}
 
 	if entry, err := utility.Cache.Get(userToken[1]); err == nil {
-
+		jsonResponse, err := getNonConfDataForFrontEnd(entry)
+		if err != nil {
+			log.Println("err in marshal during tokencheck for frontend: ", err)
+			return err
+		}
 		// Set JSON Payload to the header so the users can use the same
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("tokenPayload", string(entry))
+		w.Header().Set("tokenPayload", string(jsonResponse))
 		w.Header().Set("Access-Control-Expose-Headers", "tokenPayload")
 		// r.Header.Add("tokenPayload", string(entry))
 		return err
@@ -113,8 +151,15 @@ func VerifyTokenFrontend(r *http.Request, w http.ResponseWriter) error {
 			// Rehydrate if we got the JSON conversion done
 			// Fails would be rare, but if it happens kind of defeat the purpose as JSON unmarshall would also crash
 			utility.Cache.Set(data.Token, jsonData)
+			jsonResponse, err := getNonConfDataForFrontEnd(jsonData)
+			if err != nil {
+				log.Println("err in marshal during tokencheck for frontend: ", err)
+				return err
+			}
 			// r.Header.Add("tokenPayload", string(jsonData))
-			w.Header().Add("tokenPayload", string(jsonData))
+			w.Header().Set("Content-Type", "application/json")
+			w.Header().Set("tokenPayload", string(jsonResponse))
+			w.Header().Set("Access-Control-Expose-Headers", "tokenPayload")
 			return err
 		} else {
 			return err

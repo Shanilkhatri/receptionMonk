@@ -130,7 +130,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, emailVerfToken,Authorization,tokenPayload")
 	w.Header().Set("Content-Security-Policy", "default-src 'self'")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE")
 }
 
 func motd() {

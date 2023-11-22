@@ -40,17 +40,18 @@ func CheckACL(w http.ResponseWriter, r *http.Request, allowedAccess []string) bo
 			userType = "guest"
 		}
 		if !Utility.StringInArray(fmt.Sprintf("%v", userType), allowedAccess) {
-			http.Error(w, "403 Forbidden", http.StatusForbidden)
+			utility.RenderJsonResponse(w, r, "", 403)
 			return false
 		}
 	} else {
 		// Token based Auth
 		err := models.VerifyToken(r, w)
 		if err != nil {
-			http.Error(w, "403 Forbidden", http.StatusForbidden)
+			utility.RenderJsonResponse(w, r, "", 403)
 			return false
 		}
 	}
+	utility.RenderJsonResponse(w, r, "", 200)
 	return true
 }
 func CheckACLFrontend(w http.ResponseWriter, r *http.Request) bool {
