@@ -31,7 +31,6 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 	}
 	userType := userDetails.AccountType
 	// userType := utility.SessionGet(r, "type")
-	log.Println("usertypw", userType)
 	if userType == "" {
 		userType = "guest"
 	}
@@ -42,7 +41,6 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 403)
 		return
 	}
-	log.Println("here 1")
 	tx := utility.Db.MustBegin()
 	companyId, err1 := models.Company{}.PutCompany(companyStruct, tx)
 	if err1 != nil {
@@ -57,7 +55,6 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	log.Println("here 2 companyid", companyId)
 	ok, err3 := models.Authentication{}.UpdateCompanyIdByEmail(userDetails.ID, companyId, tx)
 	if err3 != nil {
 		response.Status = "403"
