@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"reakgo/models"
@@ -296,6 +297,17 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		response.Status = "200"
 		response.Message = "Record successfully updated"
 		response.Payload = []interface{}{userStruct}
+		// rehydrating the cache after the a successful update
+		userData, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
+		if err != nil {
+			tx.Rollback()
+			response.Status = "400"
+			response.Message = "Unable to hydrate cache! Please try again."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		jsonData, _ := json.Marshal(userData)
+		utility.Cache.Set(userData.Token, jsonData)
 		utility.RenderJsonResponse(w, r, response, 200)
 		return
 	}
