@@ -97,7 +97,7 @@ func PostKycDetails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-func GetKyc(w http.ResponseWriter, r *http.Request) {
+func GetKycDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
@@ -117,5 +117,5 @@ func GetKyc(w http.ResponseWriter, r *http.Request) {
 	response.Message = "successfully getting the record."
 	response.Payload = kyc_data
 	utility.RenderJsonResponse(w, r, response, 200)
-	return
+
 }
