@@ -20,7 +20,7 @@ import (
 //		TokenTimestamp int64 `db:"tokenTimestamp"`
 //	}
 type Authentication struct {
-	ID                    int    `json:"id" db:"id"`
+	ID                    int64  `json:"id" db:"id"`
 	Name                  string `json:"name" db:"name"`
 	Email                 string `json:"email" db:"email"`
 	PasswordHash          string `json:"passwordHash" db:"passwordHash"`
@@ -28,7 +28,7 @@ type Authentication struct {
 	TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
 	DOB                   string `json:"dob" db:"dob"`
 	AccountType           string `json:"accountType" db:"accountType"`
-	CompanyID             int    `json:"companyId" db:"companyId"`
+	CompanyID             int64  `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
 	Token                 string `json:"token" db:"token"`
 	EmailToken            string `json:"emailToken" db:"emailToken"`
@@ -70,25 +70,25 @@ func (auth Authentication) ForgotPassword(id int32) (string, error) {
 	return Token, err
 }
 
-func (auth Authentication) TokenVerify(token string, newPassword string) (bool, error) {
-	var selectedRow Authentication
+// func (auth Authentication) TokenVerify(token string, newPassword string) (bool, error) {
+// 	var selectedRow Authentication
 
-	rows := utility.Db.QueryRow("SELECT * FROM authentication WHERE token = ?", token)
-	err := rows.Scan(&selectedRow.ID, &selectedRow.Email, &selectedRow.PasswordHash, &selectedRow.Token, &selectedRow.TokenTimestamp)
-	if err != nil {
-		log.Println(err)
-		return true, err
-	}
-	if (selectedRow.TokenTimestamp + 360000) > time.Now().Unix() {
-		_, err := auth.ChangePassword(newPassword, int32(selectedRow.ID))
-		if err != nil {
-			return true, err
-		} else {
-			return false, err
-		}
-	}
-	return false, err
-}
+// 	rows := utility.Db.QueryRow("SELECT * FROM authentication WHERE token = ?", token)
+// 	err := rows.Scan(&selectedRow.ID, &selectedRow.Email, &selectedRow.PasswordHash, &selectedRow.Token, &selectedRow.TokenTimestamp)
+// 	if err != nil {
+// 		log.Println(err)
+// 		return true, err
+// 	}
+// 	if (selectedRow.TokenTimestamp + 360000) > time.Now().Unix() {
+// 		_, err := auth.ChangePassword(newPassword, int32(selectedRow.ID))
+// 		if err != nil {
+// 			return true, err
+// 		} else {
+// 			return false, err
+// 		}
+// 	}
+// 	return false, err
+// }
 
 func (auth Authentication) ChangePassword(newPassword string, id int32) (bool, error) {
 	query, err := utility.Db.Prepare("UPDATE authentication SET passwordHash = ? WHERE id = ?")
