@@ -1,15 +1,17 @@
 package controllers
 
 import (
-	"bytes"
-	"encoding/json"
 	"io"
 	"log"
+	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"reakgo/models"
 	"reakgo/utility"
+	"strconv"
+	"strings"
 )
 
 func PutKycDetails(w http.ResponseWriter, r *http.Request) {
@@ -140,55 +142,80 @@ func GetKycDetails(w http.ResponseWriter, r *http.Request) {
 	utility.RenderJsonResponse(w, r, response, 200)
 
 }
-func UploadHandler(w http.ResponseWriter, r *http.Request) bool {
+
+// curl -X POST -H "Authorization: Bearer $2a$10$e3hXRBp5LaepakdYrq2RFegovRN9ivfiVBqF49qC0m6hIcyRfB1Zm" -F "image=@/home/user/Pictures/Screenshots/Screenshot from 2023-10-16 11-24-16 .png" -F "modulename=kyc" http://localhost:4000/kycfileupload
+func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	var savePath string
-	response := utility.AjaxResponce{Status: "failure", Payload: ""}
+	response := utility.AjaxResponce{Status: "400", Payload: []interface{}{}}
 	// Check if the request method is POST
 	if r.Method != http.MethodPost {
 		response.Message = "Method not allowed"
 		utility.RenderJsonResponse(w, r, response, 400)
-		return false
+		return
 	}
 
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // Max 10 MB file size
 	if err != nil {
-		log.Println(err)
+		// utility.Logger(err)
 		response.Message = "Failed to parse form"
 		utility.RenderJsonResponse(w, r, response, 400)
-		return false
+		return
 	}
 	//get the modulename for the differentiations of the modules
 	modulename := r.FormValue("modulename")
 	// Get the file from the form data
 	file, handler, err := r.FormFile("image")
 	if err != nil {
-		log.Println(err)
+		// utility.Logger(err)
 		response.Message = "Failed to retrieve image from form data"
 		utility.RenderJsonResponse(w, r, response, 400)
-		return false
+		return
 	}
 	defer file.Close()
 	//to save the screenshots with randomstring name and in upload folder.
-	if modulename == "marketpurchase" {
-		filename, err := utility.RandomNameForImage(handler)
+	if modulename == "kyc" {
+		filename, err := RandomNameForImage(handler)
 		if err != nil {
-			log.Println(err)
+			// utility.Logger(err)
 			response.Message = "Failed to generate image name."
 			utility.RenderJsonResponse(w, r, response, 400)
-			return false
+			return
+		}
+		isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
+		if !isok {
+			response.Status = "403"
+			response.Message = "Unauthorized access! You are not allowed to make this request"
+			utility.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+		idString := strconv.FormatInt(userDetailsType.ID, 10)
+		name, _ := utility.NewPasswordHash(idString + userDetailsType.Name)
+		if name == "" {
+			response.Message = "Failed to find the name for this image folder."
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		folderName := strings.ReplaceAll(name, "/", "")
+		err = os.MkdirAll("uploads", os.ModePerm) // Create the "uploads" directory if it doesn't exist
+		randomFolderPath := filepath.Join("uploads", folderName)
+		err = os.MkdirAll(randomFolderPath, os.ModePerm)
+		if err != nil {
+			// utility.Logger(err)
+			response.Message = "Failed to save this image"
+			utility.RenderJsonResponse(w, r, response, 400)
+			return
 		}
 		// Create a new file on the server
-		savePath = filepath.Join("uploads", filename)
-		err = os.MkdirAll("uploads", os.ModePerm) // Create the "uploads" directory if it doesn't exist
+		savePath = filepath.Join(randomFolderPath, filename)
 	} else {
 		if modulename == "item" {
-			filename, err := utility.RandomNameForImage(handler)
+			filename, err := RandomNameForImage(handler)
 			if err != nil {
-				log.Println(err)
+				// utility.Logger(err)
 				response.Message = "Failed to generate image name."
 				utility.RenderJsonResponse(w, r, response, 400)
-				return false
+				return
 			}
 			handler.Filename = filename
 		}
@@ -197,58 +224,72 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) bool {
 		err = os.MkdirAll("assets/images/item", os.ModePerm)
 	}
 	if err != nil {
-		log.Println(err)
+		// utility.Logger(err)
 		response.Message = "Failed to create uploads directory"
 		utility.RenderJsonResponse(w, r, response, 400)
-		return false
+		return
 	}
 	newFile, err := os.Create(savePath)
 	if err != nil {
-		log.Println(err)
+		// utility.Logger(err)
 		response.Message = "Failed to create file on server"
 		utility.RenderJsonResponse(w, r, response, 400)
-		return false
+		return
 	}
 	defer newFile.Close()
 
 	// Copy the uploaded file to the new file on the server
 	_, err = io.Copy(newFile, file)
 	if err != nil {
-		log.Println(err)
+		// utility.Logger(err)
 		response.Message = "Failed to save file on server"
 		utility.RenderJsonResponse(w, r, response, 400)
-		return false
+		return
 	}
 	// Construct the URL for the saved file
-	// baseURL := utility.GetBaseURL(r)
-	// fileURL := utility.ConstructFileURL(baseURL, savePath)
+	baseURL := getBaseURL(r)
+	fileURL := constructFileURL(baseURL, savePath)
+	log.Println("Exact filepath:", fileURL)
+
 	response.Status = "200"
-	response.Message = "successfully getting the record."
+	response.Message = "File uploaded successfully"
 	response.Payload = savePath
-	// utility.RenderJsonResponse(w, r, response, 200)
-	jsonresponce, err := json.Marshal(response)
-	if err != nil {
-		log.Println(err)
+	utility.RenderJsonResponse(w, r, response, 200)
+}
+func getBaseURL(r *http.Request) string {
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
 	}
-	trimmedResponse := bytes.TrimSpace(jsonresponce)
+	return scheme + "://" + r.Host
+}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-	w.Write(trimmedResponse)
-	return true
-	// jsonResponse, err := json.Marshal(response)
-	// if err != nil {
-	// 	http.Error(w, "Error marshalling JSON", http.StatusInternalServerError)
-	// 	return
+func constructFileURL(baseURL, filePath string) string {
+	// Clean the file path to ensure it doesn't contain any leading slash
+	filePath = strings.TrimLeft(filePath, "/")
+	// Encode the file path to handle special characters
+	encodedFilePath := url.PathEscape(filePath)
+	// Concatenate the base URL and encoded file path to get the complete URL
+	// baseURL + "/" + encodedFilePath
+	replacedStr := strings.ReplaceAll(baseURL+"/"+encodedFilePath, "%2F", "/")
+	return replacedStr
+}
+func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
+	var extension string
+	//for getting the type of the image
+	// lastDotIndex := strings.LastIndex(handler.Filename, ".")
+	// if lastDotIndex != -1 {
+	// 	extension = handler.Filename[lastDotIndex:]
 	// }
-
-	// // Set the appropriate Content-Type header
-	// w.Header().Set("Content-Type", "application/json")
-
-	// // Send the JSON response
-	// // w.Write(jsonResponse)
-	// w.Write([]byte(jsonResponse))
+	extension = utility.GetImageTypeExtension(handler.Filename, ".", true)
+	randomString, err := utility.GenerateRandomString(30)
+	if err != nil {
+		utility.Logger(err)
+		// response.Message = "Failed to generate image name."
+		// utility.RenderJsonResponse(w, r, response, 400)
+		return "", err
+	}
+	//filename with its extension.
+	filename := randomString + extension
+	return filename, err
 }

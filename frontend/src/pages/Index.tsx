@@ -80,7 +80,7 @@ const Index = () => {
         var validValues = {};
         var img = "";
 
-        const imgUrl = await uploadImageAndReturnUrl('fileInput', "marketpurchase");
+        const imgUrl = await uploadImageAndReturnUrl('fileInput', "kyc");
         img = imgUrl;   
         console.log(img)
 
@@ -188,13 +188,13 @@ const Index = () => {
         if (imageInput !== null && imageInput.files && imageInput.files.length > 0) {
             imageFile = imageInput.files[0];
         }
-    
-        console.log("img", imageFile);
-        console.log("input", imageInput);
-    
         const formData = new FormData();
-        formData.append('image', imageFile || '');
-        formData.append('modulename', modulename);
+        if (imageFile !=undefined && imageInput!=null){
+            console.log("img", imageFile);
+            console.log("input", imageInput);
+            formData.append('image', imageFile || '');
+            formData.append('modulename', modulename);
+        }
     
         try {
             var response = await fetch(imageUploadURL, {
@@ -209,9 +209,12 @@ const Index = () => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             console.log("resp",response)
-            const dataa = await response.text();
-            console.log("da",dataa)
-            console.log(JSON.parse(dataa))
+            // const dataa = await response.text();
+            // console.log("da",dataa)
+            // console.log(response.json())
+            const data = await response.json();
+            console.log("Response data:", data);
+            // console.log(JSON.parse(dataa))
 
             // const cart = JSON.parse(dataa);
 

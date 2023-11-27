@@ -65,26 +65,24 @@ func main() {
 	utility.CSRF = csrf.Protect([]byte("v0kDIaHLy2TpHrumcl4Z0gpel8DpV9zo"))
 
 	mux := mux.NewRouter()
-
-	mux.PathPrefix("/").HandlerFunc(handler)
-
 	// Serve static assets
 	staticHandler := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
 	mux.PathPrefix("/assets/").Handler(staticHandler)
 
-	server := &http.Server{
-		Addr:           ":" + os.Getenv("WEB_PORT"),
-		Handler:        mux,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	log.Fatal(server.ListenAndServe())
+	// Set up a file server to serve the uploads folder
+	uploadsDir := "./uploads" // Path to the uploads folder
+	uploadsURL := "/uploads/" // URL path to access the uploads folder
+
+	uploadsHandler := http.StripPrefix(uploadsURL, http.FileServer(http.Dir(uploadsDir)))
+	// mux.PathPrefix(uploadsURL).Handler(uploadsHandler)
+	mux.Handle(uploadsURL, RestrictUploadsAccess(uploadsHandler))
+
+	mux.PathPrefix("/").HandlerFunc(handler)
 
 	if os.Getenv("APP_IS") == "monolith" {
 		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), utility.CSRF(mux)))
 	} else if os.Getenv("APP_IS") == "microservice" {
-		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), nil))
+		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), mux))
 	}
 }
 
@@ -125,6 +123,35 @@ func cacheTemplates() *template.Template {
 	return templ
 }
 
+// Define a middleware function to restrict direct access to the uploads folder
+func RestrictUploadsAccess(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Get the requested file path
+		filePath := filepath.Join("./uploads", r.URL.Path[len("/uploads/"):])
+
+		// Check if the requested path is a directory
+		fileInfo, err := os.Stat(filePath)
+		if err != nil {
+			if os.IsNotExist(err) {
+				// Return a not found error if the file or directory does not exist
+				http.NotFound(w, r)
+				return
+			}
+			// Return an server error for other errors
+			http.Error(w, "Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		if fileInfo.IsDir() {
+			// If the requested path is a directory, return a forbidden error
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
+
+		// Serve the requested file
+		http.ServeFile(w, r, filePath)
+	})
+}
 func handler(w http.ResponseWriter, r *http.Request) {
 	router.Routes(w, r)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
