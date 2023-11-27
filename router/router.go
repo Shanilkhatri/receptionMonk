@@ -119,6 +119,12 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 				controllers.GetKycDetails(w, r)
 			}
 		}
+	case "kycfileupload":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.UploadHandler(w, r)
+			}
+		}
 	}
 
 }

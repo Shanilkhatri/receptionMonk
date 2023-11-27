@@ -10,6 +10,7 @@ import 'tippy.js/dist/tippy.css';
 import Utility from '../utility/utility';
 import Modal from './modal';
 import store from '../store';
+import { data } from 'autoprefixer';
 
 // object of class utility
 const utility = new Utility()
@@ -18,7 +19,7 @@ const Index = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     useEffect(() => {
-        
+
         dispatch(setPageTitle('Homepage'));
         // integrate a condition here that if token is empty we go straight to login
         console.log("exampleToken: ", utility.getCookieValue("exampleToken"))
@@ -51,13 +52,199 @@ const Index = () => {
         dispatch(setEmail(store.getState().themeConfig.email));
         dispatch(setHydrateCookie(""))
         console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
-        
+
         if (tokenPayload.iswizardcomplete != "completed") {
             handleOpenModal()
             // handleCloseModal()
         }
 
     }
+    async function onFormSubmit(e: any) {
+        e.preventDefault();
+        const marketurl = "http://localhost:4000/kyc";
+
+        // // Getting formElement
+        var form = document.getElementById("formdataid");
+        // // Accessing formData
+        // var formData = new FormData(form);
+        var formData
+        if (form instanceof HTMLFormElement) {
+            // Accessing formData
+            formData = new FormData(form);
+            // Your further code with formData
+        } else {
+            console.error("Form element not found");
+        }
+        console.log(formData)
+        // Empty object to store key-value pairs from form data
+        var validValues = {};
+        var img = "";
+
+        const imgUrl = await uploadImageAndReturnUrl('fileInput', "marketpurchase");
+        img = imgUrl;   
+        console.log(img)
+
+
+
+        // Check image validation and upload
+        // if (validateImgBeforeUpload('fileInput')) {
+        //     try {
+        //         const imgUrl = await uploadImageAndReturnUrl('fileInput', "item");
+        //         validValues['image'] = imgUrl;
+        //     } catch (error) {
+        //         console.error('Image upload error:', error);
+        //         flagMsg('failure', 'Error uploading image');
+        //         return;
+        //     }
+        // }
+
+        // Iterating over form data entries to form key-value pairs
+        // for (pair of formData.entries()) {
+        //     var key = pair[0];
+        //     var value = pair[1];
+
+        //     var decider = validationCheck(value, key);
+
+        //     if (decider) {
+        //         if (key == "goldCoinPrice" || key == "amountCredited") {
+        //             value = parseInt(value, 10);
+        //         }
+        //         if (key == 'image') {
+        //             value = ""; // Empty string since the value is already stored in validValues['image']
+        //         }
+
+        //         validValues[key] = value;
+        //     } else {
+        //         // flagMsg('failure', `Invalid ${key} value`);
+        //         return;
+        //     }
+        // }
+
+        // Submit the form with valid values
+        fetch(marketurl, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`
+            },
+            body: JSON.stringify({
+                "doc_name": "aadhaar_card",
+                "doc_pic_name": "img"
+            }),
+        })
+            .then(response => response.json())
+            .then((value) => {
+                
+                // if (value.Status == 'success') {
+                //     // window.location.href = APPURL+'viewMarketTemplate';
+                // }
+            })
+            .catch(error => {
+                console.error('Form submission error:', error);
+                // flagMsg('failure', 'Error submitting the form');
+            });
+    }
+
+
+    // async function uploadImageAndReturnUrl(imageElement: any, modulename: any) {
+    //     const imageUploadURL = 'http://localhost:4000/kycfileupload';
+    //     // var imageInput = document.getElementById(imageElement);
+    //     // var imageFile
+    //     const imageInput = document.getElementById(imageElement) as HTMLInputElement | null;
+    //     let imageFile: File | undefined;
+    //     if (imageInput !== null ) {
+    //         imageFile = imageInput.files?.[0]// Assume only one file is selected
+    //     }
+    //     console.log("img",imageFile)
+    //     console.log("input",imageInput)
+    //     var formData = new FormData()
+    //     var imgUrl = '';
+    //     formData.append('image', imageFile || '')
+    //     formData.append('modulename', modulename)
+    //     var response = await fetch(imageUploadURL, {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`,
+                
+    //         },
+    //         body: JSON.stringify(formData),
+    //     })
+    //     var dataa = await response.json()
+    //     if (dataa.Status == "success") {
+    //         imgUrl = dataa.Payload
+    //         // imageInput.value = '';
+    //         return imgUrl
+    //     }
+    //     // imgUrl = imageData
+    //     return imgUrl
+    // }
+    async function uploadImageAndReturnUrl(imageElement: string, modulename: string): Promise<string> {
+        const imageUploadURL = 'http://localhost:4000/kycfileupload';
+    
+        const imageInput = document.getElementById(imageElement) as HTMLInputElement | null;
+        let imageFile: File | undefined;
+    
+        if (imageInput !== null && imageInput.files && imageInput.files.length > 0) {
+            imageFile = imageInput.files[0];
+        }
+    
+        console.log("img", imageFile);
+        console.log("input", imageInput);
+    
+        const formData = new FormData();
+        formData.append('image', imageFile || '');
+        formData.append('modulename', modulename);
+    
+        try {
+            var response = await fetch(imageUploadURL, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`,
+                },
+                body: formData,
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            console.log("resp",response)
+            const dataa = await response.text();
+            console.log("da",dataa)
+            console.log(JSON.parse(dataa))
+
+            // const cart = JSON.parse(dataa);
+
+            // if(!cart){
+            //     console.log("Cart is empty");
+
+            //     const array = [payload];
+            //     const string = JSON.stringify(array);
+            //     localStorage.setItem('productsInCart', string);
+            // }else{
+            //     console.log("item in cart");
+            //     console.log(cart);
+
+            //     const newArray = [...cart, payload];
+            //     const string = JSON.stringify(newArray);
+            //     localStorage.setItem('productsInCart',string);
+
+            //     console.log( localStorage.getItem('productsInCart'));
+            // }
+
+            // if (dataa.Status === "success") {
+            //     return dataa.Payload;
+            // } else {
+            //     console.error("Image upload failed:", dataa.Message);
+            //     return ''; // or throw an error, depending on your logic
+            // }
+        } catch (error) {
+            console.error("Error during image upload:", error);
+            return ''; // or throw an error, depending on your logic
+        }
+    }
+    
+
     async function saveUserDetails() {
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
@@ -68,16 +255,16 @@ const Index = () => {
             passwordHash,
             email,
             dob,
-            "companyId":store.getState().themeConfig.hydrateCookie.companyId
+            "companyId": store.getState().themeConfig.hydrateCookie.companyId
         };
-        
-       const ok=await utility.sendRequestPutOrPost(userData, "users", "POST")
-       if (ok){
-        //do what you want if successfully added the data 
-        console.log("SuccessFully added")
-       }else{
-        navigate("/auth/SignIn")
-       }
+
+        const ok = await utility.sendRequestPutOrPost(userData, "users", "POST")
+        if (ok) {
+            //do what you want if successfully added the data 
+            console.log("SuccessFully added")
+        } else {
+            navigate("/auth/SignIn")
+        }
     }
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -272,28 +459,40 @@ const Index = () => {
     return (
         <div>{
             <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
-                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                     <div className="modal-dialog modal-lg">
-                         <div className="modal-content">
-                             <div className="modal-header">
-                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
-                             </div>
-                             <div className="modal-body">
-                                 <form>
-                                     <input type="text" className="form-control" id="recipient-name" />
+                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form id='formdataid' onSubmit={(e) => onFormSubmit(e)}>
+                                    {/* <input type="text" className="form-control" id="recipient-name" />
                                      <input type="password" className="form-control" id="recipient-password"/>
                                      <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
-                                     <input type="date" className="form-control" id="recipient-dob"/>
-                                     <button type="button" className="btn btn-primary" onClick={saveUserDetails} data-mdb-ripple-init>
-                                         Save
-                                     </button>
-                                 </form>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </Modal>
-}
+                                     <input type="date" className="form-control" id="recipient-dob"/> */}
+                                    <select
+                                        aria-describedby="err-currtype" aria-label="currentytype"
+                                        name="doc_name" id="currtype" required>
+                                        <option disabled selected hidden value="">Select Type</option>
+                                        <option value="Aadhaar Card">Aadhaar Card</option>
+                                        <option value="PanCard">PanCard</option>
+                                        <option value="Driving License">Driving License</option>
+                                        <option value="VoterId">VoterId</option>
+                                    </select>
+
+                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" />
+
+                                    <button type="submit" className="btn btn-primary" >
+                                        Save
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+        }
             {
                 <div>
                     <ul className="flex space-x-2 rtl:space-x-reverse">

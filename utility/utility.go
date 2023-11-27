@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"mime/multipart"
 	"os"
 	"reflect"
 	"regexp"
@@ -20,6 +21,7 @@ import (
 	"html/template"
 	"net/http"
 	"net/smtp"
+	"net/url"
 
 	"github.com/allegro/bigcache/v3"
 	"github.com/gorilla/csrf"
@@ -626,4 +628,54 @@ func DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string)
 	session.Save(r, w)
 	fmt.Fprintln(w, "Value removed from the session")
 	return false
+}
+func GetImageTypeExtension(Filename string, whatToBeTrim string, dotInclude bool) string {
+	var extension string
+	lastDotIndex := strings.LastIndex(Filename, whatToBeTrim)
+	if lastDotIndex != -1 {
+		if dotInclude {
+			extension = Filename[lastDotIndex:]
+		} else {
+			extension = Filename[lastDotIndex+1:]
+		}
+	}
+	return extension
+}
+
+func GetBaseURL(r *http.Request) string {
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
+	return scheme + "://" + r.Host
+}
+
+func ConstructFileURL(baseURL, filePath string) string {
+	// Clean the file path to ensure it doesn't contain any leading slash
+	filePath = strings.TrimLeft(filePath, "/")
+	// Encode the file path to handle special characters
+	encodedFilePath := url.PathEscape(filePath)
+	// Concatenate the base URL and encoded file path to get the complete URL
+	// baseURL + "/" + encodedFilePath
+	replacedStr := strings.ReplaceAll(baseURL+"/"+encodedFilePath, "%2F", "/")
+	return replacedStr
+}
+func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
+	var extension string
+	//for getting the type of the image
+	// lastDotIndex := strings.LastIndex(handler.Filename, ".")
+	// if lastDotIndex != -1 {
+	// 	extension = handler.Filename[lastDotIndex:]
+	// }
+	extension = GetImageTypeExtension(handler.Filename, ".", true)
+	randomString, err := GenerateRandomString(30)
+	if err != nil {
+		Logger(err)
+		// response.Message = "Failed to generate image name."
+		// utility.RenderTemplate(w, r, "", response)
+		return "", err
+	}
+	//filename with its extension.
+	filename := randomString + extension
+	return filename, err
 }
