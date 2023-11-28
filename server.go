@@ -65,26 +65,19 @@ func main() {
 	utility.CSRF = csrf.Protect([]byte("v0kDIaHLy2TpHrumcl4Z0gpel8DpV9zo"))
 
 	mux := mux.NewRouter()
-
-	mux.PathPrefix("/").HandlerFunc(handler)
-
 	// Serve static assets
 	staticHandler := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
 	mux.PathPrefix("/assets/").Handler(staticHandler)
 
-	server := &http.Server{
-		Addr:           ":" + os.Getenv("WEB_PORT"),
-		Handler:        mux,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	log.Fatal(server.ListenAndServe())
+	// Set up a file server to serve the uploads folder
+	uploadsURL := "/uploads/" // URL path to access the uploads folder
+	mux.PathPrefix(uploadsURL).Handler(http.HandlerFunc(staticHandlerUpload))
+	mux.PathPrefix("/").HandlerFunc(handler)
 
 	if os.Getenv("APP_IS") == "monolith" {
 		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), utility.CSRF(mux)))
 	} else if os.Getenv("APP_IS") == "microservice" {
-		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), nil))
+		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), mux))
 	}
 }
 
@@ -123,6 +116,16 @@ func cacheTemplates() *template.Template {
 	}
 
 	return templ
+}
+func staticHandlerUpload(w http.ResponseWriter, r *http.Request) {
+	// Get the requested file name
+	fileName := filepath.Base(r.URL.Path)
+
+	// Construct the actual file path within the /assets/ directory
+	filePath := filepath.Join("./uploads/", fileName)
+
+	// Serve the requested file
+	http.ServeFile(w, r, filePath)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {

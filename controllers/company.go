@@ -55,7 +55,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	ok, err3 := models.Authentication{}.UpdateCompanyIdByEmail(userDetails.ID, companyId, tx)
+	ok, err3 := models.Authentication{}.UpdateCompanyIdById(userDetails.ID, companyId, tx)
 	if err3 != nil {
 		response.Status = "403"
 		response.Message = "Unable to add company details at the moment! Please try again."
@@ -161,7 +161,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 // 	utility.RenderJsonResponse(w, r, response, 403)
 // 	return
 // }
-// ok, err3 := models.Authentication{}.UpdateCompanyIdByEmail(userDetails.ID, companyId, tx)
+// ok, err3 := models.Authentication{}.UpdateCompanyIdById(userDetails.ID, companyId, tx)
 // if err3 != nil {
 // 	response.Status = "403"
 // 	response.Message = "Unable to add company details at the moment! Please try again."

@@ -103,6 +103,34 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 				controllers.GetCompany(w, r)
 			}
 		}
+	case "kyc":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.PostKycDetails(w, r)
+			}
+		}
+		if r.Method == "PUT" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.PutKycDetails(w, r)
+			}
+		}
+		if r.Method == "GET" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.GetKycDetails(w, r)
+			}
+		}
+	case "kycfileupload":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.UploadHandler(w, r)
+			}
+		}
+	case "updateWizard":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.PostUpdateWizardStatus(w, r)
+			}
+		}
 	}
 
 }

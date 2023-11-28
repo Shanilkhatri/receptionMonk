@@ -232,7 +232,7 @@ func (auth Authentication) GetUserDetailsByEmail(email string) (SignupDetails, e
 // 	}
 
 // }
-func (user Authentication) UpdateCompanyIdByEmail(id int64, companyId int64, tx *sqlx.Tx) (bool, error) {
+func (user Authentication) UpdateCompanyIdById(id int64, companyId int64, tx *sqlx.Tx) (bool, error) {
 	//update data
 	queryOfauth, err := tx.NamedExec("UPDATE `authentication` SET `companyId`=:CompanyId  WHERE `id`=:Id ", map[string]interface{}{"CompanyId": companyId, "Id": id})
 	// Check error

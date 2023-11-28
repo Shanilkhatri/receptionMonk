@@ -10,6 +10,8 @@ import 'tippy.js/dist/tippy.css';
 import Utility from '../utility/utility';
 import Modal from './modal';
 import store from '../store';
+import { data } from 'autoprefixer';
+import { bool, boolean } from 'yup';
 
 // object of class utility
 const utility = new Utility()
@@ -18,7 +20,7 @@ const Index = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     useEffect(() => {
-        
+
         dispatch(setPageTitle('Homepage'));
         // integrate a condition here that if token is empty we go straight to login
         console.log("exampleToken: ", utility.getCookieValue("exampleToken"))
@@ -51,13 +53,167 @@ const Index = () => {
         dispatch(setEmail(store.getState().themeConfig.email));
         dispatch(setHydrateCookie(""))
         console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
-        
+
         if (tokenPayload.iswizardcomplete != "completed") {
             handleOpenModal()
             // handleCloseModal()
+        }else if (tokenPayload.iswizardcomplete == "completed") {
+            handleCloseModal()
         }
 
     }
+    async function updateWizard(userData:any):Promise<boolean> {
+
+        const ok = await utility.sendRequestPutOrPost(userData, "updateWizard", "POST")
+        if (ok) {
+            //do what you want if successfully added the data 
+            console.log("SuccessFully added")
+        }
+        return ok
+    }
+    async function onFormSubmit(e: any) {
+        e.preventDefault();
+        
+        // // Getting formElement
+        var form = document.getElementById("formdataid");
+        // // Accessing formData
+        // var formData = new FormData(form);
+        var formData
+        if (form instanceof HTMLFormElement) {
+            // Accessing formData
+            formData = new FormData(form);
+            // Your further code with formData
+        } else {
+            console.error("Form element not found");
+            return
+        }
+        // Empty object to store key-value pairs from form data
+        var validValues = {};
+        var img = "";
+        // Retrieve doc_name from FormData
+        const docNameValue: FormDataEntryValue | null = formData.get('doc_name');
+
+        // Check if doc_name is present and is a string
+        let docName: string | null = null;
+
+        if (docNameValue !== null) {
+            if (typeof docNameValue === 'string') {
+                docName = docNameValue;
+                console.log('doc_name:', docName);
+            } else {
+                console.error('doc_name is not a string');
+            }
+        } else {
+        console.error('doc_name not found in FormData');
+        }
+        //fileInput is the id of the input in which file is uploaded and kyc is the module name need to be send for the backend validations.
+        const imgUrl = await uploadImageAndReturnUrl('fileInput', "kyc");
+        img=imgUrl
+        if (img!=""&&docName!=""){
+            await kycDetailsPut(docName||"",img)            
+        } else{
+            console.error('image not found');
+        }
+    }
+    async function kycDetailsPut(docName:string,img:string){
+        const marketurl = "http://localhost:4000/kyc";
+        // Submit the form with valid values
+        fetch(marketurl, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`
+            },
+            body: JSON.stringify({
+                "doc_name":docName,
+                "doc_pic_name": img
+            }),
+        })
+            .then(response => response.json())
+            .then(async (value) => {
+                if (value.Status == '200') {
+                    //todo what you want to do after this successful kyc put
+                    console.log("successfully enter")
+                    const userData = {
+                        "iswizardcomplete": "completed"
+                    };
+                    const ok=await updateWizard(userData);
+                    // window.location.href = APPURL+'viewMarketTemplate';
+                }else{
+                    //todo what you want to do after this unsuccessful kyc put
+                    console.log("failed to enter kyc details")
+                }
+            })
+            .catch(error => {
+                console.error('Form submission error:', error);
+                // flagMsg('failure', 'Error submitting the form');
+            });
+    }
+    function validateImgBeforeUpload(imageFile:File):boolean{
+        var allowedExtensions = ['jpg', 'jpeg', 'png']; // Allowed image extensions
+        var maxFileSize = 5 * 1024 * 1024; // Maximum file size in bytes (5MB)
+        if (!imageFile.name) {
+            console.error('File name is undefined');
+            return false;
+          }
+          // Check the file extension
+          const fileParts = imageFile.name.split('.');
+          if (fileParts.length === 1) {
+            console.error('File name does not have an extension');
+            return false;
+          }
+        // Check the file extension
+        var fileExtension = fileParts.pop()!.toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            return false
+        }
+        // Check the file size
+        if (imageFile.size > maxFileSize) {
+            console.log('failure', "Image size should be under 5mb")
+            return false
+        }
+        return true
+    }
+    async function uploadImageAndReturnUrl(imageElement: string, modulename: string): Promise<string> {
+        const imageUploadURL = 'http://localhost:4000/kycfileupload';
+    
+        const imageInput = document.getElementById(imageElement) as HTMLInputElement | null;
+        let imageFile: File | undefined;
+    
+        if (imageInput !== null && imageInput.files && imageInput.files.length > 0) {
+            imageFile = imageInput.files[0];
+        }
+        const formData = new FormData();
+        if (imageFile !=undefined && imageInput!=null){
+            const valid= validateImgBeforeUpload(imageFile)
+            if (!valid){
+                console.error("not a valid image is uploaded:");
+                return ""
+            }
+            formData.append('image', imageFile || '');
+            formData.append('modulename', modulename);
+        }
+        try {
+            var response = await fetch(imageUploadURL, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`,
+                },
+                body: formData,
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data.Payload
+            
+        } catch (error) {
+            console.error("Error during image upload:", error);
+            return ''; // or throw an error, depending on your logic
+        }
+    }
+    
     async function saveUserDetails() {
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
@@ -68,16 +224,16 @@ const Index = () => {
             passwordHash,
             email,
             dob,
-            "companyId":store.getState().themeConfig.hydrateCookie.companyId
+            "companyId": store.getState().themeConfig.hydrateCookie.companyId
         };
-        
-       const ok=await utility.sendRequestPutOrPost(userData, "users", "POST")
-       if (ok){
-        //do what you want if successfully added the data 
-        console.log("SuccessFully added")
-       }else{
-        navigate("/auth/SignIn")
-       }
+
+        const ok = await utility.sendRequestPutOrPost(userData, "users", "POST")
+        if (ok) {
+            //do what you want if successfully added the data 
+            console.log("SuccessFully added")
+        } else {
+            navigate("/auth/SignIn")
+        }
     }
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -272,28 +428,38 @@ const Index = () => {
     return (
         <div>{
             <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
-                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                     <div className="modal-dialog modal-lg">
-                         <div className="modal-content">
-                             <div className="modal-header">
-                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
-                             </div>
-                             <div className="modal-body">
-                                 <form>
-                                     <input type="text" className="form-control" id="recipient-name" />
+                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form id='formdataid' onSubmit={(e) => onFormSubmit(e)}>
+                                    {/* <input type="text" className="form-control" id="recipient-name" />
                                      <input type="password" className="form-control" id="recipient-password"/>
                                      <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
-                                     <input type="date" className="form-control" id="recipient-dob"/>
-                                     <button type="button" className="btn btn-primary" onClick={saveUserDetails} data-mdb-ripple-init>
-                                         Save
-                                     </button>
-                                 </form>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </Modal>
-}
+                                     <input type="date" className="form-control" id="recipient-dob"/> */}
+                                    <select
+                                        aria-describedby="err-currtype" aria-label="currentytype"
+                                        name="doc_name" id="currtype" required>
+                                        <option disabled selected hidden value="">Select Type</option>
+                                        <option value="aadhaar_card">Aadhaar Card</option>
+                                        <option value="pan_card">PanCard</option>
+                                    </select>
+
+                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" />
+
+                                    <button type="submit" className="btn btn-primary" >
+                                        Save
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+        }
             {
                 <div>
                     <ul className="flex space-x-2 rtl:space-x-reverse">

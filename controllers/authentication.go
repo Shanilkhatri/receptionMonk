@@ -173,7 +173,6 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	var signupDetails models.SignupDetails
 	err := utility.StrictParseDataFromJson(r, &signupDetails)
-	log.Println("signupDetails: ", signupDetails)
 	if err != nil {
 		log.Println("error: ", err)
 		// utility.Logger(err)
@@ -195,7 +194,6 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	//otp generate.
 	otp, expirationTime, currentTime := GenerateOTP()
 
-	log.Println("otp", otp)
 	signupDetails.EpochCurrent = currentTime
 	signupDetails.EpochExpired = expirationTime
 	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
@@ -208,7 +206,6 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 		utility.RenderJsonResponse(w, r, response, 500)
 		return true
 	}
-	log.Println("boolValues", boolValues)
 
 	if boolValues {
 		boolType := EmailSend(otp, signupDetails)
