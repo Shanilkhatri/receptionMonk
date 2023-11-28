@@ -5,7 +5,6 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"reakgo/models"
@@ -36,7 +35,6 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 	}
 	userStruct.UserId = userDetailsType.ID
 	if userStruct.UserId > 0 && userStruct.DocPicName != "" && userStruct.DocName != "" {
-		log.Println("userStruct: ", userStruct)
 		tx := utility.Db.MustBegin()
 		inserted := models.KycDetails{}.Putkyc(userStruct, tx)
 		if inserted {
@@ -153,7 +151,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // Max 10 MB file size
 	if err != nil {
@@ -175,13 +172,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	//to save the screenshots with randomstring name and in upload folder.
 	if modulename == "kyc" {
-		// filename, err := RandomNameForImage(handler)
-		// if err != nil {
-		// 	// utility.Logger(err)
-		// 	response.Message = "Failed to generate image name."
-		// 	utility.RenderJsonResponse(w, r, response, 400)
-		// 	return
-		// }
 		isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
 		if !isok {
 			response.Status = "403"
@@ -248,34 +238,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		utility.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	// Construct the URL for the saved file
-	baseURL := getBaseURL(r)
-	fileURL := constructFileURL(baseURL, savePath)
-	log.Println("Exact filepath:", fileURL)
-
 	response.Status = "200"
 	response.Message = "File uploaded successfully"
 	response.Payload = savePath
 	utility.RenderJsonResponse(w, r, response, 200)
 }
-func getBaseURL(r *http.Request) string {
-	scheme := "http"
-	if r.TLS != nil {
-		scheme = "https"
-	}
-	return scheme + "://" + r.Host
-}
 
-func constructFileURL(baseURL, filePath string) string {
-	// Clean the file path to ensure it doesn't contain any leading slash
-	filePath = strings.TrimLeft(filePath, "/")
-	// Encode the file path to handle special characters
-	encodedFilePath := url.PathEscape(filePath)
-	// Concatenate the base URL and encoded file path to get the complete URL
-	// baseURL + "/" + encodedFilePath
-	replacedStr := strings.ReplaceAll(baseURL+"/"+encodedFilePath, "%2F", "/")
-	return replacedStr
-}
 func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
 	var extension string
 	//for getting the type of the image

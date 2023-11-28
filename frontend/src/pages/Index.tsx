@@ -61,8 +61,7 @@ const Index = () => {
     }
     async function onFormSubmit(e: any) {
         e.preventDefault();
-        const marketurl = "http://localhost:4000/kyc";
-
+        
         // // Getting formElement
         var form = document.getElementById("formdataid");
         // // Accessing formData
@@ -74,52 +73,38 @@ const Index = () => {
             // Your further code with formData
         } else {
             console.error("Form element not found");
+            return
         }
-        console.log(formData)
         // Empty object to store key-value pairs from form data
         var validValues = {};
         var img = "";
+        // Retrieve doc_name from FormData
+        const docNameValue: FormDataEntryValue | null = formData.get('doc_name');
 
+        // Check if doc_name is present and is a string
+        let docName: string | null = null;
+
+        if (docNameValue !== null) {
+            if (typeof docNameValue === 'string') {
+                docName = docNameValue;
+                console.log('doc_name:', docName);
+            } else {
+                console.error('doc_name is not a string');
+            }
+        } else {
+        console.error('doc_name not found in FormData');
+        }
+        //fileInput is the id of the input in which file is uploaded and kyc is the module name need to be send for the backend validations.
         const imgUrl = await uploadImageAndReturnUrl('fileInput', "kyc");
-        img = imgUrl;   
-        console.log(img)
-
-
-
-        // Check image validation and upload
-        // if (validateImgBeforeUpload('fileInput')) {
-        //     try {
-        //         const imgUrl = await uploadImageAndReturnUrl('fileInput', "item");
-        //         validValues['image'] = imgUrl;
-        //     } catch (error) {
-        //         console.error('Image upload error:', error);
-        //         flagMsg('failure', 'Error uploading image');
-        //         return;
-        //     }
-        // }
-
-        // Iterating over form data entries to form key-value pairs
-        // for (pair of formData.entries()) {
-        //     var key = pair[0];
-        //     var value = pair[1];
-
-        //     var decider = validationCheck(value, key);
-
-        //     if (decider) {
-        //         if (key == "goldCoinPrice" || key == "amountCredited") {
-        //             value = parseInt(value, 10);
-        //         }
-        //         if (key == 'image') {
-        //             value = ""; // Empty string since the value is already stored in validValues['image']
-        //         }
-
-        //         validValues[key] = value;
-        //     } else {
-        //         // flagMsg('failure', `Invalid ${key} value`);
-        //         return;
-        //     }
-        // }
-
+        img=imgUrl
+        if (img!=""&&docName!=""){
+            await kycDetailsPut(docName||"",img)            
+        } else{
+            console.error('image not found');
+        }
+    }
+    async function kycDetailsPut(docName:string,img:string){
+        const marketurl = "http://localhost:4000/kyc";
         // Submit the form with valid values
         fetch(marketurl, {
             method: "PUT",
@@ -128,57 +113,51 @@ const Index = () => {
                 'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`
             },
             body: JSON.stringify({
-                "doc_name": "aadhaar_card",
-                "doc_pic_name": "img"
+                "doc_name":docName,
+                "doc_pic_name": img
             }),
         })
             .then(response => response.json())
             .then((value) => {
-                
-                // if (value.Status == 'success') {
-                //     // window.location.href = APPURL+'viewMarketTemplate';
-                // }
+                if (value.Status == '200') {
+                    //todo what you want to do after this successful kyc put
+                    console.log("successfully enter")
+                    // window.location.href = APPURL+'viewMarketTemplate';
+                }else{
+                    //todo what you want to do after this unsuccessful kyc put
+                    console.log("failed to enter kyc details")
+                }
             })
             .catch(error => {
                 console.error('Form submission error:', error);
                 // flagMsg('failure', 'Error submitting the form');
             });
     }
-
-
-    // async function uploadImageAndReturnUrl(imageElement: any, modulename: any) {
-    //     const imageUploadURL = 'http://localhost:4000/kycfileupload';
-    //     // var imageInput = document.getElementById(imageElement);
-    //     // var imageFile
-    //     const imageInput = document.getElementById(imageElement) as HTMLInputElement | null;
-    //     let imageFile: File | undefined;
-    //     if (imageInput !== null ) {
-    //         imageFile = imageInput.files?.[0]// Assume only one file is selected
-    //     }
-    //     console.log("img",imageFile)
-    //     console.log("input",imageInput)
-    //     var formData = new FormData()
-    //     var imgUrl = '';
-    //     formData.append('image', imageFile || '')
-    //     formData.append('modulename', modulename)
-    //     var response = await fetch(imageUploadURL, {
-    //         method: "POST",
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${utility.getCookieValue("exampleToken")}`,
-                
-    //         },
-    //         body: JSON.stringify(formData),
-    //     })
-    //     var dataa = await response.json()
-    //     if (dataa.Status == "success") {
-    //         imgUrl = dataa.Payload
-    //         // imageInput.value = '';
-    //         return imgUrl
-    //     }
-    //     // imgUrl = imageData
-    //     return imgUrl
-    // }
+    function validateImgBeforeUpload(imageFile:File):boolean{
+        var allowedExtensions = ['jpg', 'jpeg', 'png']; // Allowed image extensions
+        var maxFileSize = 5 * 1024 * 1024; // Maximum file size in bytes (5MB)
+        if (!imageFile.name) {
+            console.error('File name is undefined');
+            return false;
+          }
+          // Check the file extension
+          const fileParts = imageFile.name.split('.');
+          if (fileParts.length === 1) {
+            console.error('File name does not have an extension');
+            return false;
+          }
+        // Check the file extension
+        var fileExtension = fileParts.pop()!.toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            return false
+        }
+        // Check the file size
+        if (imageFile.size > maxFileSize) {
+            console.log('failure', "Image size should be under 5mb")
+            return false
+        }
+        return true
+    }
     async function uploadImageAndReturnUrl(imageElement: string, modulename: string): Promise<string> {
         const imageUploadURL = 'http://localhost:4000/kycfileupload';
     
@@ -190,12 +169,14 @@ const Index = () => {
         }
         const formData = new FormData();
         if (imageFile !=undefined && imageInput!=null){
-            console.log("img", imageFile);
-            console.log("input", imageInput);
+            const valid= validateImgBeforeUpload(imageFile)
+            if (!valid){
+                console.error("not a valid image is uploaded:");
+                return ""
+            }
             formData.append('image', imageFile || '');
             formData.append('modulename', modulename);
         }
-    
         try {
             var response = await fetch(imageUploadURL, {
                 method: "POST",
@@ -208,46 +189,15 @@ const Index = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            console.log("resp",response)
-            // const dataa = await response.text();
-            // console.log("da",dataa)
-            // console.log(response.json())
             const data = await response.json();
-            console.log("Response data:", data);
-            // console.log(JSON.parse(dataa))
-
-            // const cart = JSON.parse(dataa);
-
-            // if(!cart){
-            //     console.log("Cart is empty");
-
-            //     const array = [payload];
-            //     const string = JSON.stringify(array);
-            //     localStorage.setItem('productsInCart', string);
-            // }else{
-            //     console.log("item in cart");
-            //     console.log(cart);
-
-            //     const newArray = [...cart, payload];
-            //     const string = JSON.stringify(newArray);
-            //     localStorage.setItem('productsInCart',string);
-
-            //     console.log( localStorage.getItem('productsInCart'));
-            // }
-
-            // if (dataa.Status === "success") {
-            //     return dataa.Payload;
-            // } else {
-            //     console.error("Image upload failed:", dataa.Message);
-            //     return ''; // or throw an error, depending on your logic
-            // }
+            return data.Payload
+            
         } catch (error) {
             console.error("Error during image upload:", error);
             return ''; // or throw an error, depending on your logic
         }
     }
     
-
     async function saveUserDetails() {
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
@@ -478,10 +428,8 @@ const Index = () => {
                                         aria-describedby="err-currtype" aria-label="currentytype"
                                         name="doc_name" id="currtype" required>
                                         <option disabled selected hidden value="">Select Type</option>
-                                        <option value="Aadhaar Card">Aadhaar Card</option>
-                                        <option value="PanCard">PanCard</option>
-                                        <option value="Driving License">Driving License</option>
-                                        <option value="VoterId">VoterId</option>
+                                        <option value="aadhaar_card">Aadhaar Card</option>
+                                        <option value="pan_card">PanCard</option>
                                     </select>
 
                                     <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" />

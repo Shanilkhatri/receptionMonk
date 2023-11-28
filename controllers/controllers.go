@@ -33,6 +33,7 @@ func standardizeError(err error) error {
 func CheckACL(w http.ResponseWriter, r *http.Request, allowedAccess []string) bool {
 	// Check if Token is provided else we continue with Session based auth management
 	apiToken := r.Header.Get("Authorization")
+
 	if apiToken == "" {
 		// API Token not found, Switching to session based auth
 		userType := utility.SessionGet(r, "type")
@@ -51,7 +52,6 @@ func CheckACL(w http.ResponseWriter, r *http.Request, allowedAccess []string) bo
 			return false
 		}
 	}
-	utility.RenderJsonResponse(w, r, "", 200)
 	return true
 }
 func CheckACLFrontend(w http.ResponseWriter, r *http.Request) bool {
