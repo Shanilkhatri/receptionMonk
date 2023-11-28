@@ -70,13 +70,8 @@ func main() {
 	mux.PathPrefix("/assets/").Handler(staticHandler)
 
 	// Set up a file server to serve the uploads folder
-	uploadsDir := "./uploads" // Path to the uploads folder
 	uploadsURL := "/uploads/" // URL path to access the uploads folder
-
-	uploadsHandler := http.StripPrefix(uploadsURL, http.FileServer(http.Dir(uploadsDir)))
-	// mux.PathPrefix(uploadsURL).Handler(uploadsHandler)
-	mux.Handle(uploadsURL, RestrictUploadsAccess(uploadsHandler))
-
+	mux.PathPrefix(uploadsURL).Handler(http.HandlerFunc(staticHandlerUpload))
 	mux.PathPrefix("/").HandlerFunc(handler)
 
 	if os.Getenv("APP_IS") == "monolith" {
@@ -122,36 +117,17 @@ func cacheTemplates() *template.Template {
 
 	return templ
 }
+func staticHandlerUpload(w http.ResponseWriter, r *http.Request) {
+	// Get the requested file name
+	fileName := filepath.Base(r.URL.Path)
 
-// Define a middleware function to restrict direct access to the uploads folder
-func RestrictUploadsAccess(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Get the requested file path
-		filePath := filepath.Join("./uploads", r.URL.Path[len("/uploads/"):])
+	// Construct the actual file path within the /assets/ directory
+	filePath := filepath.Join("./uploads/", fileName)
 
-		// Check if the requested path is a directory
-		fileInfo, err := os.Stat(filePath)
-		if err != nil {
-			if os.IsNotExist(err) {
-				// Return a not found error if the file or directory does not exist
-				http.NotFound(w, r)
-				return
-			}
-			// Return an server error for other errors
-			http.Error(w, "Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		if fileInfo.IsDir() {
-			// If the requested path is a directory, return a forbidden error
-			http.Error(w, "forbidden", http.StatusForbidden)
-			return
-		}
-
-		// Serve the requested file
-		http.ServeFile(w, r, filePath)
-	})
+	// Serve the requested file
+	http.ServeFile(w, r, filePath)
 }
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	router.Routes(w, r)
 	w.Header().Set("Access-Control-Allow-Origin", "*")

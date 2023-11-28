@@ -175,13 +175,13 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	//to save the screenshots with randomstring name and in upload folder.
 	if modulename == "kyc" {
-		filename, err := RandomNameForImage(handler)
-		if err != nil {
-			// utility.Logger(err)
-			response.Message = "Failed to generate image name."
-			utility.RenderJsonResponse(w, r, response, 400)
-			return
-		}
+		// filename, err := RandomNameForImage(handler)
+		// if err != nil {
+		// 	// utility.Logger(err)
+		// 	response.Message = "Failed to generate image name."
+		// 	utility.RenderJsonResponse(w, r, response, 400)
+		// 	return
+		// }
 		isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
 		if !isok {
 			response.Status = "403"
@@ -192,14 +192,16 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		idString := strconv.FormatInt(userDetailsType.ID, 10)
 		name, _ := utility.NewPasswordHash(idString + userDetailsType.Name)
 		if name == "" {
-			response.Message = "Failed to find the name for this image folder."
-			utility.RenderJsonResponse(w, r, response, 400)
+			response.Message = "Failed to set the name for this image ."
+			utility.RenderJsonResponse(w, r, response, 500)
 			return
 		}
-		folderName := strings.ReplaceAll(name, "/", "")
+		extension := utility.GetImageTypeExtension(handler.Filename, ".", true)
+		fileName := name + extension
+		folderName := strings.ReplaceAll(fileName, "/", "")
 		err = os.MkdirAll("uploads", os.ModePerm) // Create the "uploads" directory if it doesn't exist
-		randomFolderPath := filepath.Join("uploads", folderName)
-		err = os.MkdirAll(randomFolderPath, os.ModePerm)
+		// randomFolderPath := filepath.Join("uploads", folderName)
+		// err = os.MkdirAll(randomFolderPath, os.ModePerm)
 		if err != nil {
 			// utility.Logger(err)
 			response.Message = "Failed to save this image"
@@ -207,7 +209,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Create a new file on the server
-		savePath = filepath.Join(randomFolderPath, filename)
+		savePath = filepath.Join("uploads", folderName)
 	} else {
 		if modulename == "item" {
 			filename, err := RandomNameForImage(handler)
