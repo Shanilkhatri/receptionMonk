@@ -191,7 +191,7 @@ func TestPostWalletWithCorrectStruct(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -273,7 +273,7 @@ func TestPostWalletWithDiffernetCompanyId(t *testing.T) {
 	userdetails.CompanyID = 21
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -347,7 +347,7 @@ func TestPostWalletWithEmptyUserStruct(t *testing.T) {
 	}
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool: false,
 	}
 
@@ -403,7 +403,7 @@ func TestPostWalletWithUserTypeIsUser(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -449,7 +449,7 @@ func TestGetWalletWithCorrectStruct(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -514,7 +514,7 @@ func TestGetWalletWithIncorrectUserStruct(t *testing.T) {
 	}
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool: false,
 	}
 
@@ -560,7 +560,7 @@ func TestGetWalletWithAccountTypeUser(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -607,7 +607,7 @@ func TestGetWalletWithDifferentCompanyId(t *testing.T) {
 	userdetails.CompanyID = 45 //set company id.
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -654,7 +654,7 @@ func TestGetWalletWithSqlErrors(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -714,7 +714,7 @@ func TestGetWalletWithNOResultFounds(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -771,7 +771,7 @@ func TestWalletDeleteSuccess(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -871,7 +871,7 @@ func TestWalletDeleteValidation(t *testing.T) {
 func TestWalletDeleteUserStruct(t *testing.T) {
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool: false,
 	}
 
@@ -915,7 +915,7 @@ func TestWalletDeleteUserAccountTypeIsUser(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -960,7 +960,7 @@ func TestWalletDeleteReturnEmptyRows(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -1023,7 +1023,7 @@ func TestWalletDeleteReturnSqlErrors(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -1096,7 +1096,7 @@ func TestWalletDeleteDifferentCompanyId(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}

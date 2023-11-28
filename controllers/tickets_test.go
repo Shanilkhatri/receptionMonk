@@ -65,7 +65,7 @@ func TestTicketPutWithCorrectData(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -133,7 +133,7 @@ func TestTicketPutWithIncorrectDateString(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -235,7 +235,7 @@ func TestTicketPostWithCorrectData(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -306,7 +306,7 @@ func TestTicketPostWithInCorrectData(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -404,7 +404,7 @@ func TestTicketPostWithCorrectDataButErrAtSQL(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -470,7 +470,7 @@ func TestGetTicketWithTypeUser(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -560,7 +560,7 @@ func TestGetTicketsWithTypeUserAccessingAnotherUser(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -625,7 +625,7 @@ func TestGetTicketsWithTypeOwnerAccessingAnotherUserOfDiffCompany(t *testing.T) 
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -696,7 +696,7 @@ func TestGetTicketsWithTypeOwnerAccessingAnotherUserOfSameCompany(t *testing.T) 
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -776,7 +776,7 @@ func TestTicketDeleteWithOwnerDelUserOfSameComp(t *testing.T) {
 	userdetails.CompanyID = 2         // companyId set same as user's
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -860,7 +860,7 @@ func TestTicketDeleteWithOwnerDelUserOfDiffComp(t *testing.T) {
 	userdetails.CompanyID = 2         // companyId diff from user
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -940,7 +940,7 @@ func TestTicketDeleteWithOSuperAdmin(t *testing.T) {
 	userdetails.AccountType = "super-admin" // type set to super-admin
 	userdetails.CompanyID = 2
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,

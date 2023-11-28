@@ -50,7 +50,7 @@ func TestGetOrdersWithTypeUser(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -136,7 +136,7 @@ func TestGetOrdersWithTypeUserAccessingAnotherUser(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -201,7 +201,7 @@ func TestGetOrdersWithTypeOwnerAccessingAnotherUserOfDiffCompany(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -272,7 +272,7 @@ func TestGetOrdersWithTypeOwnerAccessingAnotherUserOfSameCompany(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}

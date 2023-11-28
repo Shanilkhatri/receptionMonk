@@ -17,20 +17,20 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	//decode json (new decoder)
 	var userStruct models.KycDetails
-	err := utility.StrictParseDataFromJson(r, &userStruct)
+	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		utility.Logger(err)
+		Helper.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetailsType := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	userStruct.UserId = userDetailsType.ID
@@ -44,24 +44,24 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 				tx.Rollback()
 				response.Status = "400"
 				response.Message = "Unable to update kyc at the moment! Please try again."
-				utility.RenderJsonResponse(w, r, response, 400)
+				Helper.RenderJsonResponse(w, r, response, 400)
 				return
 			}
 			response.Status = "200"
 			response.Message = "Document upload successfully"
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return
 		} else {
 			tx.Rollback()
 			response.Status = "400"
 			response.Message = "Unable to update kyc at the moment! Please try again."
-			utility.RenderJsonResponse(w, r, response, 400)
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
 	} else {
 		response.Status = "400"
 		response.Message = "Please provide all fields correctly and try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 }
@@ -69,20 +69,20 @@ func PostKycDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	//decode json (new decoder)
 	var userStruct models.KycDetails
-	err := utility.StrictParseDataFromJson(r, &userStruct)
+	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		utility.Logger(err)
+		Helper.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetailsType := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	userStruct.UserId = userDetailsType.ID
@@ -97,47 +97,47 @@ func PostKycDetails(w http.ResponseWriter, r *http.Request) {
 				tx.Rollback()
 				response.Status = "400"
 				response.Message = "Unable to update kyc at the moment! Please try again."
-				utility.RenderJsonResponse(w, r, response, 400)
+				Helper.RenderJsonResponse(w, r, response, 400)
 				return
 			}
 			response.Status = "200"
 			response.Message = "Document upload successfully"
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return
 		} else {
 			tx.Rollback()
 			response.Status = "400"
 			response.Message = "Unable to update kyc at the moment! Please try again."
-			utility.RenderJsonResponse(w, r, response, 400)
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
 	} else {
 		response.Status = "400"
 		response.Message = "Please provide all fields correctly and try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 }
 func GetKycDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-	isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetailsType := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	kyc_data, err := models.KycDetails{}.Getkyc(userDetailsType.ID)
 	if err != nil {
 		response.Status = "400"
 		response.Message = "Unable to get kyc at the moment! Please try again."
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	response.Status = "200"
 	response.Message = "successfully getting the record."
 	response.Payload = kyc_data
-	utility.RenderJsonResponse(w, r, response, 200)
+	Helper.RenderJsonResponse(w, r, response, 200)
 
 }
 
@@ -148,7 +148,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the request method is POST
 	if r.Method != http.MethodPost {
 		response.Message = "Method not allowed"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	// Parse the multipart form
@@ -156,7 +156,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// utility.Logger(err)
 		response.Message = "Failed to parse form"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	//get the modulename for the differentiations of the modules
@@ -166,27 +166,27 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// utility.Logger(err)
 		response.Message = "Failed to retrieve image from form data"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	defer file.Close()
 	//to save the screenshots with randomstring name and in upload folder.
 	if modulename == "kyc" {
-		isok, userDetailsType := utility.CheckTokenPayloadAndReturnUser(r)
+		isok, userDetailsType := Helper.CheckTokenPayloadAndReturnUser(r)
 		if !isok {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not allowed to make this request"
-			utility.RenderJsonResponse(w, r, response, 403)
+			Helper.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 		idString := strconv.FormatInt(userDetailsType.ID, 10)
-		name, _ := utility.NewPasswordHash(idString + userDetailsType.Name)
+		name, _ := Helper.NewPasswordHash(idString + userDetailsType.Name)
 		if name == "" {
 			response.Message = "Failed to set the name for this image ."
-			utility.RenderJsonResponse(w, r, response, 500)
+			Helper.RenderJsonResponse(w, r, response, 500)
 			return
 		}
-		extension := utility.GetImageTypeExtension(handler.Filename, ".", true)
+		extension := Helper.GetImageTypeExtension(handler.Filename, ".", true)
 		fileName := name + extension
 		folderName := strings.ReplaceAll(fileName, "/", "")
 		err = os.MkdirAll("uploads", os.ModePerm) // Create the "uploads" directory if it doesn't exist
@@ -195,7 +195,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			// utility.Logger(err)
 			response.Message = "Failed to save this image"
-			utility.RenderJsonResponse(w, r, response, 400)
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
 		// Create a new file on the server
@@ -206,7 +206,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				// utility.Logger(err)
 				response.Message = "Failed to generate image name."
-				utility.RenderJsonResponse(w, r, response, 400)
+				Helper.RenderJsonResponse(w, r, response, 400)
 				return
 			}
 			handler.Filename = filename
@@ -218,14 +218,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// utility.Logger(err)
 		response.Message = "Failed to create uploads directory"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	newFile, err := os.Create(savePath)
 	if err != nil {
 		// utility.Logger(err)
 		response.Message = "Failed to create file on server"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	defer newFile.Close()
@@ -235,13 +235,13 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// utility.Logger(err)
 		response.Message = "Failed to save file on server"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	response.Status = "200"
 	response.Message = "File uploaded successfully"
 	response.Payload = savePath
-	utility.RenderJsonResponse(w, r, response, 200)
+	Helper.RenderJsonResponse(w, r, response, 200)
 }
 
 func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
@@ -251,10 +251,10 @@ func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
 	// if lastDotIndex != -1 {
 	// 	extension = handler.Filename[lastDotIndex:]
 	// }
-	extension = utility.GetImageTypeExtension(handler.Filename, ".", true)
-	randomString, err := utility.GenerateRandomString(30)
+	extension = Helper.GetImageTypeExtension(handler.Filename, ".", true)
+	randomString, err := Helper.GenerateRandomString(30)
 	if err != nil {
-		utility.Logger(err)
+		Helper.Logger(err)
 		// response.Message = "Failed to generate image name."
 		// utility.RenderJsonResponse(w, r, response, 400)
 		return "", err

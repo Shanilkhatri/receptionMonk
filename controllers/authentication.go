@@ -26,7 +26,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			log.Println("form parsing failed")
-			utility.RenderTemplate(w, r, "login", "demo")
+			Helper.RenderTemplate(w, r, "login", "demo")
 		} else {
 			// Parsing form went fine, Now we can access all the values
 			email := r.FormValue("email")
@@ -42,31 +42,31 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					// In case of MYSQL issues or no results are returned
 					log.Println(err)
-					utility.AddFlash("error", "Credentials didn't match, Please try again.", w, r)
-					utility.RenderTemplate(w, r, "login", "demo")
+					Helper.AddFlash("error", "Credentials didn't match, Please try again.", w, r)
+					Helper.RenderTemplate(w, r, "login", "demo")
 				} else {
 					match := bcrypt.CompareHashAndPassword([]byte(row.PasswordHash), []byte(r.FormValue("password")))
 					if match != nil {
-						utility.AddFlash("error", "Credentials didn't match, Please try again.", w, r)
-						utility.RenderTemplate(w, r, "login", "demo")
+						Helper.AddFlash("error", "Credentials didn't match, Please try again.", w, r)
+						Helper.RenderTemplate(w, r, "login", "demo")
 					} else {
 						// Password match has been a success
-						utility.SessionSet(w, r, utility.Session{Key: "id", Value: row.ID})
-						utility.SessionSet(w, r, utility.Session{Key: "email", Value: row.Email})
-						utility.SessionSet(w, r, utility.Session{Key: "type", Value: row.AccountType})
-						utility.AddFlash("success", "Success !, Logged in.", w, r)
+						Helper.SessionSet(w, r, utility.Session{Key: "id", Value: row.ID})
+						Helper.SessionSet(w, r, utility.Session{Key: "email", Value: row.Email})
+						Helper.SessionSet(w, r, utility.Session{Key: "type", Value: row.AccountType})
+						Helper.AddFlash("success", "Success !, Logged in.", w, r)
 						if r.FormValue("rememberMe") == "yes" {
 							utility.Store.Options = &sessions.Options{
 								MaxAge: 60 * 1,
 							}
 						}
 						token := models.Authentication{}.CheckTwoFactorRegistration(int32(row.ID))
-						utility.SessionSet(w, r, utility.Session{Key: "2faSecret", Value: token})
+						Helper.SessionSet(w, r, utility.Session{Key: "2faSecret", Value: token})
 
 						if token != "" {
-							utility.RedirectTo(w, r, "verify-2fa")
+							Helper.RedirectTo(w, r, "verify-2fa")
 						} else {
-							utility.RedirectTo(w, r, "dashboard")
+							Helper.RedirectTo(w, r, "dashboard")
 						}
 						//utility.RenderTemplate(w, r, "login", "demo")
 					}
@@ -74,24 +74,24 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		utility.RenderTemplate(w, r, "login", "demo")
+		Helper.RenderTemplate(w, r, "login", "demo")
 	}
 }
 
 func VerifyTwoFa(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		utility.RenderTemplate(w, r, "verifyTwoFa", "demo")
+		Helper.RenderTemplate(w, r, "verifyTwoFa", "demo")
 	} else if r.Method == "POST" {
 		err := r.ParseForm()
 		if err != nil {
 			log.Println(err)
 		} else {
 			twoFaVerify := r.FormValue("twoFaVerify")
-			secret := fmt.Sprintf("%v", utility.SessionGet(r, "2faSecret"))
+			secret := fmt.Sprintf("%v", Helper.SessionGet(r, "2faSecret"))
 			if totp.Validate(twoFaVerify, secret) {
-				utility.RedirectTo(w, r, "dashboard")
+				Helper.RedirectTo(w, r, "dashboard")
 			} else {
-				utility.RedirectTo(w, r, "login")
+				Helper.RedirectTo(w, r, "login")
 			}
 		}
 	}
@@ -100,12 +100,12 @@ func VerifyTwoFa(w http.ResponseWriter, r *http.Request) {
 func RegisterTwoFa(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		email := utility.SessionGet(r, "email")
+		email := Helper.SessionGet(r, "email")
 		key, _ := totp.Generate(totp.GenerateOpts{
 			Issuer:      os.Getenv("TOTP_ISSUER"),
 			AccountName: fmt.Sprintf("%v", email),
 		})
-		utility.SessionSet(w, r, utility.Session{Key: "totpSecret", Value: key.Secret()})
+		Helper.SessionSet(w, r, utility.Session{Key: "totpSecret", Value: key.Secret()})
 
 		img, _ := key.Image(400, 400)
 
@@ -115,23 +115,23 @@ func RegisterTwoFa(w http.ResponseWriter, r *http.Request) {
 		data := b64.StdEncoding.EncodeToString([]byte(buf.String()))
 		data = "data:image/png;base64," + data
 
-		utility.RenderTemplate(w, r, "twoFactorRegister", data)
+		Helper.RenderTemplate(w, r, "twoFactorRegister", data)
 	} else if r.Method == "POST" {
 		err := r.ParseForm()
 		if err != nil {
 
 		} else {
 			verifyToken := r.FormValue("challengeCode")
-			validationResult := totp.Validate(verifyToken, fmt.Sprintf("%v", utility.SessionGet(r, "totpSecret")))
+			validationResult := totp.Validate(verifyToken, fmt.Sprintf("%v", Helper.SessionGet(r, "totpSecret")))
 			if validationResult {
-				secret := fmt.Sprintf("%v", utility.SessionGet(r, "totpSecret"))
-				userId := fmt.Sprintf("%v", utility.SessionGet(r, "id"))
+				secret := fmt.Sprintf("%v", Helper.SessionGet(r, "totpSecret"))
+				userId := fmt.Sprintf("%v", Helper.SessionGet(r, "id"))
 				intUserId, _ := strconv.Atoi(userId)
 				models.Authentication{}.TwoFactorAuthAdd(secret, intUserId)
-				utility.RenderTemplate(w, r, "successTwoFactor", nil)
+				Helper.RenderTemplate(w, r, "successTwoFactor", nil)
 			} else {
 				// Show Error Page
-				utility.RenderTemplate(w, r, "failureTwoFactor", nil)
+				Helper.RenderTemplate(w, r, "failureTwoFactor", nil)
 			}
 		}
 	}
@@ -162,7 +162,7 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 	data["currentTime"] = signupData.EpochCurrent
 
 	//if email success return true.
-	if utility.SendEmail(userEmailId, "emailforotp", data) {
+	if Helper.SendEmail(userEmailId, "emailforotp", data) {
 		return true
 	}
 	return false
@@ -172,20 +172,20 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	var signupDetails models.SignupDetails
-	err := utility.StrictParseDataFromJson(r, &signupDetails)
+	err := Helper.StrictParseDataFromJson(r, &signupDetails)
 	if err != nil {
 		log.Println("error: ", err)
 		// utility.Logger(err)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
 
 	if signupDetails.Email == "" {
 		response.Status = "400"
 		response.Message = "Please Enter valid Email Address."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
 	//otp set in session.
@@ -203,7 +203,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	if err != nil {
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-		utility.RenderJsonResponse(w, r, response, 500)
+		Helper.RenderJsonResponse(w, r, response, 500)
 		return true
 	}
 
@@ -213,12 +213,12 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 			response.Status = "200"
 			response.Message = "New OTP has been sent, Please check your inbox"
 			response.Payload = signupDetails.EmailToken
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return false
 		} else {
 			log.Println("Otp not sent!!")
 			response.Message = "OTP email couldn't be sent at the moment, Please try again."
-			utility.RenderJsonResponse(w, r, response, 500)
+			Helper.RenderJsonResponse(w, r, response, 500)
 		}
 
 	}
@@ -231,12 +231,12 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	// otpSession := fmt.Sprintf("%v", utility.SessionGet(r, "otp"))
 	emailToken := r.Header.Get("emailVerfToken")
 	var signupDetails models.SignupDetails
-	err := utility.StrictParseDataFromJson(r, &signupDetails)
+	err := Helper.StrictParseDataFromJson(r, &signupDetails)
 	if err != nil {
 		// utility.Logger(err)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
 
@@ -245,14 +245,14 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 		log.Println(err)
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-		utility.RenderJsonResponse(w, r, response, 500)
+		Helper.RenderJsonResponse(w, r, response, 500)
 		return true
 	}
 
 	if emailToken != data.EmailToken {
 		response.Status = "400"
 		response.Message = "Email token not valid."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
 	//checking otp if correct or not.
@@ -274,23 +274,23 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 			if err != nil {
 				response.Status = "500"
 				response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-				utility.RenderJsonResponse(w, r, response, 500)
+				Helper.RenderJsonResponse(w, r, response, 500)
 				return true
 			}
 			response.Payload = data.Token
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return true
 		} else {
 			fmt.Println("OTP has expired")
 			response.Status = "403"
 			response.Message = "Please Insert Correct Opt."
-			utility.RenderJsonResponse(w, r, response, 403)
+			Helper.RenderJsonResponse(w, r, response, 403)
 			return false
 		}
 	} else {
 		response.Status = "403"
 		response.Message = "Please Insert Correct Opt."
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return false
 	}
 
@@ -307,5 +307,5 @@ func GenerateEmailToken(userid string) string {
 
 // only for test emailforotp template run.
 func Add(w http.ResponseWriter, r *http.Request) {
-	utility.RenderTemplate(w, r, "emailforotp", nil)
+	Helper.RenderTemplate(w, r, "emailforotp", nil)
 }

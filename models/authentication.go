@@ -12,6 +12,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var Helper utility.Helper = &utility.Utility{}
+
 //	type Authentication struct {
 //		Id             int32
 //		Email          string
@@ -52,7 +54,7 @@ func (auth Authentication) GetUserByEmail(email string) (Authentication, error) 
 }
 
 func (auth Authentication) ForgotPassword(id int32) (string, error) {
-	Token, err := utility.GenerateRandomString(60)
+	Token, err := Helper.GenerateRandomString(60)
 	if err != nil {
 		log.Println("Random String Generator Failed")
 	}
