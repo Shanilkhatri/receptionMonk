@@ -405,7 +405,7 @@ func DeleteUserData(w http.ResponseWriter, r *http.Request) bool {
 		}
 	}
 	//Add data in user table then show the error
-	boolType, err := models.Users{}.DeleteUser(userId)
+	boolType, err := models.Users{}.DeleteUser(int64(userId))
 	if !boolType || err != nil {
 		log.Println(err)
 		response.Status = "500"
@@ -439,4 +439,48 @@ func CopyStructValues(st1 models.Authentication) models.Users {
 		// Add other fields as needed
 	}
 	return st2
+}
+func PostUpdateWizardStatus(w http.ResponseWriter, r *http.Request) {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+	// wizardStatus := r.URL.Query().Get("wizardstatus")
+	var user models.Authentication
+	err := utility.StrictParseDataFromJson(r, &user)
+	if err != nil {
+		utility.Logger(err)
+		log.Println("Unable to decode json")
+		response.Status = "400"
+		response.Message = "Please check all fields correctly and try again."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	if user.IsWizardComplete == "" {
+		response.Status = "400"
+		response.Message = "Please provide the wizard updated status and try again."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	if !isok {
+		response.Status = "403"
+		response.Message = "You are not authorized to make this request."
+		utility.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	user.ID = userDetails.ID
+	boolType, err := models.Users{}.UpdateWizardStatus(user)
+	if err != nil {
+		response.Status = "400"
+		response.Message = "cant update the wizard status at that moment."
+		utility.RenderJsonResponse(w, r, response, 400)
+		return
+	}
+	if boolType {
+		response.Status = "200"
+		response.Message = "wizard status updated"
+		utility.RenderJsonResponse(w, r, response, 200)
+		return
+	}
+	response.Status = "400"
+	response.Message = "cant update the wizard status at that moment."
+	utility.RenderJsonResponse(w, r, response, 400)
 }

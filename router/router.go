@@ -125,6 +125,12 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 				controllers.UploadHandler(w, r)
 			}
 		}
+	case "updateWizard":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.PostUpdateWizardStatus(w, r)
+			}
+		}
 	}
 
 }

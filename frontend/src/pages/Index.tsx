@@ -11,6 +11,7 @@ import Utility from '../utility/utility';
 import Modal from './modal';
 import store from '../store';
 import { data } from 'autoprefixer';
+import { bool, boolean } from 'yup';
 
 // object of class utility
 const utility = new Utility()
@@ -56,8 +57,19 @@ const Index = () => {
         if (tokenPayload.iswizardcomplete != "completed") {
             handleOpenModal()
             // handleCloseModal()
+        }else if (tokenPayload.iswizardcomplete == "completed") {
+            handleCloseModal()
         }
 
+    }
+    async function updateWizard(userData:any):Promise<boolean> {
+
+        const ok = await utility.sendRequestPutOrPost(userData, "updateWizard", "POST")
+        if (ok) {
+            //do what you want if successfully added the data 
+            console.log("SuccessFully added")
+        }
+        return ok
     }
     async function onFormSubmit(e: any) {
         e.preventDefault();
@@ -118,10 +130,14 @@ const Index = () => {
             }),
         })
             .then(response => response.json())
-            .then((value) => {
+            .then(async (value) => {
                 if (value.Status == '200') {
                     //todo what you want to do after this successful kyc put
                     console.log("successfully enter")
+                    const userData = {
+                        "iswizardcomplete": "completed"
+                    };
+                    const ok=await updateWizard(userData);
                     // window.location.href = APPURL+'viewMarketTemplate';
                 }else{
                     //todo what you want to do after this unsuccessful kyc put

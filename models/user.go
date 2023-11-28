@@ -128,7 +128,7 @@ func (Users) GetParaForFilterUser(para UserCondition) UserCondition {
 
 	return para
 }
-func (Users) DeleteUser(id int) (bool, error) {
+func (Users) DeleteUser(id int64) (bool, error) {
 	row, err := utility.Db.Exec("DELETE FROM authentication WHERE id = ?", id)
 	if err != nil {
 		log.Print(err)
@@ -140,4 +140,19 @@ func (Users) DeleteUser(id int) (bool, error) {
 		return false, err
 	}
 	return rowsDeleted > 0, nil
+}
+func (Users) UpdateWizardStatus(usr Authentication) (bool, error) {
+	userData, err := utility.Db.NamedExec("UPDATE `authentication` SET iswizardcomplete=:Iswizardcomplete WHERE id=:ID ", map[string]interface{}{"Iswizardcomplete": usr.IsWizardComplete, "ID": usr.ID})
+	// Check error
+	if err != nil {
+		log.Println("error: ", err)
+		// utility.Logger(err)
+	} else {
+		Rowefffect, _ := userData.RowsAffected()
+		if Rowefffect == 0 {
+			log.Println("input value is not change with previous one or id= " + fmt.Sprint(usr.ID) + "is not valid")
+		}
+		return Rowefffect > 0, err
+	}
+	return false, err
 }
