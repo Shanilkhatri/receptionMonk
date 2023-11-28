@@ -132,12 +132,13 @@ const Index = () => {
             .then(response => response.json())
             .then(async (value) => {
                 if (value.Status == '200') {
-                    //todo what you want to do after this successful kyc put
+                    //what you want to do after this successful kyc put after kyc the wizard status is automatically marked to completed in backend
                     console.log("successfully enter")
-                    const userData = {
-                        "iswizardcomplete": "completed"
-                    };
-                    const ok=await updateWizard(userData);
+                    //this is what you need to do after personal and company detail successfully update you need to update the wizard status 
+                    // const userData = {
+                    //     "iswizardcomplete": "company or kyc"
+                    // };
+                    // const ok=await updateWizard(userData);
                     // window.location.href = APPURL+'viewMarketTemplate';
                 }else{
                     //todo what you want to do after this unsuccessful kyc put

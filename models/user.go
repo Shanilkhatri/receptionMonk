@@ -141,8 +141,8 @@ func (Users) DeleteUser(id int64) (bool, error) {
 	}
 	return rowsDeleted > 0, nil
 }
-func (Users) UpdateWizardStatus(usr Authentication) (bool, error) {
-	userData, err := utility.Db.NamedExec("UPDATE `authentication` SET iswizardcomplete=:Iswizardcomplete WHERE id=:ID ", map[string]interface{}{"Iswizardcomplete": usr.IsWizardComplete, "ID": usr.ID})
+func (Users) UpdateWizardStatus(usr Authentication, tx *sqlx.Tx) (bool, error) {
+	userData, err := tx.NamedExec("UPDATE `authentication` SET iswizardcomplete=:Iswizardcomplete WHERE id=:ID ", map[string]interface{}{"Iswizardcomplete": usr.IsWizardComplete, "ID": usr.ID})
 	// Check error
 	if err != nil {
 		log.Println("error: ", err)

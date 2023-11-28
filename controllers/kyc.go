@@ -17,6 +17,7 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	//decode json (new decoder)
 	var userStruct models.KycDetails
+	var user models.Authentication
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
 		Helper.Logger(err)
@@ -38,19 +39,38 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 		tx := utility.Db.MustBegin()
 		inserted := models.KycDetails{}.Putkyc(userStruct, tx)
 		if inserted {
-			err = tx.Commit()
+			user.ID = userStruct.UserId
+			user.IsWizardComplete = "completed"
+			boolType, err := models.Users{}.UpdateWizardStatus(user, tx)
 			if err != nil {
-				log.Println(err)
+				tx.Rollback()
+				response.Status = "400"
+				response.Message = "cant update the wizard status at that moment."
+				Helper.RenderJsonResponse(w, r, response, 400)
+				return
+			}
+			if boolType {
+				err = tx.Commit()
+				if err != nil {
+					log.Println(err)
+					tx.Rollback()
+					response.Status = "400"
+					response.Message = "Unable to update kyc at the moment! Please try again."
+					Helper.RenderJsonResponse(w, r, response, 400)
+					return
+				}
+				response.Status = "200"
+				response.Message = "Document upload successfully"
+				Helper.RenderJsonResponse(w, r, response, 200)
+				return
+			} else {
 				tx.Rollback()
 				response.Status = "400"
 				response.Message = "Unable to update kyc at the moment! Please try again."
 				Helper.RenderJsonResponse(w, r, response, 400)
 				return
+
 			}
-			response.Status = "200"
-			response.Message = "Document upload successfully"
-			Helper.RenderJsonResponse(w, r, response, 200)
-			return
 		} else {
 			tx.Rollback()
 			response.Status = "400"

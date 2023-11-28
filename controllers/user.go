@@ -295,7 +295,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		response.Status = "200"
 		response.Message = "Record successfully updated"
 		response.Payload = []interface{}{userStruct}
-		// rehydrating the cache after the a successful update
+
 		userData, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
 			tx.Rollback()
@@ -303,18 +303,50 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			response.Message = "Unable to hydrate cache! Please try again."
 			Helper.RenderJsonResponse(w, r, response, 400)
 			return
-		}
-		err = tx.Commit()
-		if err != nil {
-			log.Println(err)
-			tx.Rollback()
-			response.Status = "400"
-			response.Message = "Unable to update user at the moment! Please try again."
-			Helper.RenderJsonResponse(w, r, response, 400)
-			return
+		} else {
+			//update the IsWizardComplete from personal to company
+			if userData.IsWizardComplete == "personal" && userData.PasswordHash != "" {
+				userData.IsWizardComplete = "company"
+				boolType, err := models.Users{}.UpdateWizardStatus(userData, tx)
+				if err != nil {
+					tx.Rollback()
+					response.Status = "400"
+					response.Message = "cant update the wizard status at that moment."
+					Helper.RenderJsonResponse(w, r, response, 400)
+					return
+				}
+				if boolType {
+					err = tx.Commit()
+					if err != nil {
+						log.Println(err)
+						tx.Rollback()
+						response.Status = "400"
+						response.Message = "Unable to update details at the moment! Please try again."
+						Helper.RenderJsonResponse(w, r, response, 400)
+						return
+					}
+				} else {
+					tx.Rollback()
+					response.Status = "400"
+					response.Message = "Unable to update details at the moment! Please try again."
+					Helper.RenderJsonResponse(w, r, response, 400)
+					return
+				}
+			} else { //if the wizard is already completed or more progress is above personal we didnt update that and move forward
+				err = tx.Commit()
+				if err != nil {
+					log.Println(err)
+					tx.Rollback()
+					response.Status = "400"
+					response.Message = "Unable to update user at the moment! Please try again."
+					Helper.RenderJsonResponse(w, r, response, 400)
+					return
+				}
 
+			}
 		}
 		jsonData, _ := json.Marshal(userData)
+		// rehydrating the cache after the a successful update
 		utility.Cache.Set(userData.Token, jsonData)
 		Helper.RenderJsonResponse(w, r, response, 200)
 		return
@@ -467,17 +499,34 @@ func PostUpdateWizardStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.ID = userDetails.ID
-	boolType, err := models.Users{}.UpdateWizardStatus(user)
+	tx := utility.Db.MustBegin()
+	boolType, err := models.Users{}.UpdateWizardStatus(user, tx)
 	if err != nil {
+		tx.Rollback()
 		response.Status = "400"
-		response.Message = "cant update the wizard status at that moment."
+		response.Message = "cant update the wizard status at the moment."
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	if boolType {
+		err = tx.Commit()
+		if err != nil {
+			log.Println(err)
+			tx.Rollback()
+			response.Status = "400"
+			response.Message = "Unable to update wizard status at the moment! Please try again."
+			Helper.RenderJsonResponse(w, r, response, 400)
+			return
+		}
 		response.Status = "200"
-		response.Message = "wizard status updated"
+		response.Message = "Document upload successfully"
 		Helper.RenderJsonResponse(w, r, response, 200)
+		return
+	} else {
+		tx.Rollback()
+		response.Status = "400"
+		response.Message = "cant update the wizard status at that moment."
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	response.Status = "400"
