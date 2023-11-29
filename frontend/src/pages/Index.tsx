@@ -15,7 +15,7 @@ import { bool, boolean } from 'yup';
 
 // object of class utility
 const utility = new Utility()
-
+const appUrl = import.meta.env.VITE_APPURL
 const Index = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Index = () => {
         headers.append("Content-Type", 'application/json');
         headers.append("Authorization", "bearer " + token);
 
-        const response = await fetch("http://localhost:4000/tokencheckfrontend", {
+        const response = await fetch(appUrl+"tokencheckfrontend", {
             method: 'GET',
             headers: headers,
 
