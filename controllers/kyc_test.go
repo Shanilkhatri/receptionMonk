@@ -84,7 +84,7 @@ func TestPutKycDetailsWithTypeUserAccessingAnotherUser(t *testing.T) {
 }
 
 // TEST #2 - PutKyc with incorrect parameters
-// -> user tries to put incorrect kyc data
+// -> user tries to put incorrect kyc data(i had given the doc_name as a int here so you can change its type and check)
 // -> we won't mock DB as we expect to get error unauhtorized access before the DB ops
 // expecting a 400
 func TestPutKycDetailsWithIncorrectData(t *testing.T) {
