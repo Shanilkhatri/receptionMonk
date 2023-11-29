@@ -126,7 +126,9 @@ const Index = () => {
             },
             body: JSON.stringify({
                 "doc_name":docName,
-                "doc_pic_name": img
+                "doc_pic_name": img,
+                "userid": store.getState().themeConfig.hydrateCookie.userid,
+                "companyId": store.getState().themeConfig.hydrateCookie.companyId
             }),
         })
             .then(response => response.json())
