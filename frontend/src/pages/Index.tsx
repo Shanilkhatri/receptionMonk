@@ -51,6 +51,7 @@ const Index = () => {
         var tokenPayload = JSON.parse(tokenData)
         document.cookie = `whoami=${JSON.stringify(tokenPayload)}; secure; path=/`;
         dispatch(setEmail(store.getState().themeConfig.email));
+        console.log("email",store.getState().themeConfig.email)
         dispatch(setHydrateCookie(""))
         console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
 
@@ -116,7 +117,7 @@ const Index = () => {
         }
     }
     async function kycDetailsPut(docName:string,img:string){
-        const marketurl = "http://localhost:4000/kyc";
+        const marketurl = appUrl+"kyc";
         
         console.log( "userid", store.getState().themeConfig.hydrateCookie.id,
         "companyId", store.getState().themeConfig.hydrateCookie.companyId)
@@ -181,7 +182,7 @@ const Index = () => {
         return true
     }
     async function uploadImageAndReturnUrl(imageElement: string, modulename: string): Promise<string> {
-        const imageUploadURL = 'http://localhost:4000/kycfileupload';
+        const imageUploadURL = appUrl+'kycfileupload';
     
         const imageInput = document.getElementById(imageElement) as HTMLInputElement | null;
         let imageFile: File | undefined;
@@ -220,7 +221,8 @@ const Index = () => {
         }
     }
     
-    async function saveUserDetails() {
+    async function saveUserDetails(e:any) {
+        e.preventDefault();
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
         const email = store.getState().themeConfig.email
@@ -441,12 +443,12 @@ const Index = () => {
                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
                             </div>
                             <div className="modal-body">
-                                <form id='formdataid' onSubmit={(e) => onFormSubmit(e)}>
-                                    {/* <input type="text" className="form-control" id="recipient-name" />
+                                <form id='formdataid' onSubmit={(e) => saveUserDetails(e)}>
+                                    <input type="text" className="form-control" id="recipient-name" />
                                      <input type="password" className="form-control" id="recipient-password"/>
                                      <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
-                                     <input type="date" className="form-control" id="recipient-dob"/> */}
-                                    <select
+                                     <input type="date" className="form-control" id="recipient-dob"/>
+                                    {/* <select
                                         aria-describedby="err-currtype" aria-label="currentytype"
                                         name="doc_name" id="currtype" required>
                                         <option disabled selected hidden value="">Select Type</option>
@@ -454,7 +456,7 @@ const Index = () => {
                                         <option value="pan_card">PanCard</option>
                                     </select>
 
-                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" />
+                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" /> */}
 
                                     <button type="submit" className="btn btn-primary" >
                                         Save

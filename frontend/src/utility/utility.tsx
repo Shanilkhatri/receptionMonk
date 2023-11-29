@@ -1,5 +1,11 @@
-
 class Utility{
+    appUrl: string;
+
+    constructor() {
+        this.appUrl = import.meta.env.VITE_APPURL;
+        console.log(this.appUrl);
+    }
+
 
 getCookieValue(key:any) {
         const cookies = document.cookie.split(';');
@@ -19,7 +25,7 @@ getCookieValue(key:any) {
     }
 async sendRequestPutOrPost(userData:any,route:string,method:string) {
 
-    const response = await fetch("http://localhost:4000/"+route, {
+    const response = await fetch(this.appUrl+route, {
         method: method,
         headers: {
             'Content-Type': 'application/json',

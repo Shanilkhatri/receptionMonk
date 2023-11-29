@@ -25,7 +25,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		Helper.Logger(err)
 		response.Status = "403"
-		response.Message = "You cannot register the company because you are not an owner."
+		response.Message = "Unauthorized access! You are not allowed to make this request"
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
@@ -110,7 +110,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		Helper.Logger(err)
 		response.Status = "403"
-		response.Message = "You cannot register the company because you are not an owner."
+		response.Message = "Unauthorized access! You are not allowed to make this request."
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
@@ -121,15 +121,15 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 	if userType != "owner" {
 		Helper.Logger(err)
 		response.Status = "403"
-		response.Message = "You cannot register the company because you are not an owner."
+		response.Message = "You cannot update the company details because you are not an owner."
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	tx := utility.Db.MustBegin()
 	isupdate, err1 := models.Company{}.PostCompany(companyStruct, tx)
 	if err1 != nil || !isupdate {
-		response.Status = "403"
-		response.Message = "Unable to add company details at the moment! Please try again."
+		response.Status = "400"
+		response.Message = "Unable to update company details at the moment! Please try again."
 		isok, errString := Helper.CheckSqlError(err, "") // dummy check
 		if isok {
 			log.Println(errString)
@@ -145,7 +145,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 		Helper.Logger(err)
 		tx.Rollback()
 		response.Status = "400"
-		response.Message = "Unable to add company details at the moment! Please try again."
+		response.Message = "Unable to update company details at the moment! Please try again."
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
