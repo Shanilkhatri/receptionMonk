@@ -243,6 +243,30 @@ const Index = () => {
             navigate("/auth/SignIn")
         }
     }
+    async function saveCompanyDetails(e:any) {
+        e.preventDefault();
+        const companyName = (document.getElementById('company-name') as HTMLInputElement)?.value;
+        const gstin = (document.getElementById('company-gstin') as HTMLInputElement)?.value;
+        const contactEmail = store.getState().themeConfig.email
+        const contactNumber = (document.getElementById('company-number') as HTMLInputElement)?.value;
+        const companyaddress = (document.getElementById('company-address') as HTMLInputElement)?.value;
+        const userData = {
+            companyName,
+            gstin,
+            companyaddress,
+            contactNumber,
+            contactEmail,
+        };
+
+        const ok = await utility.sendRequestPutOrPost(userData, "company", "PUT")
+        if (ok) {
+            //do what you want if successfully added the data 
+            console.log("SuccessFully added")
+        } else {
+            navigate("/auth/SignIn")
+        }
+    }
+    
     const [isModalOpen, setModalOpen] = useState(false);
 
     const handleOpenModal = () => {
@@ -443,11 +467,11 @@ const Index = () => {
                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
                             </div>
                             <div className="modal-body">
-                                <form id='formdataid' onSubmit={(e) => saveUserDetails(e)}>
-                                    <input type="text" className="form-control" id="recipient-name" />
+                                <form id='formdataid' onSubmit={(e) => saveCompanyDetails(e)}>
+                                    {/* <input type="text" className="form-control" id="recipient-name" />
                                      <input type="password" className="form-control" id="recipient-password"/>
                                      <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
-                                     <input type="date" className="form-control" id="recipient-dob"/>
+                                     <input type="date" className="form-control" id="recipient-dob"/> */}
                                     {/* <select
                                         aria-describedby="err-currtype" aria-label="currentytype"
                                         name="doc_name" id="currtype" required>
@@ -457,7 +481,11 @@ const Index = () => {
                                     </select>
 
                                     <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" /> */}
-
+                                    <input type="text" className="form-control" id="company-name" />
+                                     <input type="text" className="form-control" id="company-gstin"/>
+                                     <input type="email" className="form-control" id="company-email" value={store.getState().themeConfig.email} readOnly/>
+                                     <input type="text" className="form-control" id="company-address"/>
+                                     <input type="text" className="form-control" id="company-contact"/>
                                     <button type="submit" className="btn btn-primary" >
                                         Save
                                     </button>
