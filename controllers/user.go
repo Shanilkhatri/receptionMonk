@@ -298,7 +298,6 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 
 		userData, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
-			log.Println("error: ", err)
 			tx.Rollback()
 			response.Status = "400"
 			response.Message = "Unable to hydrate cache! Please try again."
