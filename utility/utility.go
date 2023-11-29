@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"math/big"
-	"mime/multipart"
 	"os"
 	"reflect"
 	"regexp"
@@ -21,7 +20,6 @@ import (
 	"html/template"
 	"net/http"
 	"net/smtp"
-	"net/url"
 
 	"github.com/allegro/bigcache/v3"
 	"github.com/gorilla/csrf"
@@ -76,6 +74,18 @@ type UserDetails struct {
 	Status                string `json:"status" db:"status"`
 }
 
+type Utility struct{}
+
+// ReturnUserDetails implements Helper.
+func (*Utility) ReturnUserDetails(r *http.Request, user interface{}) error {
+	panic("unimplemented")
+}
+
+// ViewFlash implements Helper.
+func (*Utility) ViewFlash(w http.ResponseWriter, r *http.Request) interface{} {
+	panic("unimplemented")
+}
+
 type Helper interface {
 	GenerateRandomString(n int) (string, error)
 	RedirectTo(w http.ResponseWriter, r *http.Request, path string)
@@ -86,16 +96,33 @@ type Helper interface {
 	RenderTemplate(w http.ResponseWriter, r *http.Request, template string, data interface{})
 	ParseDataFromPostRequestToMap(r *http.Request) (map[string]interface{}, error)
 	ParseDataFromJsonToMap(r *http.Request) (map[string]interface{}, error)
-	// StrictParseDataFromJson(r *http.Request, structure interface{}) error
+	StrictParseDataFromJson(r *http.Request, structure interface{}) error
 	StrictParseDataFromPostRequest(r *http.Request, structure interface{}) error
 	RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, statusCode int)
 	RenderTemplateData(w http.ResponseWriter, r *http.Request, template string, data interface{})
 	StringInArray(target string, arr []string) bool
 	ReturnUserDetails(r *http.Request, user interface{}) error
 	CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails)
+	StrToInt64(str string) (int64, error)
+	SendEmailSMTP(to []string, subject string, body string) bool
+	SendEmail(to []string, template string, data map[string]interface{}) bool
+	GetErrorMessage(currentFilePath string, lineNumbers int, errorMessage error) bool
+	OpenLogFile() *os.File
+	Logger(errObject error)
+	GetSqlErrorString(err error) string
+	CheckSqlError(err error, errString string) (bool, string)
+	NewPasswordHash(NewPassword string) (string, error)
+	CheckDateFormat(dateString string) bool
+	CheckEmailFormat(emailString string) bool
+	SaltPlainPassWord(passW string) (string, error)
+	FillEmptyFieldsForPostUpdate(src, dest interface{}) bool
+	CopyFieldsBetweenDiffStructType(src, dest interface{}) bool
+	StrToInt(num string) int
+	DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string) bool
+	GetImageTypeExtension(Filename string, whatToBeTrim string, dotInclude bool) string
 }
 
-func GenerateRandomString(n int) (string, error) {
+func (u *Utility) GenerateRandomString(n int) (string, error) {
 	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
 	ret := make([]byte, n)
 	for i := 0; i < n; i++ {
@@ -109,11 +136,11 @@ func GenerateRandomString(n int) (string, error) {
 	return string(ret), nil
 }
 
-func RedirectTo(w http.ResponseWriter, r *http.Request, path string) {
+func (u *Utility) RedirectTo(w http.ResponseWriter, r *http.Request, path string) {
 	http.Redirect(w, r, os.Getenv("APP_URL")+"/"+path, http.StatusFound)
 }
 
-func SessionSet(w http.ResponseWriter, r *http.Request, data Session) {
+func (u *Utility) SessionSet(w http.ResponseWriter, r *http.Request, data Session) {
 	session, _ := Store.Get(r, os.Getenv("SESSION_NAME"))
 	// Set some session values.
 	session.Values[data.Key] = data.Value
@@ -124,7 +151,7 @@ func SessionSet(w http.ResponseWriter, r *http.Request, data Session) {
 	}
 }
 
-func SessionGet(r *http.Request, key string) interface{} {
+func (u *Utility) SessionGet(r *http.Request, key string) interface{} {
 	session, _ := Store.Get(r, os.Getenv("SESSION_NAME"))
 	// Set some session values.
 	if session == nil {
@@ -133,7 +160,7 @@ func SessionGet(r *http.Request, key string) interface{} {
 	return session.Values[key]
 }
 
-func AddFlash(flavour string, message string, w http.ResponseWriter, r *http.Request) {
+func (u *Utility) AddFlash(flavour string, message string, w http.ResponseWriter, r *http.Request) {
 	session, err := Store.Get(r, os.Getenv("SESSION_NAME"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -165,7 +192,7 @@ func ViewFlash(w http.ResponseWriter, r *http.Request) interface{} {
 	return fm
 }
 
-func RenderTemplate(w http.ResponseWriter, r *http.Request, template string, data interface{}) {
+func (u *Utility) RenderTemplate(w http.ResponseWriter, r *http.Request, template string, data interface{}) {
 	session, _ := Store.Get(r, os.Getenv("SESSION_NAME"))
 	tmplData := make(map[string]interface{})
 	tmplData["data"] = data
@@ -175,7 +202,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, template string, dat
 	View.ExecuteTemplate(w, template, tmplData)
 }
 
-func ParseDataFromPostRequestToMap(r *http.Request) (map[string]interface{}, error) {
+func (u *Utility) ParseDataFromPostRequestToMap(r *http.Request) (map[string]interface{}, error) {
 	formData := make(map[string]interface{})
 	err := r.ParseForm()
 	if err != nil {
@@ -196,7 +223,7 @@ func ParseDataFromPostRequestToMap(r *http.Request) (map[string]interface{}, err
 	return formData, nil
 }
 
-func ParseDataFromJsonToMap(r *http.Request) (map[string]interface{}, error) {
+func (u *Utility) ParseDataFromJsonToMap(r *http.Request) (map[string]interface{}, error) {
 	var jsonDataMap map[string]interface{}
 	result := make(map[string]interface{})
 
@@ -217,7 +244,7 @@ func ParseDataFromJsonToMap(r *http.Request) (map[string]interface{}, error) {
 	return result, nil
 }
 
-func StrictParseDataFromJson(r *http.Request, structure interface{}) error {
+func (u *Utility) StrictParseDataFromJson(r *http.Request, structure interface{}) error {
 	err := json.NewDecoder(r.Body).Decode(structure)
 	if err != nil {
 		return err
@@ -227,7 +254,7 @@ func StrictParseDataFromJson(r *http.Request, structure interface{}) error {
 
 }
 
-func StrictParseDataFromPostRequest(r *http.Request, structure interface{}) error {
+func (u *Utility) StrictParseDataFromPostRequest(r *http.Request, structure interface{}) error {
 	err := r.ParseForm()
 	if err != nil {
 		return err
@@ -320,7 +347,7 @@ func StrictParseDataFromPostRequest(r *http.Request, structure interface{}) erro
 	return err
 
 }
-func RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, statusCode int) {
+func (u *Utility) RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, statusCode int) {
 	jsonresponce, err := json.Marshal(data)
 	if err != nil {
 		log.Println(err)
@@ -345,7 +372,7 @@ func RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}
 	w.Write([]byte(jsonresponce))
 }
 
-func RenderTemplateData(w http.ResponseWriter, r *http.Request, template string, data interface{}) {
+func (u *Utility) RenderTemplateData(w http.ResponseWriter, r *http.Request, template string, data interface{}) {
 	session, _ := Store.Get(r, os.Getenv("SESSION_NAME"))
 	tmplData := make(map[string]interface{})
 	tmplData["data"] = data
@@ -355,7 +382,7 @@ func RenderTemplateData(w http.ResponseWriter, r *http.Request, template string,
 	View.ExecuteTemplate(w, template, tmplData)
 }
 
-func StringInArray(target string, arr []string) bool {
+func (u *Utility) StringInArray(target string, arr []string) bool {
 	// Can change to slices.Contain if we're targetting 1.21+
 	for _, s := range arr {
 		if s == target {
@@ -366,7 +393,7 @@ func StringInArray(target string, arr []string) bool {
 }
 
 // convert string to int64
-func StrToInt64(str string) (int64, error) {
+func (u *Utility) StrToInt64(str string) (int64, error) {
 	strint64, err := strconv.ParseInt(str, 10, 64)
 	if err != nil {
 		return int64(0), err
@@ -375,7 +402,7 @@ func StrToInt64(str string) (int64, error) {
 }
 
 // ERR LOGGER CODE
-func SendEmailSMTP(to []string, subject string, body string) bool {
+func (u *Utility) SendEmailSMTP(to []string, subject string, body string) bool {
 	//Sender data.
 	from := os.Getenv("FROM_EMAIL")
 	// Set up email information.
@@ -390,7 +417,7 @@ func SendEmailSMTP(to []string, subject string, body string) bool {
 	}
 	return true
 }
-func SendEmail(to []string, template string, data map[string]interface{}) bool {
+func (u *Utility) SendEmail(to []string, template string, data map[string]interface{}) bool {
 	buf := new(bytes.Buffer)
 	//extra information on email
 	data["app_url"] = os.Getenv("APPURL")
@@ -401,11 +428,11 @@ func SendEmail(to []string, template string, data map[string]interface{}) bool {
 		fmt.Println(err)
 		return false
 	}
-	return SendEmailSMTP(to, fmt.Sprintf("%v", data["subject"]), buf.String())
+	return u.SendEmailSMTP(to, fmt.Sprintf("%v", data["subject"]), buf.String())
 }
 
 /* Go: email sent of Critical Error Message*/
-func GetErrorMessage(currentFilePath string, lineNumbers int, errorMessage error) bool {
+func (u *Utility) GetErrorMessage(currentFilePath string, lineNumbers int, errorMessage error) bool {
 	emailForErrorMessageSend := os.Getenv("EMAIL_FOR_CRITICAL_ERROR")
 	email := []string{emailForErrorMessageSend} // set email address
 	data := make(map[string]interface{})
@@ -413,7 +440,7 @@ func GetErrorMessage(currentFilePath string, lineNumbers int, errorMessage error
 	data["errorMessage"] = errorMessage
 	data["currentFilePath"] = currentFilePath
 	data["lineNumbers"] = lineNumbers
-	if !SendEmail(email, "errorMessage", data) {
+	if !u.SendEmail(email, "errorMessage", data) {
 		fmt.Println("Error log Email couldn't be sent at the moment")
 	}
 	return false
@@ -423,7 +450,7 @@ var LogFile *os.File
 var ErrorLog *log.Logger
 
 /*Go:Open file for Log Critical Error Message */
-func OpenLogFile() *os.File {
+func (u *Utility) OpenLogFile() *os.File {
 	loggedErrorPath := os.Getenv("PATH_OF_LOG_API")
 	if loggedErrorPath == "" {
 		loggedErrorPath = "APIdata/"
@@ -441,7 +468,7 @@ func OpenLogFile() *os.File {
 }
 
 /* Go: Log Critical Error Message on file if CI_ENVIRONMENT is production in env file then send email to EMAIL_FOR_CRITICAL_ERROR */
-func Logger(errObject error) {
+func (u *Utility) Logger(errObject error) {
 	if errObject != nil { // null checking because of stuck server when error is null
 		//using 1 indicate actually error
 		_, currentFilePath, lineNumbers, ok := runtime.Caller(1)
@@ -452,39 +479,39 @@ func Logger(errObject error) {
 		ErrorLog.Output(2, errObject.Error())
 
 		if os.Getenv("CI_ENVIRONMENT") == "production" { // when development environment is set email not to be sent to developer because of this rise a error
-			go GetErrorMessage(currentFilePath, lineNumbers, errObject)
+			go u.GetErrorMessage(currentFilePath, lineNumbers, errObject)
 		}
 	}
 }
 
 // get sql error string from sql error
-func GetSqlErrorString(err error) string {
+func (u *Utility) GetSqlErrorString(err error) string {
 	mes := strings.SplitN(err.Error(), ":", -1)
 	return mes[1]
 }
 
 // match sql error with particular sql error string
-func CheckSqlError(err error, errString string) (bool, string) {
-	sqlerrorString := GetSqlErrorString(err)
+func (u *Utility) CheckSqlError(err error, errString string) (bool, string) {
+	sqlerrorString := u.GetSqlErrorString(err)
 	exists := strings.HasPrefix(sqlerrorString, errString)
 	return exists, sqlerrorString
 }
 
 // Generate NewPasswordHash
-func NewPasswordHash(NewPassword string) (string, error) {
+func (u *Utility) NewPasswordHash(NewPassword string) (string, error) {
 	//NewPassword Change bcrypt code
 	newPasswordHash, err := bcrypt.GenerateFromPassword([]byte(NewPassword), 10)
 	//modify NewPassword
 	NewPassword = string(newPasswordHash)
 	if err != nil || NewPassword == "" {
-		Logger(err)
+		u.Logger(err)
 	} else {
 		return NewPassword, err
 	}
 	return "", err
 }
 
-func CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails) {
+func (u *Utility) CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails) {
 	var userDetails UserDetails
 	// getting user details from token
 	tokenPayload := r.Header.Get("tokenPayload")
@@ -496,7 +523,7 @@ func CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails) {
 	return true, userDetails
 }
 
-func CheckDateFormat(dateString string) bool {
+func (u *Utility) CheckDateFormat(dateString string) bool {
 	// regex for the yyyy-mm-dd, we'll add month !>12 ahead
 	pattern := `^\d{4}-\d{2}-\d{2}$`
 
@@ -520,7 +547,7 @@ func CheckDateFormat(dateString string) bool {
 	return month >= 1 && month <= 12
 }
 
-func CheckEmailFormat(emailString string) bool {
+func (u *Utility) CheckEmailFormat(emailString string) bool {
 	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 	// Compile the regular expression pattern.
 	regex := regexp.MustCompile(pattern)
@@ -532,9 +559,9 @@ func CheckEmailFormat(emailString string) bool {
 	return true
 }
 
-func SaltPlainPassWord(passW string) (string, error) {
+func (u *Utility) SaltPlainPassWord(passW string) (string, error) {
 	// making hash of pass #1
-	hashedPassW, err := NewPasswordHash(passW)
+	hashedPassW, err := u.NewPasswordHash(passW)
 	if err != nil {
 		return "", err
 	}
@@ -542,7 +569,7 @@ func SaltPlainPassWord(passW string) (string, error) {
 	pswdConcatWithSalt := hashedPassW + os.Getenv("CONS_SALT")
 
 	// making hash of (salted+hashed) pass #2
-	hashedPassW, err = NewPasswordHash(pswdConcatWithSalt)
+	hashedPassW, err = u.NewPasswordHash(pswdConcatWithSalt)
 	if err != nil {
 		return "", err
 	}
@@ -557,7 +584,7 @@ func SaltPlainPassWord(passW string) (string, error) {
 // -> if they are (valid) are they of same type
 // -> we return a bool value indicating whether the run was successfull or not
 
-func FillEmptyFieldsForPostUpdate(src, dest interface{}) bool {
+func (u *Utility) FillEmptyFieldsForPostUpdate(src, dest interface{}) bool {
 	srcValue := reflect.ValueOf(src)
 	destValue := reflect.ValueOf(dest).Elem() // Use Elem to get the underlying struct Value.
 
@@ -584,7 +611,7 @@ func FillEmptyFieldsForPostUpdate(src, dest interface{}) bool {
 }
 
 // This function copys values between different structs if they have same reflects and fields types
-func CopyFieldsBetweenDiffStructType(src, dest interface{}) bool {
+func (u *Utility) CopyFieldsBetweenDiffStructType(src, dest interface{}) bool {
 	srcValue := reflect.ValueOf(src)
 	destValue := reflect.ValueOf(dest).Elem() // Use Elem to get the underlying struct Value.
 
@@ -606,7 +633,7 @@ func CopyFieldsBetweenDiffStructType(src, dest interface{}) bool {
 }
 
 // convert string to int
-func StrToInt(num string) int {
+func (u *Utility) StrToInt(num string) int {
 	if num != "" {
 		intNum, err := strconv.Atoi(num)
 		if err != nil {
@@ -617,7 +644,7 @@ func StrToInt(num string) int {
 	return 0
 }
 
-func DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string) bool {
+func (u *Utility) DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string) bool {
 	session, err := Store.Get(r, os.Getenv("SESSION_NAME"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -629,7 +656,7 @@ func DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string)
 	fmt.Fprintln(w, "Value removed from the session")
 	return false
 }
-func GetImageTypeExtension(Filename string, whatToBeTrim string, dotInclude bool) string {
+func (u *Utility) GetImageTypeExtension(Filename string, whatToBeTrim string, dotInclude bool) string {
 	var extension string
 	lastDotIndex := strings.LastIndex(Filename, whatToBeTrim)
 	if lastDotIndex != -1 {
@@ -640,42 +667,4 @@ func GetImageTypeExtension(Filename string, whatToBeTrim string, dotInclude bool
 		}
 	}
 	return extension
-}
-
-func GetBaseURL(r *http.Request) string {
-	scheme := "http"
-	if r.TLS != nil {
-		scheme = "https"
-	}
-	return scheme + "://" + r.Host
-}
-
-func ConstructFileURL(baseURL, filePath string) string {
-	// Clean the file path to ensure it doesn't contain any leading slash
-	filePath = strings.TrimLeft(filePath, "/")
-	// Encode the file path to handle special characters
-	encodedFilePath := url.PathEscape(filePath)
-	// Concatenate the base URL and encoded file path to get the complete URL
-	// baseURL + "/" + encodedFilePath
-	replacedStr := strings.ReplaceAll(baseURL+"/"+encodedFilePath, "%2F", "/")
-	return replacedStr
-}
-func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
-	var extension string
-	//for getting the type of the image
-	// lastDotIndex := strings.LastIndex(handler.Filename, ".")
-	// if lastDotIndex != -1 {
-	// 	extension = handler.Filename[lastDotIndex:]
-	// }
-	extension = GetImageTypeExtension(handler.Filename, ".", true)
-	randomString, err := GenerateRandomString(30)
-	if err != nil {
-		Logger(err)
-		// response.Message = "Failed to generate image name."
-		// utility.RenderTemplate(w, r, "", response)
-		return "", err
-	}
-	//filename with its extension.
-	filename := randomString + extension
-	return filename, err
 }

@@ -13,6 +13,7 @@ type KycDetails struct {
 	UserId     int64  `json:"userid" db:"userid"`
 	DocName    string `json:"doc_name" db:"doc_name"`
 	DocPicName string `json:"doc_pic_name" db:"doc_pic_name"`
+	CompanyId  int64  `json:"companyId"`
 }
 
 func (KycDetails) Putkyc(add KycDetails, tx *sqlx.Tx) bool {
@@ -21,9 +22,9 @@ func (KycDetails) Putkyc(add KycDetails, tx *sqlx.Tx) bool {
 	if err != nil {
 		log.Println(err)
 		//logger remove for duplicate entry that means duplicate error message not send at email.
-		istrue, _ := utility.CheckSqlError(err, "Duplicate entry")
+		istrue, _ := Helper.CheckSqlError(err, "Duplicate entry")
 		if !istrue {
-			utility.Logger(err)
+			Helper.Logger(err)
 		}
 	} else {
 		return true

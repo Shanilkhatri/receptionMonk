@@ -15,7 +15,7 @@ import { bool, boolean } from 'yup';
 
 // object of class utility
 const utility = new Utility()
-
+const appUrl = import.meta.env.VITE_APPURL
 const Index = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Index = () => {
         headers.append("Content-Type", 'application/json');
         headers.append("Authorization", "bearer " + token);
 
-        const response = await fetch("http://localhost:4000/tokencheckfrontend", {
+        const response = await fetch(appUrl+"tokencheckfrontend", {
             method: 'GET',
             headers: headers,
 
@@ -51,6 +51,7 @@ const Index = () => {
         var tokenPayload = JSON.parse(tokenData)
         document.cookie = `whoami=${JSON.stringify(tokenPayload)}; secure; path=/`;
         dispatch(setEmail(store.getState().themeConfig.email));
+        console.log("email",store.getState().themeConfig.email)
         dispatch(setHydrateCookie(""))
         console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
 
@@ -116,7 +117,10 @@ const Index = () => {
         }
     }
     async function kycDetailsPut(docName:string,img:string){
-        const marketurl = "http://localhost:4000/kyc";
+        const marketurl = appUrl+"kyc";
+        
+        console.log( "userid", store.getState().themeConfig.hydrateCookie.id,
+        "companyId", store.getState().themeConfig.hydrateCookie.companyId)
         // Submit the form with valid values
         fetch(marketurl, {
             method: "PUT",
@@ -126,18 +130,21 @@ const Index = () => {
             },
             body: JSON.stringify({
                 "doc_name":docName,
-                "doc_pic_name": img
+                "doc_pic_name": img,
+                "userid": store.getState().themeConfig.hydrateCookie.id,
+                "companyId": store.getState().themeConfig.hydrateCookie.companyId
             }),
         })
             .then(response => response.json())
             .then(async (value) => {
                 if (value.Status == '200') {
-                    //todo what you want to do after this successful kyc put
+                    //what you want to do after this successful kyc put after kyc the wizard status is automatically marked to completed in backend
                     console.log("successfully enter")
-                    const userData = {
-                        "iswizardcomplete": "completed"
-                    };
-                    const ok=await updateWizard(userData);
+                    //this is what you need to do after personal and company detail successfully update you need to update the wizard status 
+                    // const userData = {
+                    //     "iswizardcomplete": "company or kyc"
+                    // };
+                    // const ok=await updateWizard(userData);
                     // window.location.href = APPURL+'viewMarketTemplate';
                 }else{
                     //todo what you want to do after this unsuccessful kyc put
@@ -175,7 +182,7 @@ const Index = () => {
         return true
     }
     async function uploadImageAndReturnUrl(imageElement: string, modulename: string): Promise<string> {
-        const imageUploadURL = 'http://localhost:4000/kycfileupload';
+        const imageUploadURL = appUrl+'kycfileupload';
     
         const imageInput = document.getElementById(imageElement) as HTMLInputElement | null;
         let imageFile: File | undefined;
@@ -214,7 +221,8 @@ const Index = () => {
         }
     }
     
-    async function saveUserDetails() {
+    async function saveUserDetails(e:any) {
+        e.preventDefault();
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
         const email = store.getState().themeConfig.email
@@ -235,6 +243,30 @@ const Index = () => {
             navigate("/auth/SignIn")
         }
     }
+    async function saveCompanyDetails(e:any) {
+        e.preventDefault();
+        const companyName = (document.getElementById('company-name') as HTMLInputElement)?.value;
+        const gstin = (document.getElementById('company-gstin') as HTMLInputElement)?.value;
+        const contactEmail = store.getState().themeConfig.email
+        const contactNumber = (document.getElementById('company-number') as HTMLInputElement)?.value;
+        const companyaddress = (document.getElementById('company-address') as HTMLInputElement)?.value;
+        const userData = {
+            companyName,
+            gstin,
+            companyaddress,
+            contactNumber,
+            contactEmail,
+        };
+
+        const ok = await utility.sendRequestPutOrPost(userData, "company", "PUT")
+        if (ok) {
+            //do what you want if successfully added the data 
+            console.log("SuccessFully added")
+        } else {
+            navigate("/auth/SignIn")
+        }
+    }
+    
     const [isModalOpen, setModalOpen] = useState(false);
 
     const handleOpenModal = () => {
@@ -435,12 +467,12 @@ const Index = () => {
                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
                             </div>
                             <div className="modal-body">
-                                <form id='formdataid' onSubmit={(e) => onFormSubmit(e)}>
+                                <form id='formdataid' onSubmit={(e) => saveCompanyDetails(e)}>
                                     {/* <input type="text" className="form-control" id="recipient-name" />
                                      <input type="password" className="form-control" id="recipient-password"/>
                                      <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
                                      <input type="date" className="form-control" id="recipient-dob"/> */}
-                                    <select
+                                    {/* <select
                                         aria-describedby="err-currtype" aria-label="currentytype"
                                         name="doc_name" id="currtype" required>
                                         <option disabled selected hidden value="">Select Type</option>
@@ -448,8 +480,12 @@ const Index = () => {
                                         <option value="pan_card">PanCard</option>
                                     </select>
 
-                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" />
-
+                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" /> */}
+                                    <input type="text" className="form-control" id="company-name" />
+                                     <input type="text" className="form-control" id="company-gstin"/>
+                                     <input type="email" className="form-control" id="company-email" value={store.getState().themeConfig.email} readOnly/>
+                                     <input type="text" className="form-control" id="company-address"/>
+                                     <input type="text" className="form-control" id="company-contact"/>
                                     <button type="submit" className="btn btn-primary" >
                                         Save
                                     </button>

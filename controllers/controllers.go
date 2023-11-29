@@ -9,7 +9,7 @@ import (
 	"reakgo/utility"
 )
 
-var Utility utility.Helper
+var Helper utility.Helper = &utility.Utility{}
 var (
 	// ErrCode is a config or an internal error
 	ErrCode = errors.New("Case statement in code is not correct.")
@@ -36,19 +36,19 @@ func CheckACL(w http.ResponseWriter, r *http.Request, allowedAccess []string) bo
 
 	if apiToken == "" {
 		// API Token not found, Switching to session based auth
-		userType := utility.SessionGet(r, "type")
+		userType := Helper.SessionGet(r, "type")
 		if userType == nil {
 			userType = "guest"
 		}
-		if !utility.StringInArray(fmt.Sprintf("%v", userType), allowedAccess) {
-			utility.RenderJsonResponse(w, r, "", 403)
+		if !Helper.StringInArray(fmt.Sprintf("%v", userType), allowedAccess) {
+			Helper.RenderJsonResponse(w, r, "", 403)
 			return false
 		}
 	} else {
 		// Token based Auth
 		err := models.VerifyToken(r, w)
 		if err != nil {
-			utility.RenderJsonResponse(w, r, "", 403)
+			Helper.RenderJsonResponse(w, r, "", 403)
 			return false
 		}
 	}
@@ -59,9 +59,9 @@ func CheckACLFrontend(w http.ResponseWriter, r *http.Request) bool {
 	// Token based Auth
 	err := models.VerifyTokenFrontend(r, w)
 	if err != nil {
-		utility.RenderJsonResponse(w, r, "", 403)
+		Helper.RenderJsonResponse(w, r, "", 403)
 		return false
 	}
-	utility.RenderJsonResponse(w, r, "", 200)
+	Helper.RenderJsonResponse(w, r, "", 200)
 	return true
 }

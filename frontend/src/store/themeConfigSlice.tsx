@@ -41,7 +41,7 @@ const initialState = {
     showElement: true,
     uploaded: null,
     
-    hydrateCookie: { "name": "", "email": "", "accountType": "", "dob": "", "iswizardcomplete": false, "companyId": 0 },
+    hydrateCookie: { "id": 0,"name": "", "email": "", "accountType": "", "dob": "", "iswizardcomplete": false, "companyId": 0 },
     dob:"",
     emailVerfToken: "",
     email: "",

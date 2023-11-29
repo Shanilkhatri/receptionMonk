@@ -65,7 +65,7 @@ func TestTicketPutWithCorrectData(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -133,7 +133,7 @@ func TestTicketPutWithIncorrectDateString(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -213,7 +213,7 @@ func TestTicketPostWithCorrectData(t *testing.T) {
 	// make expected Ticket a row that will be returned
 	rows := sqlmock.NewRows([]string{"id", "userId", "email", "customerName", "createdTime", "lastUpdatedOn", "status", "query", "feedback", "lastResponse", "companyId"}).AddRow(expectedTicketRow.Id, expectedTicketRow.UserId, expectedTicketRow.Email, expectedTicketRow.CustomerName, expectedTicketRow.CreatedTime, expectedTicketRow.LastUpdatedOn, expectedTicketRow.Status, expectedTicketRow.Query, expectedTicketRow.FeedBack, expectedTicketRow.LastResponse, expectedTicketRow.CompanyId)
 
-	dbmock.ExpectQuery("SELECT \\* FROM tickets WHERE id = ?").WillReturnRows(rows)
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows)
 	// I have used mustBegin thats why I am using Expect begin
 	dbmock.ExpectBegin()
 	// I also expect an Insert Query execution and for that :
@@ -235,11 +235,12 @@ func TestTicketPostWithCorrectData(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		MockGetSqlErrorString:                     "",
 	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPost, "/tickets", bytes.NewBuffer(requestBody))
@@ -306,7 +307,7 @@ func TestTicketPostWithInCorrectData(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -385,7 +386,7 @@ func TestTicketPostWithCorrectDataButErrAtSQL(t *testing.T) {
 	// make expected Ticket a row that will be returned
 	rows := sqlmock.NewRows([]string{"id", "userId", "email", "customerName", "createdTime", "lastUpdatedOn", "status", "query", "feedback", "lastResponse", "companyId"}).AddRow(expectedTicketRow.Id, expectedTicketRow.UserId, expectedTicketRow.Email, expectedTicketRow.CustomerName, expectedTicketRow.CreatedTime, expectedTicketRow.LastUpdatedOn, expectedTicketRow.Status, expectedTicketRow.Query, expectedTicketRow.FeedBack, expectedTicketRow.LastResponse, expectedTicketRow.CompanyId)
 
-	dbmock.ExpectQuery("SELECT \\* FROM tickets WHERE id = ?").WillReturnRows(rows)
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows)
 	// I have used mustBegin thats why I am using Expect begin
 	dbmock.ExpectBegin()
 	// I also expect an Insert Query execution and for that :
@@ -404,7 +405,7 @@ func TestTicketPostWithCorrectDataButErrAtSQL(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -470,7 +471,7 @@ func TestGetTicketWithTypeUser(t *testing.T) {
 	userdetails.CompanyID = 2
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -560,7 +561,7 @@ func TestGetTicketsWithTypeUserAccessingAnotherUser(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -625,7 +626,7 @@ func TestGetTicketsWithTypeOwnerAccessingAnotherUserOfDiffCompany(t *testing.T) 
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -696,7 +697,7 @@ func TestGetTicketsWithTypeOwnerAccessingAnotherUserOfSameCompany(t *testing.T) 
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -776,7 +777,7 @@ func TestTicketDeleteWithOwnerDelUserOfSameComp(t *testing.T) {
 	userdetails.CompanyID = 2         // companyId set same as user's
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -808,7 +809,7 @@ func TestTicketDeleteWithOwnerDelUserOfSameComp(t *testing.T) {
 	// I also expect a GET Query execution and for that :
 	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE").WillReturnRows(rows)
 	// I  expect a Delete Query execution and for that :
-	dbmock.ExpectExec("DELETE FROM tickets").WillReturnResult(sqlmock.NewResult(1, 1))
+	dbmock.ExpectExec("UPDATE `tickets`").WillReturnResult(sqlmock.NewResult(1, 1))
 
 	// Binding the DB Cursor to correct utility.Db
 	utility.Db = sqlxDB
@@ -860,7 +861,7 @@ func TestTicketDeleteWithOwnerDelUserOfDiffComp(t *testing.T) {
 	userdetails.CompanyID = 2         // companyId diff from user
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -940,7 +941,7 @@ func TestTicketDeleteWithOSuperAdmin(t *testing.T) {
 	userdetails.AccountType = "super-admin" // type set to super-admin
 	userdetails.CompanyID = 2
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -953,7 +954,7 @@ func TestTicketDeleteWithOSuperAdmin(t *testing.T) {
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
 
 	// I  expect a Delete Query execution and for that :
-	dbmock.ExpectExec("DELETE FROM tickets").WillReturnResult(sqlmock.NewResult(1, 1))
+	dbmock.ExpectExec("UPDATE `tickets`").WillReturnResult(sqlmock.NewResult(1, 1))
 
 	// Binding the DB Cursor to correct utility.Db
 	utility.Db = sqlxDB

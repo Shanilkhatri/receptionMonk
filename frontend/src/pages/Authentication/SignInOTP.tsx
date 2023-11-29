@@ -16,6 +16,7 @@ interface FormValues {
 
     // Define other fields if needed
 }
+const appUrl = import.meta.env.VITE_APPURL
 const SignInOTP = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -43,7 +44,7 @@ const SignInOTP = () => {
             "authEmailId": store.getState().themeConfig.email  // email at redux-store
         }
 
-        const response = await fetch("http://localhost:4000/matchotp", {
+        const response = await fetch(appUrl+"matchotp", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -14,12 +14,12 @@ func PutWallet(w http.ResponseWriter, r *http.Request) {
 	// there are no checks here as the documentation says it needs to bypass header auth
 	var walletStruct models.Wallet
 	// directly unmarshalling the json data into the struct
-	err := utility.StrictParseDataFromJson(r, &walletStruct)
+	err := Helper.StrictParseDataFromJson(r, &walletStruct)
 	if err != nil {
-		utility.Logger(err)
+		Helper.Logger(err)
 		response.Status = "400"
 		response.Message = "Please fill all the fields correctly and try again"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	// populating epoch with current time in unix timestamp
@@ -33,29 +33,29 @@ func PutWallet(w http.ResponseWriter, r *http.Request) {
 				log.Println("panic occured: ", recover)
 				tx.Rollback()
 				response.Message = "An internal error occurred, please try again"
-				utility.RenderJsonResponse(w, r, response, 500)
+				Helper.RenderJsonResponse(w, r, response, 500)
 			}
 		}()
 		_, err := models.Wallet{}.PutWallet(walletStruct, tx)
 		if err != nil {
-			sqlErr := utility.GetSqlErrorString(err)
+			sqlErr := Helper.GetSqlErrorString(err)
 			response.Status = "400"
 			response.Message = "Couldn't add wallet info at the moment! Please try again."
 			if sqlErr != "" {
 				response.Message = sqlErr
 			}
-			utility.RenderJsonResponse(w, r, response, 400)
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
 		tx.Commit()
 		response.Status = "200"
 		response.Message = "Wallet information added successfully."
-		utility.RenderJsonResponse(w, r, response, 200)
+		Helper.RenderJsonResponse(w, r, response, 200)
 		return
 	}
 	response.Status = "400"
 	response.Message = "Please fill the required fields properly, leaving them vacant will result in non-submission."
-	utility.RenderJsonResponse(w, r, response, 400)
+	Helper.RenderJsonResponse(w, r, response, 400)
 }
 
 func PostWallet(w http.ResponseWriter, r *http.Request) {
@@ -63,22 +63,22 @@ func PostWallet(w http.ResponseWriter, r *http.Request) {
 
 	var walletStruct models.Wallet
 	// directly unmarshalling the json data into the struct
-	err := utility.StrictParseDataFromJson(r, &walletStruct)
+	err := Helper.StrictParseDataFromJson(r, &walletStruct)
 	if err != nil {
-		utility.Logger(err)
+		Helper.Logger(err)
 		response.Status = "400"
 		response.Message = "Please fill all the fields correctly and try again"
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 
 	// getting userDetails from the token
-	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 	// as directed in the documentation, only accountType "owner" can access this route
 	if !isOk || userDetails.AccountType != "owner" {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request."
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	// if the owner is trying to update wallet belonging to a diff company
@@ -88,41 +88,41 @@ func PostWallet(w http.ResponseWriter, r *http.Request) {
 	if walletData.CompanyId != userDetails.CompanyID {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request."
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	// updating epoch to mark updated time
 	walletStruct.Epoch = time.Now().Unix()
 	// copying all the unchanged fields from src to dest
-	flag := utility.FillEmptyFieldsForPostUpdate(walletData, &walletStruct)
+	flag := Helper.FillEmptyFieldsForPostUpdate(walletData, &walletStruct)
 	if !flag {
 		log.Println("couldn't flip fields for wallet")
 		response.Status = "400"
 		response.Message = "Unable to update data at the moment! Please try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	// now calling the model function to finally update the wallet data at DB
 	_, err = models.Wallet{}.PostWallet(walletStruct)
 	if err != nil {
-		utility.Logger(err)
-		sqlErr := utility.GetSqlErrorString(err)
+		Helper.Logger(err)
+		sqlErr := Helper.GetSqlErrorString(err)
 		response.Status = "400"
 		response.Message = "Couldn't update wallet info at the moment! Please try again."
 		if sqlErr != "" {
 			response.Message = sqlErr
 		}
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	response.Status = "200"
 	response.Message = "Wallet information updated successfully."
-	utility.RenderJsonResponse(w, r, response, 200)
+	Helper.RenderJsonResponse(w, r, response, 200)
 }
 
 func GetWallet(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-	isOk, userDetails := Utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 
 	if isOk {
 		queryParams := r.URL.Query()
@@ -134,7 +134,7 @@ func GetWallet(w http.ResponseWriter, r *http.Request) {
 		for paramName := range paramMap {
 			paramValue := queryParams.Get(paramName)
 			if paramValue != "" {
-				paramParsed, err := utility.StrToInt64(paramValue)
+				paramParsed, err := Helper.StrToInt64(paramValue)
 				if err != nil {
 					log.Println(err)
 				} else {
@@ -147,13 +147,13 @@ func GetWallet(w http.ResponseWriter, r *http.Request) {
 		if userDetails.AccountType != "owner" {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not authorized to make this request."
-			utility.RenderJsonResponse(w, r, response, 403)
+			Helper.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 		if paramMap["companyId"] != 0 && paramMap["companyId"] != userDetails.CompanyID {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not authorized to make this request."
-			utility.RenderJsonResponse(w, r, response, 403)
+			Helper.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 		param := models.WalletCondition{
@@ -169,44 +169,44 @@ func GetWallet(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			response.Status = "500"
 			response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-			utility.RenderJsonResponse(w, r, response, 500)
+			Helper.RenderJsonResponse(w, r, response, 500)
 			return
 		}
 
 		if len(result) == 0 {
 			response.Status = "200"
 			response.Message = "No result were found for this search."
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return
 		} else {
 			response.Status = "200"
 			response.Message = "Fetched wallet transactions successfully."
 			response.Payload = result // Set the calllogs data in the response payload
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return
 		}
 
 	}
 	response.Status = "403"
 	response.Message = "You are not authorized to make this request."
-	utility.RenderJsonResponse(w, r, response, 403)
+	Helper.RenderJsonResponse(w, r, response, 403)
 
 }
 func DeleteWallet(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
 
-	walletId := utility.StrToInt(r.URL.Query().Get("id"))
+	walletId := Helper.StrToInt(r.URL.Query().Get("id"))
 	if walletId <= 0 {
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !isok || userDetails.AccountType != "owner" && userDetails.AccountType != "super-admin" {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request."
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	if userDetails.AccountType == "owner" {
@@ -214,25 +214,25 @@ func DeleteWallet(w http.ResponseWriter, r *http.Request) {
 		walletData, err := models.Wallet{}.GetWalletById(int64(walletId))
 		if err != nil {
 			response.Status = "400"
-			response.Message = utility.GetSqlErrorString(err)
-			utility.RenderJsonResponse(w, r, response, 400)
+			response.Message = Helper.GetSqlErrorString(err)
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
 		if walletData.CompanyId != userDetails.CompanyID {
 			response.Status = "403"
 			response.Message = "You are not authorized to make this request."
-			utility.RenderJsonResponse(w, r, response, 403)
+			Helper.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 	}
 	_, err := models.Wallet{}.DeleteWallet(int64(walletId))
 	if err != nil {
 		response.Status = "400"
-		response.Message = utility.GetSqlErrorString(err)
-		utility.RenderJsonResponse(w, r, response, 400)
+		response.Message = Helper.GetSqlErrorString(err)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	response.Status = "200"
 	response.Message = "Wallet deleted successfully."
-	utility.RenderJsonResponse(w, r, response, 200)
+	Helper.RenderJsonResponse(w, r, response, 200)
 }

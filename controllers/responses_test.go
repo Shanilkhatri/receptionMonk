@@ -81,7 +81,7 @@ func TestResponsePutWithCorrectData(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -144,7 +144,7 @@ func TestResponsePutWithIncorrectDateString(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -204,7 +204,7 @@ func TestResponsePutWithIncorrectAccessRights(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -293,7 +293,7 @@ func TestResponsePutWithErrInSql(t *testing.T) {
 	userdetails.Email = "xyz@ymail.com"
 	userdetails.Name = "shan"
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -353,9 +353,10 @@ func TestGetresponseWithCorrectStruct(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -430,9 +431,10 @@ func TestGetresponse(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -493,9 +495,10 @@ func TestGetResponseWithoutTicketId(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 0,
 	}
 
 	// here we will prepare the url with parameters to pass to our request
@@ -534,7 +537,7 @@ func TestGetResponseWithEmptyUser(t *testing.T) {
 	}
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool: false,
 	}
 
@@ -580,9 +583,10 @@ func TestGetresponseReturnEmptyRows(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -638,9 +642,10 @@ func TestGetresponseWithSqlErrors(t *testing.T) {
 	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()

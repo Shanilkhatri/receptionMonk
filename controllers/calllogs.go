@@ -11,22 +11,22 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	//decode json (later with ORM)
 	var callLogsStruct models.CallLogs
-	err := utility.StrictParseDataFromJson(r, &callLogsStruct)
+	err := Helper.StrictParseDataFromJson(r, &callLogsStruct)
 	if err != nil {
 		log.Println("Unable to decode json: ", err)
 		// utility.Logger(err)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
-		utility.RenderJsonResponse(w, r, response, 400)
+		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	// tokenPayload check
-	isok, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 	// only owner can enter call logs
 	if !isok || userDetails.AccountType != "owner" {
 		response.Status = "403"
 		response.Message = "You are not authorized to make this request"
-		utility.RenderJsonResponse(w, r, response, 403)
+		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	// if companyId doesn't come as json we can set it here:
@@ -37,32 +37,32 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 		if !isOk {
 			response.Status = "400"
 			response.Message = "Unable to create CallLog at the moment! Please try again."
-			isok, errString := utility.CheckSqlError(err, "") // dummy check
+			isok, errString := Helper.CheckSqlError(err, "") // dummy check
 			if isok {
 				log.Println(errString)
 			}
-			utility.Logger(err)
-			utility.RenderJsonResponse(w, r, response, 400)
+			Helper.Logger(err)
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
 		err = tx.Commit()
 		if err != nil {
 			tx.Rollback()
 			response.Status = "400"
-			response.Message = "Unabke to create callLog at the moment. Please try again"
-			utility.RenderJsonResponse(w, r, response, 400)
+			response.Message = "Unable to create callLog at the moment. Please try again"
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
 		response.Status = "200"
 		response.Message = "CallLog created successfully."
-		utility.RenderJsonResponse(w, r, response, 200)
+		Helper.RenderJsonResponse(w, r, response, 200)
 		return
 	}
 }
 
 func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
-	isOk, userDetails := utility.CheckTokenPayloadAndReturnUser(r)
+	isOk, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 
 	if isOk {
 		queryParams := r.URL.Query()
@@ -74,7 +74,7 @@ func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 		for paramName := range paramMap {
 			paramValue := queryParams.Get(paramName)
 			if paramValue != "" {
-				paramParsed, err := utility.StrToInt64(paramValue)
+				paramParsed, err := Helper.StrToInt64(paramValue)
 				if err != nil {
 					log.Println(err)
 				} else {
@@ -82,18 +82,18 @@ func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
+		log.Println("user", userDetails, "param", paramMap)
 		// Check if the user is authorized to access call logs
 		if userDetails.AccountType != "owner" {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not authorized to make this request."
-			utility.RenderJsonResponse(w, r, response, 403)
+			Helper.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 		if paramMap["companyId"] != 0 && paramMap["companyId"] != userDetails.CompanyID {
 			response.Status = "403"
 			response.Message = "Unauthorized access! You are not authorized to make this request."
-			utility.RenderJsonResponse(w, r, response, 403)
+			Helper.RenderJsonResponse(w, r, response, 403)
 			return
 		}
 		param := models.CallLogsCondition{
@@ -109,26 +109,26 @@ func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			response.Status = "500"
 			response.Message = "Internal server error, Any serious issues which cannot be recovered from."
-			utility.RenderJsonResponse(w, r, response, 500)
+			Helper.RenderJsonResponse(w, r, response, 500)
 			return
 		}
 
 		if len(result) == 0 {
 			response.Status = "200"
 			response.Message = "No result were found for this search."
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return
 		} else {
 			response.Status = "200"
 			response.Message = "Returns all matching  calllogs."
 			response.Payload = result // Set the calllogs data in the response payload
-			utility.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 200)
 			return
 		}
 
 	}
 	response.Status = "403"
 	response.Message = "You are not authorized to make this request."
-	utility.RenderJsonResponse(w, r, response, 403)
+	Helper.RenderJsonResponse(w, r, response, 403)
 
 }

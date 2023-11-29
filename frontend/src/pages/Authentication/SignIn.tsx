@@ -12,6 +12,7 @@ interface FormValues {
     authEmailId: string;
     // Define other fields if needed
 }
+const appUrl = import.meta.env.VITE_APPURL
 const SignIn = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -27,7 +28,7 @@ const SignIn = () => {
         // use fetch to get to route
         try {
             // Send the form data to a server endpoint for validation and processing
-            const response = await fetch('http://localhost:4000/loginbyemail', {
+            const response = await fetch(appUrl+'loginbyemail', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

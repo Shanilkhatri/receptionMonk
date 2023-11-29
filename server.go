@@ -61,8 +61,12 @@ func main() {
 	// Generate cache as a go routine as to not halt operation,
 	// Cache fail-safe is already implemented so will fetch from DB incase the cache is not populated
 	go models.GenerateCache()
+	csrf_secret_key := os.Getenv("CSRF_SECRET_KEY")
+	if csrf_secret_key == "" {
+		log.Fatal("Missing Env value CSRF_SECRET_KEY")
+	}
 
-	utility.CSRF = csrf.Protect([]byte("v0kDIaHLy2TpHrumcl4Z0gpel8DpV9zo"))
+	utility.CSRF = csrf.Protect([]byte(csrf_secret_key))
 
 	mux := mux.NewRouter()
 	// Serve static assets
@@ -117,6 +121,8 @@ func cacheTemplates() *template.Template {
 
 	return templ
 }
+
+// restrict the upload function to get access by the specific path only
 func staticHandlerUpload(w http.ResponseWriter, r *http.Request) {
 	// Get the requested file name
 	fileName := filepath.Base(r.URL.Path)

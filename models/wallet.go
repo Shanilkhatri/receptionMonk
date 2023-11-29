@@ -43,7 +43,7 @@ func (Wallet) PostWallet(updatedWallet Wallet) (bool, error) {
 	// Check error
 	if err != nil {
 		log.Println("error: ", err)
-		utility.Logger(err)
+		Helper.Logger(err)
 	} else {
 		Rowefffect, _ := walletData.RowsAffected()
 		if Rowefffect == 0 {

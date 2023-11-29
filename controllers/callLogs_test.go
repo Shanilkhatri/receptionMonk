@@ -46,7 +46,7 @@ func TestCallLogsPutWithCorrectData(t *testing.T) {
 	userdetails.AccountType = "owner" // type set to owner
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -68,12 +68,6 @@ func TestCallLogsPutWithCorrectData(t *testing.T) {
 	// Binding the DB Cursor to correct utility.Db
 	utility.Db = sqlxDB
 
-	// Mocking the utility functions that are used there
-	Utility = MockHelper{
-		// MockStrictParseDataFromJsonResult:      nil,
-		MockSessionGetResult:                   nil,
-		MockCheckTokenPayloadAndReturnUserBool: false,
-	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPut, "/calllogs", bytes.NewBuffer(requestBody))
 	w := httptest.NewRecorder()
@@ -132,7 +126,7 @@ func TestCallLogsPutWithIncorrectData(t *testing.T) {
 	userdetails.AccountType = "owner" // type set to owner
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -140,7 +134,7 @@ func TestCallLogsPutWithIncorrectData(t *testing.T) {
 	}
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                   nil,
 		MockCheckTokenPayloadAndReturnUserBool: false,
@@ -199,7 +193,7 @@ func TestCallLogsPutWithUnAuthUserType(t *testing.T) {
 	userdetails.AccountType = "user" // unauthorized type user
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -207,7 +201,7 @@ func TestCallLogsPutWithUnAuthUserType(t *testing.T) {
 	}
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                   nil,
 		MockCheckTokenPayloadAndReturnUserBool: false,
@@ -250,11 +244,13 @@ func TestCallLogsGettWithCorrectData(t *testing.T) {
 	var userdetails utility.UserDetails
 	userdetails.ID = 1
 	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToInt64Int:                         1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -317,7 +313,7 @@ func TestCallLogsGettWithEmptyuserStruct(t *testing.T) {
 	}
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool: false,
 	}
 
@@ -365,9 +361,10 @@ func TestCallLogsGetWithDifferentCompanyId(t *testing.T) {
 	userdetails.CompanyID = 3
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToInt64Int:                         1,
 	}
 
 	// here we will prepare the url with parameters to pass to our request
@@ -413,7 +410,7 @@ func TestCallLogsGettWithUserTypeIsUser(t *testing.T) {
 	userdetails.AccountType = "user" // type set to owner
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}
@@ -459,11 +456,13 @@ func TestCallLogsGettWithSqlErrors(t *testing.T) {
 	var userdetails utility.UserDetails
 	userdetails.ID = 1
 	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToInt64Int:                         1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -521,7 +520,7 @@ func TestGetCallLogsSqlError(t *testing.T) {
 	userdetails.AccountType = "owner" // type set to owner
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
 	}

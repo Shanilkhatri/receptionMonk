@@ -55,10 +55,13 @@ func TestUserPutWithCorrectData(t *testing.T) {
 	utility.Db = sqlxDB
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                   nil,
 		MockCheckTokenPayloadAndReturnUserBool: false,
+		MockCheckDateFormat:                    true,
+		MockCheckEmailFormat:                   true,
+		MockGenerateRandomStringStrResult:      "123456",
 	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPut, "/users", bytes.NewBuffer(requestBody))
@@ -83,7 +86,7 @@ func TestUserPutWithCorrectData(t *testing.T) {
 		// Handle the JSON unmarshaling error
 		log.Println("error", err)
 	}
-
+	log.Println("data.message:", data.Message)
 	if data.Message != "User created successfully." && w.Result().StatusCode != 200 {
 		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
 	}
@@ -117,7 +120,7 @@ func TestUserPutWithIncorrectDateString(t *testing.T) {
 	// so we haven't mocked DB in this case
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                   nil,
 		MockCheckTokenPayloadAndReturnUserBool: false,
@@ -162,7 +165,7 @@ func TestUserPutWithFaultyStruct(t *testing.T) {
 	// so we haven't mocked DB in this case
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                   nil,
 		MockCheckTokenPayloadAndReturnUserBool: false,
@@ -207,7 +210,7 @@ func TestUserPutGuestRegAsUser(t *testing.T) {
 	// so we haven't mocked DB in this case
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                   nil,
 		MockCheckTokenPayloadAndReturnUserBool: false,
@@ -277,11 +280,13 @@ func TestUserPutWithOwnersToken(t *testing.T) {
 	utility.Db = sqlxDB
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                      "owner", //setting session also as owner
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		MockCheckDateFormat:                       true,
+		MockCheckEmailFormat:                      true,
 	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPut, "/users", bytes.NewBuffer(requestBody))
@@ -292,7 +297,20 @@ func TestUserPutWithOwnersToken(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expectations were not met %s", err)
 	}
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
 
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.message:", data.Message)
 	// we can even read body using io package and test even specific messages
 	// for now I have skipped it, might be added in future
 
@@ -346,7 +364,7 @@ func TestUserPostWithCorrectData(t *testing.T) {
 	userdetails.Email = "user@example.com"
 	userdetails.TwoFactorKey = "iuriouf08959374rvseuyyrv94w857yesiufhu" //key at DB/cache
 	userdetails.TwoFactorRecoveryCode = "fc78"                          // twoFactRecCode at DB/cache
-	userdetails.PasswordHash = "dihfw94534yrehu8y348vy3uy84728"         // passHash at DB/cache
+	userdetails.PasswordHash = ""                                       // passHash at DB/cache
 	userdetails.Status = "active"
 
 	// open Mock DB connection
@@ -359,6 +377,26 @@ func TestUserPostWithCorrectData(t *testing.T) {
 	dbmock.ExpectBegin()
 	// I also expect an Insert Query execution and for that :
 	dbmock.ExpectExec("UPDATE `authentication`").WillReturnResult(sqlmock.NewResult(1, 1))
+	// mocking the user detail I expect from the Db op
+	expectedUser := models.Authentication{
+		ID:                    1,
+		AccountType:           "user",
+		CompanyID:             2,
+		DOB:                   "2023-10-05",
+		Name:                  "hguhduhs",
+		Email:                 "user@example.com",
+		TwoFactorKey:          "iuriouf08959374rw857yesiufhu",
+		TwoFactorRecoveryCode: "fjjdjfn",
+		PasswordHash:          "",
+		Status:                "active",
+		IsWizardComplete:      "personal",
+	}
+	// make expected user a row that will be returned
+	rows := sqlmock.NewRows([]string{"id", "name", "email", "passwordHash", "twoFactorKey", "twoFactorRecoveryCode", "dob", "accountType", "companyId", "status", "iswizardcomplete"}).AddRow(expectedUser.ID, expectedUser.Name, expectedUser.Email, expectedUser.PasswordHash, expectedUser.TwoFactorKey, expectedUser.TwoFactorRecoveryCode, expectedUser.DOB, expectedUser.AccountType, expectedUser.CompanyID, expectedUser.Status, expectedUser.IsWizardComplete)
+
+	// I am expecting a db op before final updation to get user
+	dbmock.ExpectQuery("SELECT \\* FROM authentication").WillReturnRows(rows)
+	dbmock.ExpectExec("UPDATE `authentication`").WillReturnResult(sqlmock.NewResult(1, 1))
 
 	// expecting a commit to as this is correct info
 	dbmock.ExpectCommit()
@@ -367,11 +405,13 @@ func TestUserPostWithCorrectData(t *testing.T) {
 	utility.Db = sqlxDB
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		MockCheckDateFormat:                       true,
+		MockCheckEmailFormat:                      true,
 	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPost, "/users", bytes.NewBuffer(requestBody))
@@ -382,7 +422,20 @@ func TestUserPostWithCorrectData(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expectations were not met %s", err)
 	}
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
 
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.message:", data.Message)
 	// we can even read body using io package and test even specific messages
 	// for now I have skipped it, might be added in future
 
@@ -430,7 +483,7 @@ func TestUserPostWithUserUpdatingAnotherUser(t *testing.T) {
 	userdetails.Status = "active"
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -526,7 +579,7 @@ func TestUserPostWithOwnerUpdUserOfSameComp(t *testing.T) {
 	utility.Db = sqlxDB
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -590,7 +643,7 @@ func TestUserPostWithOwnerUpdUserOfDiffComp(t *testing.T) {
 	userdetails.Status = "active"
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -652,7 +705,7 @@ func TestUserPostWithOwnerUpdUserWithFaultyDate(t *testing.T) {
 	userdetails.Status = "active"
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -702,7 +755,7 @@ func TestUserDeleteWithOwnerDelUserOfSameComp(t *testing.T) {
 	userdetails.CompanyID = 2         // companyId set same as user's
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -786,7 +839,7 @@ func TestUserDeleteWithOwnerDelUserOfDiffComp(t *testing.T) {
 	userdetails.CompanyID = 2         // companyId diff from user
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -869,7 +922,7 @@ func TestUserDeleteWithUser(t *testing.T) {
 	userdetails.CompanyID = 2        // companyId diff from user
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -918,7 +971,7 @@ func TestUserDeleteWithOwnerDelHimself(t *testing.T) {
 	userdetails.CompanyID = 2         // companyId diff from user
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -983,7 +1036,7 @@ func TestUserDeleteWithOSuperAdmin(t *testing.T) {
 	userdetails.CompanyID = 2               // companyId set same as user's
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
@@ -1067,7 +1120,7 @@ func TestUserDeleteWithOSuperAdminWhenUserDoesntExist(t *testing.T) {
 	userdetails.CompanyID = 2               // companyId set same as user's
 
 	// Mocking the utility functions that are used there
-	Utility = MockHelper{
+	Helper = MockHelper{
 		// MockStrictParseDataFromJsonResult:      nil,
 		// MockSessionGetResult:                   "owner", //setting session won't be neccessary here
 		MockCheckTokenPayloadAndReturnUserBool:    true,
