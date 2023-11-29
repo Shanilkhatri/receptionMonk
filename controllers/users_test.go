@@ -169,6 +169,8 @@ func TestUserPutWithFaultyStruct(t *testing.T) {
 		// MockStrictParseDataFromJsonResult:      nil,
 		MockSessionGetResult:                   nil,
 		MockCheckTokenPayloadAndReturnUserBool: false,
+		MockCheckDateFormat:                    true,
+		MockCheckEmailFormat:                   true,
 	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPut, "/users", bytes.NewBuffer(requestBody))
@@ -176,6 +178,20 @@ func TestUserPutWithFaultyStruct(t *testing.T) {
 	// Call your function with the mocks
 	PutUser(w, request)
 
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+	log.Println("data.message:", data.Message)
 	// we can even read body using io package and test even specific messages
 	// for now I have skipped it, might be added in future
 
@@ -397,7 +413,11 @@ func TestUserPostWithCorrectData(t *testing.T) {
 	// I am expecting a db op before final updation to get user
 	dbmock.ExpectQuery("SELECT \\* FROM authentication").WillReturnRows(rows)
 	dbmock.ExpectExec("UPDATE `authentication`").WillReturnResult(sqlmock.NewResult(1, 1))
+	rowss := sqlmock.NewRows([]string{"id", "name", "email", "passwordHash", "twoFactorKey", "twoFactorRecoveryCode", "dob", "accountType", "companyId", "status", "iswizardcomplete"}).AddRow(expectedUser.ID, expectedUser.Name, expectedUser.Email, expectedUser.PasswordHash, expectedUser.TwoFactorKey, expectedUser.TwoFactorRecoveryCode, expectedUser.DOB, expectedUser.AccountType, expectedUser.CompanyID, expectedUser.Status, expectedUser.IsWizardComplete)
 
+	// I am expecting a db op before final updation to get user
+	dbmock.ExpectQuery("SELECT \\* FROM authentication").WillReturnRows(rowss)
+	dbmock.ExpectExec("UPDATE `authentication`").WillReturnResult(sqlmock.NewResult(1, 1))
 	// expecting a commit to as this is correct info
 	dbmock.ExpectCommit()
 

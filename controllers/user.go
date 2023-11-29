@@ -50,29 +50,10 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
-	if !ok {
+	if !ok && (userDetails.AccountType == "" && userStruct.AccountType != "owner") {
 		// Helper.Logger(err)
 		response.Status = "403"
 		response.Message = "You cannot register the company because you are not an owner."
-		Helper.RenderJsonResponse(w, r, response, 403)
-		return
-	}
-	userType := userDetails.AccountType
-	if userType == "" {
-		userType = "guest"
-	}
-
-	if userType == "guest" && userStruct.AccountType != "owner" {
-		// Utility.Logger(err)
-		response.Status = "403"
-		response.Message = "You cannot register without owners invite"
-		Helper.RenderJsonResponse(w, r, response, 403)
-		return
-
-	} else if userType == "user" {
-		// Utility.Logger(err)
-		response.Status = "403"
-		response.Message = "You cannot register without owners invite"
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	} else {
