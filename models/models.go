@@ -87,6 +87,7 @@ func VerifyToken(r *http.Request, w http.ResponseWriter) error {
 }
 
 type FrontendUserStruct struct {
+	Id               int64  `json:"id" db:"id"`
 	Name             string `json:"name" db:"name"`
 	Email            string `json:"email" db:"email"`
 	AccountType      string `json:"accountType" db:"accountType"`
@@ -110,6 +111,7 @@ func getNonConfDataForFrontEnd(entry []byte) ([]byte, error) {
 	dataToSend.Dob = data.DOB
 	dataToSend.IsWizardComplete = data.IsWizardComplete
 	dataToSend.CompanyId = data.CompanyID
+	dataToSend.Id = data.ID
 
 	jsonResponse, err := json.Marshal(dataToSend)
 	if err != nil {
