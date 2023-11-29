@@ -161,6 +161,8 @@ func PostKycDetails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// todo this function will need to develop according to requirement we just made this for having atleast a function but dont relied on this
 func GetKycDetails(w http.ResponseWriter, r *http.Request) {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	isok, userDetailsType := Helper.CheckTokenPayloadAndReturnUser(r)
