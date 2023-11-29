@@ -27,7 +27,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	log.Println("userStruct: ", userStruct)
 	if err != nil {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -51,7 +51,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	}
 	ok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !ok {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		response.Status = "403"
 		response.Message = "You cannot register the company because you are not an owner."
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -106,7 +106,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		userStruct.CompanyID = 2
 	}
 	if !IsValidUserStruct(userStruct) {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Either required fields are empty or contain invalid data type"
@@ -116,7 +116,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	// hashing password(plain text) #1
 	userStruct.PasswordHash, err = Helper.SaltPlainPassWord(userStruct.PasswordHash)
 	if err != nil {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		response.Status = "400"
 		response.Message = "Unable to create a strong encryption for you password at the moment! Please try again."
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -143,7 +143,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 			log.Println(errString)
 
 		}
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
@@ -227,7 +227,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		row, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
 			log.Println("error: ", err)
-			Helper.Logger(err)
+			// Helper.Logger(err)
 			response.Status = "400"
 			response.Message = "Unable to get user-record at the moment! Please try again."
 			Helper.RenderJsonResponse(w, r, response, 400)
@@ -245,7 +245,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		// hashing password(plain text) #1
 		userStruct.PasswordHash, err = Helper.SaltPlainPassWord(userStruct.PasswordHash)
 		if err != nil {
-			Helper.Logger(err)
+			// Helper.Logger(err)
 			response.Status = "400"
 			response.Message = "Unable to create a strong encryption for your password at the moment! Please try again."
 			Helper.RenderJsonResponse(w, r, response, 400)
@@ -267,7 +267,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	// flipping values from userDetails(from token) to userStruct(from req) which are empty in userStruct
 	flag = Helper.FillEmptyFieldsForPostUpdate(userDetails, &userStruct)
 	if !flag {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		log.Println("error during flipping data at: FillEmptyFieldsForPostUser")
 		response.Status = "400"
 		response.Message = "Unable to process data at the moment! Please try again."
@@ -298,6 +298,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 
 		userData, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
+			log.Println("error: ", err)
 			tx.Rollback()
 			response.Status = "400"
 			response.Message = "Unable to hydrate cache! Please try again."
@@ -305,7 +306,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			//update the IsWizardComplete from personal to company
-			if userData.IsWizardComplete == "personal" && userData.PasswordHash != "" {
+			if userData.IsWizardComplete == "personal" && userDetails.PasswordHash == "" {
 				userData.IsWizardComplete = "company"
 				boolType, err := models.Users{}.UpdateWizardStatus(userData, tx)
 				if err != nil {
@@ -478,7 +479,7 @@ func PostUpdateWizardStatus(w http.ResponseWriter, r *http.Request) {
 	var user models.Authentication
 	err := Helper.StrictParseDataFromJson(r, &user)
 	if err != nil {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."

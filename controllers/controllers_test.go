@@ -1,9 +1,16 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"reakgo/utility"
+	"reflect"
+	"strconv"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type MockHelper struct {
@@ -16,21 +23,25 @@ type MockHelper struct {
 	MockParseDataFromPostRequestToMapErrResult error
 	MockParseDataFromJsonToMapResult           map[string]interface{}
 	MockParseDataFromJsonToMapErrResult        error
-	// MockStrictParseDataFromJsonResult          error
-	MockStrictParseDataFromPostRequestResult  error
-	MockStringInArray                         bool
-	MockCheckTokenPayloadAndReturnUserBool    bool
-	MockCheckTokenPayloadAndReturnUserDetails utility.UserDetails
+	MockStrictParseDataFromJsonResult          error
+	MockStrictParseDataFromPostRequestResult   error
+	MockStringInArray                          bool
+	MockCheckTokenPayloadAndReturnUserBool     bool
+	MockCheckTokenPayloadAndReturnUserDetails  utility.UserDetails
+	MockGetSqlErrorString                      string
+	MockCheckDateFormat                        bool
+	MockCheckEmailFormat                       bool
+	MockDeleteSessionValues                    bool
 }
 
 // CheckDateFormat implements utility.Helper.
-func (MockHelper) CheckDateFormat(dateString string) bool {
-	panic("unimplemented")
+func (m MockHelper) CheckDateFormat(dateString string) bool {
+	return m.MockCheckDateFormat
 }
 
 // CheckEmailFormat implements utility.Helper.
-func (MockHelper) CheckEmailFormat(emailString string) bool {
-	panic("unimplemented")
+func (m MockHelper) CheckEmailFormat(emailString string) bool {
+	return m.MockCheckEmailFormat
 }
 
 // CheckSqlError implements utility.Helper.
@@ -39,18 +50,57 @@ func (MockHelper) CheckSqlError(err error, errString string) (bool, string) {
 }
 
 // CopyFieldsBetweenDiffStructType implements utility.Helper.
-func (MockHelper) CopyFieldsBetweenDiffStructType(src interface{}, dest interface{}) bool {
-	panic("unimplemented")
+func (m MockHelper) CopyFieldsBetweenDiffStructType(src interface{}, dest interface{}) bool {
+	srcValue := reflect.ValueOf(src)
+	destValue := reflect.ValueOf(dest).Elem() // Use Elem to get the underlying struct Value.
+
+	if srcValue.Kind() != reflect.Struct || destValue.Kind() != reflect.Struct {
+		fmt.Println("Both src and dest should be structs")
+		return false
+	}
+
+	for i := 0; i < srcValue.NumField(); i++ {
+		srcField := srcValue.Field(i)
+		destField := destValue.Field(i)
+
+		// Check if the field in dest is assignable from the field in src
+		if destField.Type().AssignableTo(srcField.Type()) {
+			destField.Set(srcField)
+		}
+	}
+	return true
 }
 
 // DeleteSessionValues implements utility.Helper.
-func (MockHelper) DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string) bool {
-	panic("unimplemented")
+func (m MockHelper) DeleteSessionValues(w http.ResponseWriter, r *http.Request, KeyName string) bool {
+	return m.MockDeleteSessionValues
 }
 
 // FillEmptyFieldsForPostUpdate implements utility.Helper.
 func (MockHelper) FillEmptyFieldsForPostUpdate(src interface{}, dest interface{}) bool {
-	panic("unimplemented")
+	srcValue := reflect.ValueOf(src)
+	destValue := reflect.ValueOf(dest).Elem() // Use Elem to get the underlying struct Value.
+
+	if srcValue.Kind() != reflect.Struct || destValue.Kind() != reflect.Struct {
+		log.Println("Both src and dest should be structs")
+		return false
+	}
+
+	if srcValue.Type() != destValue.Type() {
+		log.Println("src and dest should have the same struct type")
+		return false
+	}
+
+	for i := 0; i < srcValue.NumField(); i++ {
+		srcField := srcValue.Field(i)
+		destField := destValue.Field(i)
+		if destField.IsZero() {
+			// If empty, fill it with the value from src
+			destField.Set(srcField)
+		}
+
+	}
+	return true
 }
 
 // GetErrorMessage implements utility.Helper.
@@ -64,8 +114,8 @@ func (MockHelper) GetImageTypeExtension(Filename string, whatToBeTrim string, do
 }
 
 // GetSqlErrorString implements utility.Helper.
-func (MockHelper) GetSqlErrorString(err error) string {
-	panic("unimplemented")
+func (m MockHelper) GetSqlErrorString(err error) string {
+	return m.MockGetSqlErrorString
 }
 
 // Logger implements utility.Helper.
@@ -74,43 +124,72 @@ func (MockHelper) Logger(errObject error) {
 }
 
 // NewPasswordHash implements utility.Helper.
-func (MockHelper) NewPasswordHash(NewPassword string) (string, error) {
-	panic("unimplemented")
+func (m MockHelper) NewPasswordHash(NewPassword string) (string, error) {
+	//NewPassword Change bcrypt code
+	newPasswordHash, err := bcrypt.GenerateFromPassword([]byte(NewPassword), 10)
+	//modify NewPassword
+	NewPassword = string(newPasswordHash)
+	if err != nil || NewPassword == "" {
+		m.Logger(err)
+	} else {
+		return NewPassword, err
+	}
+	return "", err
 }
 
 // OpenLogFile implements utility.Helper.
-func (MockHelper) OpenLogFile() *os.File {
+func (m MockHelper) OpenLogFile() *os.File {
 	panic("unimplemented")
 }
 
 // SaltPlainPassWord implements utility.Helper.
-func (MockHelper) SaltPlainPassWord(passW string) (string, error) {
-	panic("unimplemented")
+func (m MockHelper) SaltPlainPassWord(passW string) (string, error) {
+	// making hash of pass #1
+	hashedPassW, err := m.NewPasswordHash(passW)
+	if err != nil {
+		return "", err
+	}
+	// mixing salt with hashed pass
+	pswdConcatWithSalt := hashedPassW + os.Getenv("CONS_SALT")
+
+	// making hash of (salted+hashed) pass #2
+	hashedPassW, err = m.NewPasswordHash(pswdConcatWithSalt)
+	if err != nil {
+		return "", err
+	}
+	return hashedPassW, nil
 }
 
 // SendEmail implements utility.Helper.
 func (MockHelper) SendEmail(to []string, template string, data map[string]interface{}) bool {
-	panic("unimplemented")
+	return true
 }
 
 // SendEmailSMTP implements utility.Helper.
 func (MockHelper) SendEmailSMTP(to []string, subject string, body string) bool {
-	panic("unimplemented")
+	return true
 }
 
 // StrToInt implements utility.Helper.
-func (MockHelper) StrToInt(num string) int {
-	panic("unimplemented")
+func (m MockHelper) StrToInt(num string) int {
+	if num != "" {
+		intNum, err := strconv.Atoi(num)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return intNum
+	}
+	return 0
 }
 
 // StrToInt64 implements utility.Helper.
-func (MockHelper) StrToInt64(str string) (int64, error) {
-	panic("unimplemented")
-}
-
-// StrictParseDataFromJson implements utility.Helper.
-func (MockHelper) StrictParseDataFromJson(r *http.Request, structure interface{}) error {
-	panic("unimplemented")
+func (m MockHelper) StrToInt64(str string) (int64, error) {
+	strint64, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return int64(0), err
+	}
+	return strint64, err
+	// panic("unimplemented")
 }
 
 // type Session struct {
@@ -158,16 +237,42 @@ func (m MockHelper) ParseDataFromJsonToMap(r *http.Request) (map[string]interfac
 	return m.MockParseDataFromJsonToMapResult, m.MockParseDataFromJsonToMapErrResult
 }
 
-// func (m MockHelper) StrictParseDataFromJson(r *http.Request, structure interface{}) error {
-// 	return m.MockStrictParseDataFromJsonResult
-// }
+func (m MockHelper) StrictParseDataFromJson(r *http.Request, structure interface{}) error {
+	err := json.NewDecoder(r.Body).Decode(structure)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
 
 func (m MockHelper) StrictParseDataFromPostRequest(r *http.Request, structure interface{}) error {
 	return m.MockStrictParseDataFromPostRequestResult
 }
 
 func (m MockHelper) RenderJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, statusCode int) {
+	jsonresponce, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
+	// we take the statusCode as an arguement and send it as a http response
+	log.Println("statusCode: ", statusCode)
+	switch statusCode {
+	case 403:
+		w.WriteHeader(http.StatusForbidden)
+	case 400:
+		w.WriteHeader(http.StatusBadRequest)
+	case 500:
+		w.WriteHeader(http.StatusInternalServerError)
+	case 200:
+		w.WriteHeader(http.StatusOK)
+	}
+	w.Write([]byte(jsonresponce))
 }
 
 func (m MockHelper) RenderTemplateData(w http.ResponseWriter, r *http.Request, template string, data interface{}) {

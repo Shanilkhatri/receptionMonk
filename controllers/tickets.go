@@ -195,7 +195,7 @@ func GetTicket(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
+		log.Println(paramMap)
 		// validation (anyone other than employee, user, owner & super-admin will not be allowed)
 		if userDetails.AccountType != "employee" && userDetails.AccountType != "user" && userDetails.AccountType != "owner" && userDetails.AccountType != "super-admin" {
 			response.Status = "403"

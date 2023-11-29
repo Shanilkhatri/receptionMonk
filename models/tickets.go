@@ -155,10 +155,10 @@ func (Tickets) GetParamsForFilterTicketsData(params TicketsCondition) TicketsCon
 }
 
 func (Tickets) DeleteTicket(id int) (bool, error) {
-	row, err := utility.Db.Exec("UPDATE tickets SET status=:Status WHERE id = :Id", map[string]interface{}{"Status": "archive", "Id": id})
+	row, err := utility.Db.NamedExec("UPDATE `tickets` SET status=:Status WHERE id = :Id", map[string]interface{}{"Status": "archive", "Id": id})
 	// row, err := utility.Db.Exec("DELETE FROM tickets WHERE id = ?", id)
 	if err != nil {
-		log.Print(err)
+		log.Print("err", err)
 		return false, err
 	}
 	rowsDeleted, err := row.RowsAffected()

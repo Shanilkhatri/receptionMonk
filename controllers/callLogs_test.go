@@ -68,12 +68,6 @@ func TestCallLogsPutWithCorrectData(t *testing.T) {
 	// Binding the DB Cursor to correct utility.Db
 	utility.Db = sqlxDB
 
-	// Mocking the utility functions that are used there
-	Helper = MockHelper{
-		// MockStrictParseDataFromJsonResult:      nil,
-		MockSessionGetResult:                   nil,
-		MockCheckTokenPayloadAndReturnUserBool: false,
-	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPut, "/calllogs", bytes.NewBuffer(requestBody))
 	w := httptest.NewRecorder()
@@ -250,11 +244,13 @@ func TestCallLogsGettWithCorrectData(t *testing.T) {
 	var userdetails utility.UserDetails
 	userdetails.ID = 1
 	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToInt64Int:                         1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -368,6 +364,7 @@ func TestCallLogsGetWithDifferentCompanyId(t *testing.T) {
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToInt64Int:                         1,
 	}
 
 	// here we will prepare the url with parameters to pass to our request
@@ -459,11 +456,13 @@ func TestCallLogsGettWithSqlErrors(t *testing.T) {
 	var userdetails utility.UserDetails
 	userdetails.ID = 1
 	userdetails.AccountType = "owner" // type set to owner
+	userdetails.CompanyID = 1
 
 	// Mocking the utility functions that are used there
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToInt64Int:                         1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()

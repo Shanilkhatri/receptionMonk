@@ -82,7 +82,7 @@ func GetCallLogsDetails(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-
+		log.Println("user", userDetails, "param", paramMap)
 		// Check if the user is authorized to access call logs
 		if userDetails.AccountType != "owner" {
 			response.Status = "403"

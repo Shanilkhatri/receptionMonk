@@ -356,6 +356,7 @@ func TestGetresponseWithCorrectStruct(t *testing.T) {
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -433,6 +434,7 @@ func TestGetresponse(t *testing.T) {
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -496,6 +498,7 @@ func TestGetResponseWithoutTicketId(t *testing.T) {
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 0,
 	}
 
 	// here we will prepare the url with parameters to pass to our request
@@ -583,6 +586,7 @@ func TestGetresponseReturnEmptyRows(t *testing.T) {
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
@@ -641,6 +645,7 @@ func TestGetresponseWithSqlErrors(t *testing.T) {
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToIntInt: 1,
 	}
 	// open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()

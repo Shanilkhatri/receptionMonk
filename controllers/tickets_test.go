@@ -213,7 +213,7 @@ func TestTicketPostWithCorrectData(t *testing.T) {
 	// make expected Ticket a row that will be returned
 	rows := sqlmock.NewRows([]string{"id", "userId", "email", "customerName", "createdTime", "lastUpdatedOn", "status", "query", "feedback", "lastResponse", "companyId"}).AddRow(expectedTicketRow.Id, expectedTicketRow.UserId, expectedTicketRow.Email, expectedTicketRow.CustomerName, expectedTicketRow.CreatedTime, expectedTicketRow.LastUpdatedOn, expectedTicketRow.Status, expectedTicketRow.Query, expectedTicketRow.FeedBack, expectedTicketRow.LastResponse, expectedTicketRow.CompanyId)
 
-	dbmock.ExpectQuery("SELECT \\* FROM tickets WHERE id = ?").WillReturnRows(rows)
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows)
 	// I have used mustBegin thats why I am using Expect begin
 	dbmock.ExpectBegin()
 	// I also expect an Insert Query execution and for that :
@@ -240,6 +240,7 @@ func TestTicketPostWithCorrectData(t *testing.T) {
 		MockSessionGetResult:                      nil,
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		MockGetSqlErrorString:                     "",
 	}
 	// Create a mock Request
 	request := httptest.NewRequest(http.MethodPost, "/tickets", bytes.NewBuffer(requestBody))
@@ -385,7 +386,7 @@ func TestTicketPostWithCorrectDataButErrAtSQL(t *testing.T) {
 	// make expected Ticket a row that will be returned
 	rows := sqlmock.NewRows([]string{"id", "userId", "email", "customerName", "createdTime", "lastUpdatedOn", "status", "query", "feedback", "lastResponse", "companyId"}).AddRow(expectedTicketRow.Id, expectedTicketRow.UserId, expectedTicketRow.Email, expectedTicketRow.CustomerName, expectedTicketRow.CreatedTime, expectedTicketRow.LastUpdatedOn, expectedTicketRow.Status, expectedTicketRow.Query, expectedTicketRow.FeedBack, expectedTicketRow.LastResponse, expectedTicketRow.CompanyId)
 
-	dbmock.ExpectQuery("SELECT \\* FROM tickets WHERE id = ?").WillReturnRows(rows)
+	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE id = ?").WillReturnRows(rows)
 	// I have used mustBegin thats why I am using Expect begin
 	dbmock.ExpectBegin()
 	// I also expect an Insert Query execution and for that :
@@ -808,7 +809,7 @@ func TestTicketDeleteWithOwnerDelUserOfSameComp(t *testing.T) {
 	// I also expect a GET Query execution and for that :
 	dbmock.ExpectQuery("SELECT \\* FROM `tickets` WHERE").WillReturnRows(rows)
 	// I  expect a Delete Query execution and for that :
-	dbmock.ExpectExec("DELETE FROM tickets").WillReturnResult(sqlmock.NewResult(1, 1))
+	dbmock.ExpectExec("UPDATE `tickets`").WillReturnResult(sqlmock.NewResult(1, 1))
 
 	// Binding the DB Cursor to correct utility.Db
 	utility.Db = sqlxDB
@@ -953,7 +954,7 @@ func TestTicketDeleteWithOSuperAdmin(t *testing.T) {
 	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
 
 	// I  expect a Delete Query execution and for that :
-	dbmock.ExpectExec("DELETE FROM tickets").WillReturnResult(sqlmock.NewResult(1, 1))
+	dbmock.ExpectExec("UPDATE `tickets`").WillReturnResult(sqlmock.NewResult(1, 1))
 
 	// Binding the DB Cursor to correct utility.Db
 	utility.Db = sqlxDB

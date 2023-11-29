@@ -139,6 +139,7 @@ func TestGetOrdersWithTypeUserAccessingAnotherUser(t *testing.T) {
 	Helper = MockHelper{
 		MockCheckTokenPayloadAndReturnUserBool:    true,
 		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+		// MockStrToInt64Int:                         2,
 	}
 	// // open Mock DB connection
 	mockDB, dbmock, err := sqlmock.New()
