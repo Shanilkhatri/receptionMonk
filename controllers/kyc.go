@@ -20,7 +20,7 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 	var user models.Authentication
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -34,7 +34,18 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
-	userStruct.UserId = userDetailsType.ID
+	if userStruct.UserId != userDetailsType.ID && userDetailsType.AccountType != "owner" {
+		response.Status = "403"
+		response.Message = "Unauthorized access! You are not allowed to make this request"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	if userDetailsType.CompanyID != userStruct.CompanyId {
+		response.Status = "403"
+		response.Message = "Unauthorized access! You are not allowed to make this request"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return
+	}
 	if userStruct.UserId > 0 && userStruct.DocPicName != "" && userStruct.DocName != "" {
 		tx := utility.Db.MustBegin()
 		inserted := models.KycDetails{}.Putkyc(userStruct, tx)
@@ -91,7 +102,7 @@ func PostKycDetails(w http.ResponseWriter, r *http.Request) {
 	var userStruct models.KycDetails
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -274,7 +285,7 @@ func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
 	extension = Helper.GetImageTypeExtension(handler.Filename, ".", true)
 	randomString, err := Helper.GenerateRandomString(30)
 	if err != nil {
-		Helper.Logger(err)
+		// Helper.Logger(err)
 		// response.Message = "Failed to generate image name."
 		// utility.RenderJsonResponse(w, r, response, 400)
 		return "", err
