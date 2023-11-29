@@ -117,6 +117,9 @@ const Index = () => {
     }
     async function kycDetailsPut(docName:string,img:string){
         const marketurl = "http://localhost:4000/kyc";
+        
+        console.log( "userid", store.getState().themeConfig.hydrateCookie.id,
+        "companyId", store.getState().themeConfig.hydrateCookie.companyId)
         // Submit the form with valid values
         fetch(marketurl, {
             method: "PUT",
@@ -127,7 +130,7 @@ const Index = () => {
             body: JSON.stringify({
                 "doc_name":docName,
                 "doc_pic_name": img,
-                "userid": store.getState().themeConfig.hydrateCookie.userid,
+                "userid": store.getState().themeConfig.hydrateCookie.id,
                 "companyId": store.getState().themeConfig.hydrateCookie.companyId
             }),
         })
