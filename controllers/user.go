@@ -201,11 +201,11 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// this step is to get user incase a user with higher access rights tries to update other user
-	if userDetails.AccountType == "owner" || userDetails.AccountType == "super-admin" && userStruct.AccountType != "super-admin" && userStruct.Email != userDetails.Email {
+	if (userDetails.AccountType == "owner" || userDetails.AccountType == "super-admin" && userStruct.AccountType != "admin" && userStruct.ID != userDetails.ID) || (userDetails.AccountType == "user" && userStruct.ID == userDetails.ID) {
 		// we need to get user details now
-		// row, err := models.Users{}.GetUserById(userStruct.ID)
+		row, err := models.Users{}.GetUserById(userStruct.ID)
 		//switch to email id not with the primary id
-		row, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
+		// row, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
 			log.Println("error: ", err)
 			// Helper.Logger(err)
@@ -214,9 +214,9 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
-		userDetails = CopyStructValues(row)
+		// userDetails = CopyStructValues(row)
 		//else assigning userdetails the row we just bought
-		// userDetails = row
+		userDetails = row
 	}
 	// check for passwordHash if empty
 	if userStruct.PasswordHash == "" {
