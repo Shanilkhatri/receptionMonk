@@ -116,7 +116,19 @@ func PostKycDetails(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
-	userStruct.UserId = userDetailsType.ID
+	if userStruct.UserId != userDetailsType.ID && userDetailsType.AccountType != "owner" {
+		response.Status = "403"
+		response.Message = "Unauthorized access! You are not allowed to make this request"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	if userDetailsType.CompanyID != userStruct.CompanyId {
+		response.Status = "403"
+		response.Message = "Unauthorized access! You are not allowed to make this request"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	// userStruct.UserId = userDetailsType.ID
 	if userStruct.UserId > 0 && userStruct.DocPicName != "" && userStruct.DocName != "" {
 		log.Println("userStruct: ", userStruct)
 		tx := utility.Db.MustBegin()
