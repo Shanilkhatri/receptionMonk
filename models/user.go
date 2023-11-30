@@ -8,6 +8,19 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+//	type Users struct {
+//		ID                    int64  `json:"id" db:"id"`
+//		Name                  string `json:"name" db:"name"`
+//		Email                 string `json:"email" db:"email"`
+//		PasswordHash          string `json:"passwordHash" db:"passwordHash"`
+//		TwoFactorKey          string `json:"twoFactorKey" db:"twoFactorKey"`
+//		TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
+//		DOB                   string `json:"dob" db:"dob"`
+//		AccountType           string `json:"accountType" db:"accountType"`
+//		CompanyID             int64  `json:"companyId" db:"companyId"`
+//		Status                string `json:"status" db:"status"`
+//		EmailToken            string `json:"emailToken" db:"emailToken"`
+//	}
 type Users struct {
 	ID                    int64  `json:"id" db:"id"`
 	Name                  string `json:"name" db:"name"`
@@ -19,6 +32,12 @@ type Users struct {
 	AccountType           string `json:"accountType" db:"accountType"`
 	CompanyID             int64  `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
+	Token                 string `json:"token" db:"token"`
+	EmailToken            string `json:"emailToken" db:"emailToken"`
+	Otp                   string `json:"otp" db:"otp"`
+	EpochCurrent          int64  `db:"epochcurrent"`
+	EpochExpired          int64  `db:"epochexpired"`
+	IsWizardComplete      string `json:"iswizardcomplete" db:"iswizardcomplete"`
 }
 
 type UserCondition struct {
@@ -74,9 +93,7 @@ func (user Users) PostUser(usr Users) (bool, error) {
 
 func (user Users) GetUserById(userId int64) (Users, error) {
 	var selectedRow Users
-
 	err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE id = ?", userId)
-
 	return selectedRow, err
 }
 
