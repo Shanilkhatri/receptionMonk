@@ -53,6 +53,12 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 				controllers.PutUser(w, r)
 			}
 		}
+		if r.Method == "GET" {
+
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "guest"}) {
+				controllers.GetUserData(w, r)
+			}
+		}
 	case "calllogs":
 		if r.Method == "PUT" {
 			if controllers.CheckACL(w, r, []string{"owner"}) {

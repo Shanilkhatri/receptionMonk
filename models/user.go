@@ -99,7 +99,7 @@ func (user Users) GetUserById(userId int64) (Users, error) {
 
 func (Users) GetUser(filter UserCondition) ([]Users, error) {
 	var userData []Users
-	query := "SELECT id,name,email,dob,account_type,company_id,status from authentication Where 1=1" + filter.WhereCondition
+	query := "SELECT id,name,email,dob,accountType,companyId,status from authentication Where 1=1" + filter.WhereCondition
 	condition := map[string]interface{}{
 		"Id":        filter.ID,
 		"Dob":       filter.DOB,
@@ -128,18 +128,18 @@ func (Users) GetParaForFilterUser(para UserCondition) UserCondition {
 		para.WhereCondition += " AND id=:Id "
 	}
 	if para.CompanyID != 0 {
-		para.WhereCondition += " AND companyid=:CompanyId "
+		para.WhereCondition += " AND companyId=:CompanyId "
 	}
 	if para.DOB != " " {
-		para.WhereCondition += " AND DATE_FORMAT(FROM_UNIXTIME(Dob), '%m%d') = DATE_FORMAT(FROM_UNIXTIME(:Dob),'%m%d')"
+		para.WhereCondition += " AND DATE_FORMAT(FROM_UNIXTIME(dob), '%m%d') = DATE_FORMAT(FROM_UNIXTIME(:Dob),'%m%d')"
 	}
 	if para.AccountType != "" {
 		if para.AccountType == "owner" {
-			para.WhereCondition += " AND type IN ('user','owner')"
+			para.WhereCondition += " AND accountType IN ('user','owner')"
 		} else if para.AccountType == "admin" {
-			para.WhereCondition += " AND type IN ('user','owner','admin')"
+			para.WhereCondition += " AND accountType IN ('user','owner','admin')"
 		} else {
-			para.WhereCondition += " AND type IN ('user')"
+			para.WhereCondition += " AND accountType IN ('user')"
 		}
 	}
 

@@ -72,8 +72,13 @@ type UserDetails struct {
 	AccountType           string `json:"accountType" db:"accountType"`
 	CompanyID             int64  `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
+	Token                 string `json:"token" db:"token"`
+	EmailToken            string `json:"emailToken" db:"emailToken"`
+	Otp                   string `json:"otp" db:"otp"`
+	EpochCurrent          int64  `db:"epochcurrent"`
+	EpochExpired          int64  `db:"epochexpired"`
+	IsWizardComplete      string `json:"iswizardcomplete" db:"iswizardcomplete"`
 }
-
 type Utility struct{}
 
 // ReturnUserDetails implements Helper.

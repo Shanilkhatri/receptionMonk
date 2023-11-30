@@ -59,9 +59,11 @@ const Index = () => {
         
 
         if (tokenPayload.iswizardcomplete != "completed") {
+            console.log("yaha aya")
             handleOpenModal()
             // handleCloseModal()
         }else if (tokenPayload.iswizardcomplete == "completed") {
+            console.log("agya")
             handleCloseModal()
         }
 
@@ -282,6 +284,7 @@ const Index = () => {
 
     const handleCloseModal = () => {
         setModalOpen(false);
+       
     };
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
@@ -464,7 +467,10 @@ const Index = () => {
 
 
     return (
-        <div>{
+        <div>
+            
+            {isModalOpen &&(
+
             <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
@@ -501,7 +507,9 @@ const Index = () => {
                     </div>
                 </div>
             </Modal>
-        }
+            )}
+        
+        
             {
                 <div>
                     <ul className="flex space-x-2 rtl:space-x-reverse">
