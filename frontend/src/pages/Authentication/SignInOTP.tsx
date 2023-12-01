@@ -30,7 +30,6 @@ const SignInOTP = () => {
 
     // submitting otp
     const submitForm = async (values: FormValues, { setSubmitting }: any) => {
-        console.log("values: ", values)
         var otpToSend = ""
         for (var keys in values) {
             if (values.hasOwnProperty(keys)) {
@@ -55,8 +54,7 @@ const SignInOTP = () => {
 
         });
         var responseData = await response.json() // wait for response > json
-        console.log("response data: ",responseData.Payload)
-        console.log("response code: ",response.ok)
+        
         if (response.ok) {
         // if (true) {
 

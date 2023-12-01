@@ -8,6 +8,19 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+//	type Users struct {
+//		ID                    int64  `json:"id" db:"id"`
+//		Name                  string `json:"name" db:"name"`
+//		Email                 string `json:"email" db:"email"`
+//		PasswordHash          string `json:"passwordHash" db:"passwordHash"`
+//		TwoFactorKey          string `json:"twoFactorKey" db:"twoFactorKey"`
+//		TwoFactorRecoveryCode string `json:"twoFactorRecoveryCode" db:"twoFactorRecoveryCode"`
+//		DOB                   string `json:"dob" db:"dob"`
+//		AccountType           string `json:"accountType" db:"accountType"`
+//		CompanyID             int64  `json:"companyId" db:"companyId"`
+//		Status                string `json:"status" db:"status"`
+//		EmailToken            string `json:"emailToken" db:"emailToken"`
+//	}
 type Users struct {
 	ID                    int64  `json:"id" db:"id"`
 	Name                  string `json:"name" db:"name"`
@@ -19,6 +32,12 @@ type Users struct {
 	AccountType           string `json:"accountType" db:"accountType"`
 	CompanyID             int64  `json:"companyId" db:"companyId"`
 	Status                string `json:"status" db:"status"`
+	Token                 string `json:"token" db:"token"`
+	EmailToken            string `json:"emailToken" db:"emailToken"`
+	Otp                   string `json:"otp" db:"otp"`
+	EpochCurrent          int64  `db:"epochcurrent"`
+	EpochExpired          int64  `db:"epochexpired"`
+	IsWizardComplete      string `json:"iswizardcomplete" db:"iswizardcomplete"`
 }
 
 type UserCondition struct {
@@ -74,15 +93,13 @@ func (user Users) PostUser(usr Users) (bool, error) {
 
 func (user Users) GetUserById(userId int64) (Users, error) {
 	var selectedRow Users
-
 	err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE id = ?", userId)
-
 	return selectedRow, err
 }
 
 func (Users) GetUser(filter UserCondition) ([]Users, error) {
 	var userData []Users
-	query := "SELECT id,name,email,dob,account_type,company_id,status from authentication Where 1=1" + filter.WhereCondition
+	query := "SELECT id,name,email,dob,accountType,companyId,status from authentication Where 1=1" + filter.WhereCondition
 	condition := map[string]interface{}{
 		"Id":        filter.ID,
 		"Dob":       filter.DOB,
@@ -111,18 +128,18 @@ func (Users) GetParaForFilterUser(para UserCondition) UserCondition {
 		para.WhereCondition += " AND id=:Id "
 	}
 	if para.CompanyID != 0 {
-		para.WhereCondition += " AND companyid=:CompanyId "
+		para.WhereCondition += " AND companyId=:CompanyId "
 	}
 	if para.DOB != " " {
-		para.WhereCondition += " AND DATE_FORMAT(FROM_UNIXTIME(Dob), '%m%d') = DATE_FORMAT(FROM_UNIXTIME(:Dob),'%m%d')"
+		para.WhereCondition += " AND DATE_FORMAT(FROM_UNIXTIME(dob), '%m%d') = DATE_FORMAT(FROM_UNIXTIME(:Dob),'%m%d')"
 	}
 	if para.AccountType != "" {
 		if para.AccountType == "owner" {
-			para.WhereCondition += " AND type IN ('user','owner')"
+			para.WhereCondition += " AND accountType IN ('user','owner')"
 		} else if para.AccountType == "admin" {
-			para.WhereCondition += " AND type IN ('user','owner','admin')"
+			para.WhereCondition += " AND accountType IN ('user','owner','admin')"
 		} else {
-			para.WhereCondition += " AND type IN ('user')"
+			para.WhereCondition += " AND accountType IN ('user')"
 		}
 	}
 

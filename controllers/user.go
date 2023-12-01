@@ -25,7 +25,6 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	//decode json (new decoder)
 	var userStruct models.Users
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
-	log.Println("userStruct: ", userStruct)
 	if err != nil {
 		// Helper.Logger(err)
 		log.Println("Unable to decode json")
@@ -34,6 +33,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
+	log.Println("userStruct: ", userStruct)
 	// date format check
 	if !Helper.CheckDateFormat(userStruct.DOB) {
 		// Utility.Logger(err)
@@ -346,7 +346,6 @@ func GetUserData(w http.ResponseWriter, r *http.Request) bool {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-
 	if usr.ID == 0 || usr.CompanyID == 0 {
 		response.Status = "403"
 		response.Message = "Unauthorized access, UserId or companyId doesn't match."

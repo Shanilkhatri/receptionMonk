@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../store';
@@ -22,17 +22,14 @@ const Index = () => {
     useEffect(() => {
 
         dispatch(setPageTitle('Homepage'));
-        // integrate a condition here that if token is empty we go straight to login
-        console.log("exampleToken: ", utility.getCookieValue("exampleToken"))
-
         if (utility.getCookieValue("exampleToken") == null) {
             navigate("/auth/SignIn")
         } else {
-            console.log(store.getState().themeConfig.hydrateCookie)
-            calling_token_check(utility.getCookieValue("exampleToken"))
+            calling_token_check()
         }
     });
-    async function calling_token_check(token: any) {
+    async function calling_token_check() {
+        var token = utility.getCookieValue("exampleToken")
         var headers = new Headers();
         headers.append("Content-Type", 'application/json');
         headers.append("Authorization", "bearer " + token);
@@ -46,19 +43,27 @@ const Index = () => {
             navigate("/auth/SignIn")
             return
         }
-        console.log("response code: ", response.headers)
+        
         var tokenData = response.headers.get("tokenPayload") || ""
         var tokenPayload = JSON.parse(tokenData)
         document.cookie = `whoami=${JSON.stringify(tokenPayload)}; secure; path=/`;
-        dispatch(setEmail(store.getState().themeConfig.email));
-        console.log("email",store.getState().themeConfig.email)
+        dispatch(setEmail(""));
+        // setEmail
+        const emailInput = document.getElementById("recipient-email") as HTMLInputElement | null;
+        
+        if (emailInput) {
+          // ensure that element exists
+          emailInput.value = store.getState().themeConfig.email;
+        }
         dispatch(setHydrateCookie(""))
-        console.log("tokenPayload.iswizardcomplete: ", tokenPayload.iswizardcomplete)
+        
 
         if (tokenPayload.iswizardcomplete != "completed") {
+            console.log("yaha aya")
             handleOpenModal()
             // handleCloseModal()
         }else if (tokenPayload.iswizardcomplete == "completed") {
+            console.log("agya")
             handleCloseModal()
         }
 
@@ -100,7 +105,6 @@ const Index = () => {
         if (docNameValue !== null) {
             if (typeof docNameValue === 'string') {
                 docName = docNameValue;
-                console.log('doc_name:', docName);
             } else {
                 console.error('doc_name is not a string');
             }
@@ -119,8 +123,7 @@ const Index = () => {
     async function kycDetailsPut(docName:string,img:string){
         const marketurl = appUrl+"kyc";
         
-        console.log( "userid", store.getState().themeConfig.hydrateCookie.id,
-        "companyId", store.getState().themeConfig.hydrateCookie.companyId)
+       
         // Submit the form with valid values
         fetch(marketurl, {
             method: "PUT",
@@ -221,13 +224,15 @@ const Index = () => {
         }
     }
     
-    async function saveUserDetails(e:any) {
+    async function saveUserDetails(e:FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        const id= store.getState().themeConfig.hydrateCookie.id
         const name = (document.getElementById('recipient-name') as HTMLInputElement)?.value;
         const passwordHash = (document.getElementById('recipient-password') as HTMLInputElement)?.value;
         const email = store.getState().themeConfig.email
         const dob = (document.getElementById('recipient-dob') as HTMLInputElement)?.value;
         const userData = {
+            id,
             name,
             passwordHash,
             email,
@@ -239,6 +244,8 @@ const Index = () => {
         if (ok) {
             //do what you want if successfully added the data 
             console.log("SuccessFully added")
+            // check token & update cookies
+            calling_token_check();
         } else {
             navigate("/auth/SignIn")
         }
@@ -262,6 +269,8 @@ const Index = () => {
         if (ok) {
             //do what you want if successfully added the data 
             console.log("SuccessFully added")
+            // check Token & update cookies
+            calling_token_check();
         } else {
             navigate("/auth/SignIn")
         }
@@ -271,11 +280,11 @@ const Index = () => {
 
     const handleOpenModal = () => {
         setModalOpen(true);
-        console.log("modal value", isModalOpen)
     };
 
     const handleCloseModal = () => {
         setModalOpen(false);
+       
     };
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
@@ -458,7 +467,10 @@ const Index = () => {
 
 
     return (
-        <div>{
+        <div>
+            
+            {isModalOpen &&(
+
             <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
@@ -467,11 +479,11 @@ const Index = () => {
                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
                             </div>
                             <div className="modal-body">
-                                <form id='formdataid' onSubmit={(e) => saveCompanyDetails(e)}>
-                                    {/* <input type="text" className="form-control" id="recipient-name" />
+                                <form id='formdataid' onSubmit={(event) => saveUserDetails(event)}>
+                                    <input type="text" className="form-control" id="recipient-name" />
                                      <input type="password" className="form-control" id="recipient-password"/>
                                      <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
-                                     <input type="date" className="form-control" id="recipient-dob"/> */}
+                                     <input type="date" className="form-control" id="recipient-dob"/>
                                     {/* <select
                                         aria-describedby="err-currtype" aria-label="currentytype"
                                         name="doc_name" id="currtype" required>
@@ -481,11 +493,11 @@ const Index = () => {
                                     </select>
 
                                     <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" /> */}
-                                    <input type="text" className="form-control" id="company-name" />
+                                    {/* <input type="text" className="form-control" id="company-name" />
                                      <input type="text" className="form-control" id="company-gstin"/>
                                      <input type="email" className="form-control" id="company-email" value={store.getState().themeConfig.email} readOnly/>
                                      <input type="text" className="form-control" id="company-address"/>
-                                     <input type="text" className="form-control" id="company-contact"/>
+                                     <input type="text" className="form-control" id="company-contact"/> */}
                                     <button type="submit" className="btn btn-primary" >
                                         Save
                                     </button>
@@ -495,7 +507,9 @@ const Index = () => {
                     </div>
                 </div>
             </Modal>
-        }
+            )}
+        
+        
             {
                 <div>
                     <ul className="flex space-x-2 rtl:space-x-reverse">

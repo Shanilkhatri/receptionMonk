@@ -22,7 +22,7 @@ const SignIn = () => {
 
     const submitForm = async (values: FormValues, { setSubmitting }: any) => {
         const authEmailId = values.authEmailId
-        console.log(JSON.stringify(values)) // authEmailId: "hi@gmail"
+        // authEmailId: "hi@gmail"
         // console.log(authEmailId) // "hi@gmail"
 
         // use fetch to get to route
@@ -37,7 +37,6 @@ const SignIn = () => {
                 
             });
             const responseData = await response.json(); // Parse the response JSON
-            console.log("responseData.payload",responseData.Payload)
             if (response.ok) {
                 // dispatch now to set email in state
                 dispatch(setEmail(authEmailId));
