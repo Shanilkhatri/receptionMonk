@@ -57,13 +57,13 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if r.Method == "PUT" {
-			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "guest"}) {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin"}) {
 				controllers.PutUser(w, r)
 			}
 		}
 		if r.Method == "GET" {
 
-			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "guest"}) {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin"}) {
 				controllers.GetUserData(w, r)
 			}
 		}
