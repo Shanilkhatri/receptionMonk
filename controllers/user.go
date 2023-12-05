@@ -33,7 +33,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	log.Println("userStruct: ", userStruct)
+
 	// date format check
 	if !Helper.CheckDateFormat(userStruct.DOB) {
 		// Utility.Logger(err)
@@ -60,15 +60,17 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		// tokenPayload check
 		isok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 		if isok {
-			if userStruct.AccountType == "owner" && userDetails.AccountType == "owner" {
-				response.Status = "403"
-				response.Message = "You are already registered as an owner for this company! Kindly use your credentials and login"
-				Helper.RenderJsonResponse(w, r, response, 403)
-				return
-			}
+			//commented coz owner could add the other owner as per further discussion.
+
+			// if userStruct.AccountType == "owner" && userDetails.AccountType == "owner" {
+			// 	response.Status = "403"
+			// 	response.Message = "You are already registered as an owner for this company! Kindly use your credentials and login"
+			// 	Helper.RenderJsonResponse(w, r, response, 403)
+			// 	return
+			// }
 			// register as a user
 			// takeout the company id from owners token
-			log.Println("owner Details: ", userDetails)
+
 			companyId := userDetails.CompanyID // which we'll get from the GET Op
 
 			// setting company id
@@ -115,7 +117,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// ^^^only for now random twofactorkey and recovery code (to be deleted when integrated with ORM)^^^
-	log.Println("userStruct: ", userStruct)
+
 	tx := utility.Db.MustBegin()
 	isok := models.Users{}.PutUser(userStruct, tx)
 	if !isok {

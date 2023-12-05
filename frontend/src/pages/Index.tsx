@@ -57,12 +57,12 @@ const Index = () => {
         }
         dispatch(setHydrateCookie(""))
         
-        // if (tokenPayload.iswizardcomplete != "completed") {
-        //     handleOpenModal()
-        // }else if (tokenPayload.iswizardcomplete == "completed") {
-        //     handleOpenModal()
-        //     // handleCloseModal()
-        // }
+        if (tokenPayload.iswizardcomplete != "completed") {
+            handleOpenModal()
+        }else if (tokenPayload.iswizardcomplete == "completed") {
+            handleOpenModal()
+            // handleCloseModal()
+        }
 
     }
     async function updateWizard(userData:any):Promise<boolean> {
