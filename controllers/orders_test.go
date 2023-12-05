@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -12,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -327,6 +329,547 @@ func TestGetOrdersWithTypeOwnerAccessingAnotherUserOfSameCompany(t *testing.T) {
 	}
 	log.Println("msg: ", data.Message)
 	if data.Message != "Results found successfully" || w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #1 - putOrder with correct Struct and also correct Data.
+func TestOrderPutSuccess(t *testing.T) {
+
+	jsonData := map[string]interface{}{
+		"id":        1,
+		"productId": 1,
+		"placedOn":  1697632642,
+		"expiry":    1697632642,
+		"price":     55,
+		"buyer":     59898,
+		"status":    "paid",
+		"dateFrom":  1697632642,
+		"DateTo":    1698237442,
+		"UserId":    1,
+		"CompanyId": 21,
+	}
+	// Marshal the data into JSON format
+	requestBody, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "owner"
+	userdetails.CompanyID = 1
+
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	int64Value := int64(42)
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(int64Value)
+	// I have used mustBegin thats why I am using Expect begin
+	dbmock.ExpectBegin()
+
+	dbmock.ExpectQuery("SELECT `plan_validity` FROM `products` WHERE  productId=?").WillReturnRows(rows)
+
+	// I also expect an Insert Query execution and for that :
+	dbmock.ExpectExec("INSERT INTO `orders`").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// expecting a commit to as this is correct info
+	dbmock.ExpectCommit()
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// Mocking the utility functions that are used there
+	Helper = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		MockSessionGetResult:                      nil,
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockReturnUserDetailsResult:               nil,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodPut, "/order", bytes.NewBuffer(requestBody))
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	PutOrder(w, request)
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Order added successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #2 - putOrder with incorrect user Struct(user return error or false).
+func TestOrderPutWithUserReturnError(t *testing.T) {
+
+	jsonData := map[string]interface{}{
+		"id":        1,
+		"productId": 1,
+		"placedOn":  1697632642,
+		"expiry":    1697632642,
+		"price":     55,
+		"buyer":     59898,
+		"status":    "paid",
+		"dateFrom":  1697632642,
+		"DateTo":    1698237442,
+		"UserId":    1,
+		"CompanyId": 21,
+	}
+	// Marshal the data into JSON format
+	requestBody, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	// Mocking the utility functions that are used there
+	Helper = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		MockSessionGetResult:                   nil,
+		MockCheckTokenPayloadAndReturnUserBool: false,
+	}
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodPut, "/order", bytes.NewBuffer(requestBody))
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	PutOrder(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Bad request, Incorrect payload or call." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #3 - putOrder with Required Fields,show 400.
+func TestOrderPutRequiredFields(t *testing.T) {
+
+	jsonData := map[string]interface{}{
+		"id":        0, //incorrect value
+		"productId": 0, //incorrect value
+		"placedOn":  1697632642,
+		"expiry":    1697632642,
+		"price":     55,
+		"buyer":     59898,
+		"status":    "paid",
+		"dateFrom":  1697632642,
+		"DateTo":    1698237442,
+		"UserId":    1,
+		"CompanyId": 21,
+	}
+	// Marshal the data into JSON format
+	requestBody, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "owner"
+	userdetails.CompanyID = 1
+
+	// Mocking the utility functions that are used there
+	Helper = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		MockSessionGetResult:                      nil,
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockReturnUserDetailsResult:               nil,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodPut, "/order", bytes.NewBuffer(requestBody))
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	PutOrder(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Bad request, Incorrect payload or call." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #1 - PostOrder with correct Struct and also correct Data.
+func TestOrderPostSuccess(t *testing.T) {
+
+	jsonData := map[string]interface{}{
+		"id":        1,
+		"productId": 1,
+		"placedOn":  1697632642,
+		"expiry":    1697632642,
+		"price":     55,
+		"buyer":     59898,
+		"status":    "paid",
+		"dateFrom":  1697632642,
+		"DateTo":    1698237442,
+		"UserId":    1,
+		"CompanyId": 21,
+	}
+	// Marshal the data into JSON format
+	requestBody, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "owner"
+	userdetails.CompanyID = 1
+
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	int64Value := int64(42)
+	rows := sqlmock.NewRows([]string{"id"}).AddRow(int64Value)
+	// I have used mustBegin thats why I am using Expect begin
+	dbmock.ExpectBegin()
+
+	dbmock.ExpectQuery("SELECT `plan_validity` FROM `products` WHERE  productId=?").WillReturnRows(rows)
+
+	// I also expect an Insert Query execution and for that :
+	dbmock.ExpectExec("UPDATE `orders` SET").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// expecting a commit to as this is correct info
+	dbmock.ExpectCommit()
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// Mocking the utility functions that are used there
+	Helper = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		MockSessionGetResult:                      nil,
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockReturnUserDetailsResult:               nil,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodPost, "/order", bytes.NewBuffer(requestBody))
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	PostOrder(w, request)
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Order Update successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #2 - PostOrder with incorrect user Struct(user return error or false),show 400.
+func TestOrderPostReturnError(t *testing.T) {
+
+	jsonData := map[string]interface{}{
+		"id":        1,
+		"productId": 1,
+		"placedOn":  1697632642,
+		"expiry":    1697632642,
+		"price":     55,
+		"buyer":     59898,
+		"status":    "paid",
+		"dateFrom":  1697632642,
+		"DateTo":    1698237442,
+		"UserId":    1,
+		"CompanyId": 21,
+	}
+	// Marshal the data into JSON format
+	requestBody, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	// Mocking the utility functions that are used there
+	Helper = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		MockSessionGetResult:                   nil,
+		MockCheckTokenPayloadAndReturnUserBool: false,
+	}
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodPost, "/order", bytes.NewBuffer(requestBody))
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	PostOrder(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Bad request, Incorrect payload or call." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// TEST #3 - PostOrder with Required Fields ,show 400.
+func TestOrderPostRequiredFields(t *testing.T) {
+
+	jsonData := map[string]interface{}{
+		"id":        0, //incorrect value
+		"productId": 0, //incorrect value
+		"placedOn":  1697632642,
+		"expiry":    1697632642,
+		"price":     55,
+		"buyer":     59898,
+		"status":    "paid",
+		"dateFrom":  1697632642,
+		"DateTo":    1698237442,
+		"UserId":    1,
+		"CompanyId": 21,
+	}
+	// Marshal the data into JSON format
+	requestBody, err := json.Marshal(jsonData)
+	if err != nil {
+		panic(err)
+	}
+
+	var userdetails utility.UserDetails
+	userdetails.ID = 1
+	userdetails.AccountType = "owner"
+	userdetails.CompanyID = 1
+
+	// Mocking the utility functions that are used there
+	Helper = MockHelper{
+		// MockStrictParseDataFromJsonResult:      nil,
+		MockSessionGetResult:                      nil,
+		MockCheckTokenPayloadAndReturnUserBool:    true,
+		MockReturnUserDetailsResult:               nil,
+		MockCheckTokenPayloadAndReturnUserDetails: userdetails,
+	}
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodPost, "/order", bytes.NewBuffer(requestBody))
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	PostOrder(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Bad request, Incorrect payload or call." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// Test1 order delete success ,if order id not empty or nil,show 200.
+func TestOrderDeleteSuccess(t *testing.T) {
+
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// I  expect a Delete Query execution and for that :
+	dbmock.ExpectExec("DELETE FROM orders").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set orderId to be deleted to 1
+	orderIdtoDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/order?" + "id=" + orderIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodDelete, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	OrderDelete(w, request)
+
+	err = dbmock.ExpectationsWereMet()
+	if err != nil {
+		t.Errorf("Expectations were not met %s", err)
+	}
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Order deleted successfully." && w.Result().StatusCode != 200 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// Test2 check order id validation for delete,show 400.
+func TestOrderDeleteValidation(t *testing.T) {
+
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// I  expect a Delete Query execution and for that :
+	dbmock.ExpectExec("DELETE FROM orders").WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set order id empty or nil.
+	orderIdtoDel := ""
+	// here we will prepare the url with parameters to pass to our request
+	url := "/order?" + "id=" + orderIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodDelete, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	OrderDelete(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Bad request, Incorrect payload or call." && w.Result().StatusCode != 400 {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
+	}
+}
+
+// Test3 check sql error foreign key constraint violation(1451),show 500.
+func TestOrderSqlErrorCheck(t *testing.T) {
+
+	// open Mock DB connection
+	mockDB, dbmock, err := sqlmock.New()
+	log.Println("mockErr: ", err)
+	defer mockDB.Close()
+	sqlxDB := sqlx.NewDb(mockDB, "sqlmock")
+
+	// I  expect a Delete Query execution and for that :
+	// dbmock.ExpectExec("DELETE FROM orders").WillReturnResult(sqlmock.NewResult(1, 1))
+	expectedErr := mysql.MySQLError{Number: 1451, Message: "Foreign key constraint violation."}
+	dbmock.ExpectExec("DELETE FROM orders").
+		WillReturnError(&expectedErr)
+
+	// Binding the DB Cursor to correct utility.Db
+	utility.Db = sqlxDB
+
+	// set order id empty or nil.
+	orderIdtoDel := "1"
+	// here we will prepare the url with parameters to pass to our request
+	url := "/order?" + "id=" + orderIdtoDel
+
+	// Create a mock Request
+	request := httptest.NewRequest(http.MethodDelete, url, nil)
+	w := httptest.NewRecorder()
+	// Call your function with the mocks
+	OrderDelete(w, request)
+
+	// Read the response body into a byte slice
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		// here i am just logging the error
+		log.Println(err)
+	}
+
+	var data utility.AjaxResponce
+	// Unmarshal the JSON data into the struct
+	if err := json.Unmarshal(body, &data); err != nil {
+		// Handle the JSON unmarshaling error
+		log.Println("error", err)
+	}
+
+	if data.Message != "Foreign key constraint violation." && w.Result().StatusCode != 500 {
 		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Result().StatusCode)
 	}
 }
