@@ -40,7 +40,15 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 			if r.Method == "GET" {
 				controllers.GetOrders(w, r)
 			}
-
+			if r.Method == "PUT" {
+				controllers.PutOrder(w, r)
+			}
+			if r.Method == "POST" {
+				controllers.PostOrder(w, r)
+			}
+			if r.Method == "DELETE" {
+				controllers.OrderDelete(w, r)
+			}
 		}
 	case "users":
 		if r.Method == "POST" {
