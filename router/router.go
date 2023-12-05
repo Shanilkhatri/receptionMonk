@@ -164,6 +164,8 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "DELETE" {
 			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
 				controllers.DeleteExtension(w, r)
+			}
+		}
 	case "product":
 		if r.Method == "POST" {
 			if controllers.CheckACL(w, r, []string{"admin", "super-admin"}) {
