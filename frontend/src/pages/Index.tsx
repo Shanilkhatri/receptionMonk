@@ -57,14 +57,11 @@ const Index = () => {
         }
         dispatch(setHydrateCookie(""))
         
-
         if (tokenPayload.iswizardcomplete != "completed") {
-            console.log("yaha aya")
+            handleOpenModal()
+        }else if (tokenPayload.iswizardcomplete == "completed") {
             handleOpenModal()
             // handleCloseModal()
-        }else if (tokenPayload.iswizardcomplete == "completed") {
-            console.log("agya")
-            handleCloseModal()
         }
 
     }
@@ -221,6 +218,73 @@ const Index = () => {
         } catch (error) {
             console.error("Error during image upload:", error);
             return ''; // or throw an error, depending on your logic
+        }
+    }
+    async function addUser(e:any){
+        e.preventDefault();
+        
+        // // Getting formElement
+        var form = document.getElementById("formdataid");
+        // // Accessing formData
+        // var formData = new FormData(form);
+        var formData
+        if (form instanceof HTMLFormElement) {
+            // Accessing formData
+            formData = new FormData(form);
+            // Your further code with formData
+        } else {
+            console.error("Form element not found");
+            return
+        }
+        // Retrieve doc_name from FormData
+        const statusvalue: FormDataEntryValue | null = formData.get('doc_name');
+        // Check if doc_name is present and is a string
+        let status: string | null = null;
+        if (statusvalue !== null) {
+            if (typeof statusvalue === 'string') {
+                status = statusvalue;
+            } else {
+                console.error('statusvalue is not a string');
+            }
+        } else {
+        console.error('statusvalue not found in FormData');
+        }
+        // Retrieve doc_name from FormData
+        const accounttypevalue: FormDataEntryValue | null = formData.get('accounttype');
+        // Check if doc_name is present and is a string
+        let accountType: string | null = null;
+        if (accounttypevalue !== null) {
+            if (typeof accounttypevalue === 'string') {
+                accountType = accounttypevalue;
+            } else {
+                console.error('accounttypevalue is not a string');
+            }
+        } else {
+        console.error('accounttypevalue not found in FormData');
+        }
+        const email=(document.getElementById('recipient-email') as HTMLInputElement)?.value;
+        const name=(document.getElementById('recipient-name') as HTMLInputElement)?.value;
+        const dob=(document.getElementById('recipient-dob') as HTMLInputElement)?.value;
+   
+        const userData ={
+           name,
+           email,
+           dob,
+           status,
+           accountType,
+           "companyId": store.getState().themeConfig.hydrateCookie.companyId,
+           "iswizardcomplete":"kyc"
+        }
+  
+        console.log(userData)
+        const ok = await utility.sendRequestPutOrPost(userData, "users", "PUT")
+        if (ok) {
+            //do what you want if successfully added the data 
+            console.log("SuccessFully added")
+            // check Token & update cookies
+            calling_token_check();
+        } else {
+            navigate("/auth/SignIn")
         }
     }
     
@@ -469,7 +533,7 @@ const Index = () => {
     return (
         <div>
             
-            {isModalOpen &&(
+            {/* {isModalOpen &&( */}
 
             <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -479,11 +543,25 @@ const Index = () => {
                                 <h5 className="modal-title" id="exampleModalLabel">Please Fill Your Details</h5>
                             </div>
                             <div className="modal-body">
-                                <form id='formdataid' onSubmit={(event) => saveUserDetails(event)}>
+                                <form id='formdataid' onSubmit={(event) => addUser(event)}>
                                     <input type="text" className="form-control" id="recipient-name" />
-                                     <input type="password" className="form-control" id="recipient-password"/>
-                                     <input type="email" className="form-control" id="recipient-email" value={store.getState().themeConfig.email} readOnly/>
-                                     <input type="date" className="form-control" id="recipient-dob"/>
+                                    <input type="email" className="form-control" id="recipient-email" />
+                                    <input type="date" className="form-control" id="recipient-dob"/>
+                                    <select
+                                        aria-describedby="err-currtype" aria-label="currentytype"
+                                        name="accounttype" id="accounttype" required>
+                                        <option disabled selected hidden value="">Select Type</option>
+                                        <option value="owner">Owner</option>
+                                        <option value="user">User</option>
+                                    </select>
+                                    <select
+                                        aria-describedby="err-currtype" aria-label="currentytype"
+                                        name="doc_name" id="doc_name" required>
+                                        <option disabled selected hidden value="">Select Type</option>
+                                        <option value="active">Active</option>
+                                        <option value="pendingVerification">pending Verification</option>
+                                    </select>
+                                    
                                     {/* <select
                                         aria-describedby="err-currtype" aria-label="currentytype"
                                         name="doc_name" id="currtype" required>
@@ -491,13 +569,14 @@ const Index = () => {
                                         <option value="aadhaar_card">Aadhaar Card</option>
                                         <option value="pan_card">PanCard</option>
                                     </select>
-
                                     <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" /> */}
+                                    
                                     {/* <input type="text" className="form-control" id="company-name" />
                                      <input type="text" className="form-control" id="company-gstin"/>
                                      <input type="email" className="form-control" id="company-email" value={store.getState().themeConfig.email} readOnly/>
                                      <input type="text" className="form-control" id="company-address"/>
                                      <input type="text" className="form-control" id="company-contact"/> */}
+
                                     <button type="submit" className="btn btn-primary" >
                                         Save
                                     </button>
@@ -507,8 +586,7 @@ const Index = () => {
                     </div>
                 </div>
             </Modal>
-            )}
-        
+            {/* )} */}
         
             {
                 <div>

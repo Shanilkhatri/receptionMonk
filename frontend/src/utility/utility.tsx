@@ -3,7 +3,7 @@ class Utility{
 
     constructor() {
         this.appUrl = import.meta.env.VITE_APPURL;
-        console.log(this.appUrl);
+
     }
 
 

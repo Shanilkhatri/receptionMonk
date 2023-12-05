@@ -57,13 +57,13 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if r.Method == "PUT" {
-			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "guest"}) {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin"}) {
 				controllers.PutUser(w, r)
 			}
 		}
 		if r.Method == "GET" {
 
-			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "guest"}) {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin"}) {
 				controllers.GetUserData(w, r)
 			}
 		}
@@ -164,6 +164,20 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "DELETE" {
 			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
 				controllers.DeleteExtension(w, r)
+	case "product":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"admin", "super-admin"}) {
+				controllers.PostProduct(w, r)
+			}
+		}
+		if r.Method == "PUT" {
+			if controllers.CheckACL(w, r, []string{"admin", "super-admin"}) {
+				controllers.PutProduct(w, r)
+			}
+		}
+		if r.Method == "GET" {
+			if controllers.CheckACL(w, r, []string{"admin", "super-admin"}) {
+				controllers.GetProduct(w, r)
 			}
 		}
 	}

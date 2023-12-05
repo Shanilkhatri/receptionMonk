@@ -33,7 +33,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	log.Println("userStruct: ", userStruct)
+
 	// date format check
 	if !Helper.CheckDateFormat(userStruct.DOB) {
 		// Utility.Logger(err)
@@ -60,15 +60,17 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		// tokenPayload check
 		isok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 		if isok {
-			if userStruct.AccountType == "owner" && userDetails.AccountType == "owner" {
-				response.Status = "403"
-				response.Message = "You are already registered as an owner for this company! Kindly use your credentials and login"
-				Helper.RenderJsonResponse(w, r, response, 403)
-				return
-			}
+			//commented coz owner could add the other owner as per further discussion.
+
+			// if userStruct.AccountType == "owner" && userDetails.AccountType == "owner" {
+			// 	response.Status = "403"
+			// 	response.Message = "You are already registered as an owner for this company! Kindly use your credentials and login"
+			// 	Helper.RenderJsonResponse(w, r, response, 403)
+			// 	return
+			// }
 			// register as a user
 			// takeout the company id from owners token
-			log.Println("owner Details: ", userDetails)
+
 			companyId := userDetails.CompanyID // which we'll get from the GET Op
 
 			// setting company id
@@ -76,16 +78,27 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 
 		}
 	}
-	// make an entry into cpmay table when AccountType == "owner"
-	if userStruct.AccountType == "owner" {
-		// call PUT company here
-		// if successfull then GET comapny id and store it into
-		// userStruct.CompanyId
-		// in case of error response.Status = "403" response.Message = "Unable to Process request at the moment"
-
-		// dummy company id
-		userStruct.CompanyID = 2
+	// only for now random twofactorkey and recovery code (to be deleted when integrated with ORM)
+	userStruct.TwoFactorRecoveryCode, err = Helper.GenerateRandomString(16)
+	if err != nil {
+		log.Println("error in generating random string for TwoFactorRecoveryCode")
 	}
+	userStruct.TwoFactorKey, err = Helper.GenerateRandomString(16)
+	if err != nil {
+		log.Println("error in generating random string for TwoFactorKey")
+	}
+	var password string
+	if userStruct.PasswordHash == "" {
+		password, err = Helper.GenerateRandomString(16)
+		if err != nil {
+			log.Println("error in generating random string for PasswordHash")
+		}
+		userStruct.PasswordHash = password
+	}
+	if userStruct.IsWizardComplete == "" {
+		userStruct.IsWizardComplete = "personal"
+	}
+
 	if !IsValidUserStruct(userStruct) {
 		// Helper.Logger(err)
 		log.Println("Unable to decode json")
@@ -103,17 +116,8 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
-	// only for now random twofactorkey and recovery code (to be deleted when integrated with ORM)
-	userStruct.TwoFactorRecoveryCode, err = Helper.GenerateRandomString(16)
-	if err != nil {
-		log.Println("error in generating random string for TwoFactorRecoveryCode")
-	}
-	userStruct.TwoFactorKey, err = Helper.GenerateRandomString(16)
-	if err != nil {
-		log.Println("error in generating random string for TwoFactorKey")
-	}
 	// ^^^only for now random twofactorkey and recovery code (to be deleted when integrated with ORM)^^^
-	log.Println("userStruct: ", userStruct)
+
 	tx := utility.Db.MustBegin()
 	isok := models.Users{}.PutUser(userStruct, tx)
 	if !isok {
@@ -138,6 +142,15 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
+	userEmailId := []string{userStruct.Email} // set email address.
+	data := make(map[string]interface{})
+	data["subject"] = "Account Created On Reception Monk"
+	data["email"] = userStruct.Email
+	data["owner_email"] = userDetails.Email
+	data["Password"] = password
+	go Helper.SendEmail(userEmailId, "emailforadduser", data)
+	//if email success return true.
+
 	response.Status = "200"
 	response.Message = "User created successfully."
 	Helper.RenderJsonResponse(w, r, response, 200)
