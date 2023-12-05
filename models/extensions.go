@@ -8,10 +8,10 @@ import (
 )
 
 type Extensions struct {
-	Id          int    `json:"id" db:"id" primarykey:"true"`
+	Id          int64  `json:"id" db:"id" primarykey:"true"`
 	Extension   string `json:"extension" db:"extension"`
-	UserId      int    `json:"userid" db:"user_id"`
-	Department  int    `json:"department" db:"department"`
+	UserId      int64  `json:"userid" db:"user_id"`
+	Department  int64  `json:"department" db:"department"`
 	SipServer   string `json:"sipserver" db:"sip_server"`
 	SipUserName string `json:"sipusername" db:"sip_username"`
 	SipPassword string `json:"sippassword" db:"sip_password"`
@@ -20,13 +20,14 @@ type Extensions struct {
 
 type ExtensionCondition struct {
 	Extensions
-	CompanyId      int
+	CompanyId      int64
 	AccountType    string
 	WhereCondition string
 }
 
 func (extension Extensions) PostExtension(data Extensions, tx *sqlx.Tx) (bool, error) {
-	row, err := tx.NamedExec("UPDATE `extensions` INNER JOIN `authentication` ON `extensions`.`user_id` = `authentication`.`id` INNER JOIN `company` ON `authentication`.`company_id` = `company`.`id` SET extension=:Extension,department=:Department,sip_server=:SipServer,sip_username=:SipUserName,sip_password=:SipPassword,sip_port=:SipPort WHERE `extensions`.`id`=:Id ", map[string]interface{}{"Extension": data.Extension, "Department": data.Department, "SipServer": data.SipServer, "SipUserName": data.SipUserName, "SipPassword": data.SipPassword, "SipPort": data.SipPort, "Id": data.Id})
+	log.Println("extension Struct: ", data)
+	row, err := tx.NamedExec("UPDATE `extension` INNER JOIN `authentication` ON `extension`.`user_id` = `authentication`.`id` INNER JOIN `company` ON `authentication`.`companyId` = `company`.`id` SET extension=:Extension,department=:Department,sip_server=:SipServer,sip_username=:SipUserName,sip_password=:SipPassword,sip_port=:SipPort WHERE `extension`.`id`=:Id ", map[string]interface{}{"Extension": data.Extension, "Department": data.Department, "SipServer": data.SipServer, "SipUserName": data.SipUserName, "SipPassword": data.SipPassword, "SipPort": data.SipPort, "Id": data.Id})
 	if err != nil {
 		log.Println(err)
 		return false, err
@@ -57,13 +58,17 @@ func (extension Extensions) DeleteExtensionDetail(id int) (bool, error) {
 	}
 	return rowsDeleted > 0, nil
 }
-
+func (extension Extensions) GetExtensionById(extensionId int64) (Extensions, error) {
+	var fetchedExtension Extensions
+	err := utility.Db.Get(&fetchedExtension, "SELECT * FROM extension WHERE id = ?", extensionId)
+	return fetchedExtension, err
+}
 func (extension Extensions) GetExtensions(filter ExtensionCondition) ([]Extensions, error) {
 	var ExtensionData []Extensions
 	query := "SELECT * FROM extension Where 1=1" + filter.WhereCondition
 	condi := map[string]interface{}{
-		"Id":        filter.Id,
-		"CompanyId": filter.CompanyId,
+		"Id":     filter.Id,
+		"UserId": filter.UserId,
 	}
 	rows, err := utility.Db.NamedQuery(query, condi)
 	if err != nil {
@@ -87,18 +92,18 @@ func (extension Extensions) GetParaForFilterExtension(para ExtensionCondition) E
 	if para.Id != 0 {
 		para.WhereCondition += " AND id=:Id "
 	}
-	if para.CompanyId != 0 {
-		para.WhereCondition += " AND companyid=:CompanyId "
+	if para.UserId != 0 {
+		para.WhereCondition += " AND user_id=:UserId "
 	}
-	if para.AccountType != "" {
-		if para.AccountType == "owner" {
-			para.WhereCondition += " AND type IN ('user','owner')"
-		} else if para.AccountType == "admin" {
-			para.WhereCondition += " AND type IN ('user','owner','admin')"
-		} else {
-			para.WhereCondition += " AND type IN ('user')"
-		}
-	}
+	// if para.AccountType != "" {
+	// 	if para.AccountType == "owner" {
+	// 		para.WhereCondition += " AND type IN ('user','owner')"
+	// 	} else if para.AccountType == "admin" {
+	// 		para.WhereCondition += " AND type IN ('user','owner','admin')"
+	// 	} else {
+	// 		para.WhereCondition += " AND type IN ('user')"
+	// 	}
+	// }
 
 	return para
 }

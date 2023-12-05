@@ -118,14 +118,14 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	case "kyc":
-		if r.Method == "POST" {
-			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
-				controllers.PostKycDetails(w, r)
-			}
-		}
 		if r.Method == "PUT" {
 			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
 				controllers.PutKycDetails(w, r)
+			}
+		}
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.PostKycDetails(w, r)
 			}
 		}
 		if r.Method == "GET" {
@@ -143,6 +143,27 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" {
 			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
 				controllers.PostUpdateWizardStatus(w, r)
+			}
+		}
+	case "extension":
+		if r.Method == "PUT" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.PutExtension(w, r)
+			}
+		}
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.PostExtension(w, r)
+			}
+		}
+		if r.Method == "GET" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.GetExtensionData(w, r)
+			}
+		}
+		if r.Method == "DELETE" {
+			if controllers.CheckACL(w, r, []string{"owner", "super-admin", "user"}) {
+				controllers.DeleteExtension(w, r)
 			}
 		}
 	}

@@ -51,7 +51,6 @@ func PostExtension(w http.ResponseWriter, r *http.Request) bool {
 
 	//Update data in table.
 	boolValue, err := models.Extensions{}.PostExtension(extensionStruct, tx)
-
 	if !boolValue || err != nil {
 		log.Println(err)
 		tx.Rollback()
@@ -128,9 +127,11 @@ func PutExtension(w http.ResponseWriter, r *http.Request) bool {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
+	log.Println("extension struct: ", extensionStruct)
 	//check validation.
 	boolType := ValidationCheck(extensionStruct)
 	if boolType {
+
 		response.Status = "400"
 		response.Message = "Bad request, Incorrect payload or call."
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -178,7 +179,29 @@ func DeleteExtension(w http.ResponseWriter, r *http.Request) bool {
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return true
 	}
-
+	isOk, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
+	if !isOk {
+		response.Status = "403"
+		response.Message = "Unauthorized access, you are not allowed to make this request!"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return true
+	}
+	// get extension which user is trying to delete
+	extension, err := models.Extensions{}.GetExtensionById(int64(extensionId))
+	if err != nil {
+		log.Println("err fetching extension: ", err)
+		response.Status = "400"
+		response.Message = "Unable to fetch desired extension for deletion or it doesn't exists!"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return true
+	}
+	// check if extension doesnt belong to same user and user isn't super admin -> 403
+	if extension.UserId != userDetails.ID && userDetails.AccountType != "super-admin" {
+		response.Status = "403"
+		response.Message = "Unauthorized access, you are not allowed to make this request!"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return true
+	}
 	boolType, err := models.Extensions{}.DeleteExtensionDetail(extensionId)
 	if !boolType || err != nil {
 		log.Println(err)
@@ -207,35 +230,35 @@ func GetExtensionData(w http.ResponseWriter, r *http.Request) bool {
 
 	isOk, userPayload := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !isOk {
-		response.Status = "400"
-		response.Message = "Bad request, Incorrect payload or call."
-		Helper.RenderJsonResponse(w, r, response, 400)
-		return true
-	}
-
-	if userPayload.ID == 0 || userPayload.CompanyID == 0 {
 		response.Status = "403"
-		response.Message = "Unauthorized access, UserId or companyId doesn't match."
+		response.Message = "Unauthorized access, User not found!"
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return true
 	}
 
-	para.AccountType = userPayload.AccountType
+	// if userPayload.ID == 0 || userPayload.CompanyID == 0 {
+	// 	response.Status = "403"
+	// 	response.Message = "Unauthorized access, UserId or companyId doesn't match."
+	// 	Helper.RenderJsonResponse(w, r, response, 403)
+	// 	return true
+	// }
 
-	para.Id = Helper.StrToInt(r.URL.Query().Get("id"))               // take id for url
-	para.CompanyId = Helper.StrToInt(r.URL.Query().Get("companyId")) // take company_id for url
+	// para.AccountType = userPayload.AccountType
 
-	if userPayload.ID != int64(para.CompanyId) {
-		response.Status = "403"
-		response.Message = "You are not authorized for this request."
-		Helper.RenderJsonResponse(w, r, response, 403)
-		return true
-	}
+	para.Id, _ = Helper.StrToInt64(r.URL.Query().Get("id")) // take id for url
+	// para.CompanyId, _ = Helper.StrToInt64(r.URL.Query().Get("companyId")) // take company_id for url
 
-	if userPayload.ID != 0 && para.AccountType == "user" {
-		para.Id = int(userPayload.ID)
-	}
+	// if userPayload.ID != int64(para.CompanyId) {
+	// 	response.Status = "403"
+	// 	response.Message = "You are not authorized for this request."
+	// 	Helper.RenderJsonResponse(w, r, response, 403)
+	// 	return true
+	// }
 
+	// if userPayload.ID != 0 && para.AccountType == "user" {
+	// 	para.Id = int64(userPayload.ID)
+	// }
+	para.UserId = userPayload.ID
 	parameters := models.Extensions{}.GetParaForFilterExtension(para)
 	result, err := models.Extensions{}.GetExtensions(parameters)
 	if err != nil {
