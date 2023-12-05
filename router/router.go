@@ -145,6 +145,22 @@ func Routes(w http.ResponseWriter, r *http.Request) {
 				controllers.PostUpdateWizardStatus(w, r)
 			}
 		}
+	case "product":
+		if r.Method == "POST" {
+			if controllers.CheckACL(w, r, []string{"admin", "super-admin"}) {
+				controllers.PostProduct(w, r)
+			}
+		}
+		if r.Method == "PUT" {
+			if controllers.CheckACL(w, r, []string{"admin", "super-admin"}) {
+				controllers.PutProduct(w, r)
+			}
+		}
+		if r.Method == "GET" {
+			if controllers.CheckACL(w, r, []string{"admin", "super-admin"}) {
+				controllers.GetProduct(w, r)
+			}
+		}
 	}
 
 }
