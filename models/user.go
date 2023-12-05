@@ -59,7 +59,7 @@ type UserCondition struct {
 // insert data in authentication table
 func (user Users) PutUser(add Users, tx *sqlx.Tx) bool {
 
-	_, err := tx.NamedExec("INSERT INTO `authentication` (name,email,passwordHash,twoFactorKey,twoFactorRecoveryCode,dob,accountType,companyId,status) VALUES ( :Name,:Email,:PasswordHash,:TwoFactorKey,:TwoFactorRecoveryCode,:DOB,:AccountType,:CompanyID,:Status)", map[string]interface{}{"Name": add.Name, "Email": add.Email, "PasswordHash": add.PasswordHash, "TwoFactorKey": add.TwoFactorKey, "TwoFactorRecoveryCode": add.TwoFactorRecoveryCode, "DOB": add.DOB, "AccountType": add.AccountType, "CompanyID": add.CompanyID, "Status": add.Status})
+	_, err := tx.NamedExec("INSERT INTO `authentication` (name,email,passwordHash,twoFactorKey,twoFactorRecoveryCode,dob,accountType,companyId,status,iswizardcomplete) VALUES ( :Name,:Email,:PasswordHash,:TwoFactorKey,:TwoFactorRecoveryCode,:DOB,:AccountType,:CompanyID,:Status,:Iswizardcomplete)", map[string]interface{}{"Name": add.Name, "Email": add.Email, "PasswordHash": add.PasswordHash, "TwoFactorKey": add.TwoFactorKey, "TwoFactorRecoveryCode": add.TwoFactorRecoveryCode, "DOB": add.DOB, "AccountType": add.AccountType, "CompanyID": add.CompanyID, "Status": add.Status, "Iswizardcomplete": add.IsWizardComplete})
 	// Check error
 	if err != nil {
 		log.Println(err)
