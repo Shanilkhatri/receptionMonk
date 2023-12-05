@@ -34,7 +34,7 @@ type OrderDataCondition struct {
 
 func (ord Orders) GetOrders(filter OrderDataCondition, tx *sqlx.Tx) ([]Orders, error) {
 	var ordersArr []Orders
-	query := "SELECT orders.id,orders.productId,orders.placedOn,orders.expiry,orders.price,orders.buyer,orders.status FROM `orders` INNER JOIN users on users.id=orders.buyer WHERE 1=1 " + filter.WhereCondition + " ORDER BY orders.id DESC;"
+	query := "SELECT orders.id,orders.productId,orders.placedOn,orders.expiry,orders.price,orders.buyer,orders.status FROM `orders` INNER JOIN authentication on authentication.id=orders.buyer WHERE 1=1 " + filter.WhereCondition + " ORDER BY orders.id DESC;"
 	condtion := map[string]interface{}{
 		"id":        filter.Id,
 		"date_from": filter.DateFrom,
@@ -75,7 +75,7 @@ func (ord Orders) GetParamsForFilterOrderData(params OrderDataCondition) OrderDa
 	} else if params.DateTo != 0 {
 		params.WhereCondition += " AND orders.placedOn <= :date_to"
 	} else if params.CompanyId != 0 {
-		params.WhereCondition += " AND users.companyId= :companyId"
+		params.WhereCondition += " AND authentication.companyId= :companyId"
 	}
 	return params
 }
@@ -102,7 +102,7 @@ func (Orders) PostOrder(order Orders, tx *sqlx.Tx) (bool, error) {
 
 func (Orders) GetSingleProduct(productId int64, tx *sqlx.Tx) (int64, error) {
 	var planValidity int64
-	err := tx.Get(&planValidity, "SELECT `plan_validity` FROM `products` WHERE  productId=?", productId)
+	err := tx.Get(&planValidity, "SELECT `plan_validity` FROM `products` WHERE  id=?", productId)
 	return planValidity, err
 }
 

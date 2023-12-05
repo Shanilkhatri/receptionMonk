@@ -7,6 +7,21 @@ import (
 	"reakgo/utility"
 )
 
+func GetProduct(w http.ResponseWriter, r *http.Request) {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+
+	// productId := Helper.StrToInt(r.URL.Query().Get("id"))
+
+	isOk, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
+	if !isOk || userDetails.AccountType != "" {
+		response.Status = "403"
+		response.Message = "Unauthorized access, you are not allowed to make this request!"
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return
+	}
+	// now fetch product
+}
+
 func IsValidProductStruct(productStruct models.Products) bool {
 	if productStruct.Name != "" && productStruct.Description != "" && productStruct.Status != "" && productStruct.Price > 0 && productStruct.PlanValidity > 0 {
 		return true

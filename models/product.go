@@ -15,6 +15,12 @@ type Products struct {
 	Status       string `db:"status" json:"productStatus" `
 }
 
+// get products
+func GetProductById(id int64) (Products, error) {
+	var selectedRow Products
+	err := utility.Db.Get(&selectedRow, "SELECT * FROM products WHERE id = ?", id)
+	return selectedRow, err
+}
 func (Products) PutProduct(add Products) bool {
 	_, err := utility.Db.NamedExec("INSERT INTO `products` (name,price,plan_validity,description,status) VALUES (:Name,:Price,:Plan_validity,:Description,:Status)", map[string]interface{}{"Name": add.Name, "Price": add.Price, "Plan_validity": add.PlanValidity, "Description": add.Description, "Status": add.Status})
 	// Check error
