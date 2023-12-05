@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"reakgo/models"
 	"reakgo/utility"
+	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 func GetOrders(w http.ResponseWriter, r *http.Request) {
@@ -105,4 +108,226 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Message = "Failed to authorize at the moment. Please Login again and try!"
 	Helper.RenderJsonResponse(w, r, response, 500)
+}
+
+func PostOrder(w http.ResponseWriter, r *http.Request) bool {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+	var orderStruct models.Orders
+	// var userPayload models.Users
+
+	isOk, userPayload := Helper.CheckTokenPayloadAndReturnUser(r)
+	if !isOk {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		Helper.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+
+	if userPayload.ID == 0 || userPayload.CompanyID == 0 {
+		response.Status = "403"
+		response.Message = "Unauthorized access, UserId or companyId doesn't match."
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return true
+	}
+
+	err := Helper.StrictParseDataFromJson(r, &orderStruct)
+	if err != nil {
+		log.Println(err)
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		Helper.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+	//check validation.
+	boolType := OrderValidationCheck(orderStruct)
+	if boolType {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		Helper.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+
+	tx := utility.Db.MustBegin()
+	// get planValidity.
+	planValidity, err := models.Orders{}.GetSingleProduct(orderStruct.ProductId, tx)
+	if err != nil {
+		log.Println(err)
+		tx.Rollback()
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		Helper.RenderJsonResponse(w, r, response, 500)
+		return true
+	}
+	// calculate Expiry.
+	orderStruct.Expiry = ExpiryCalculate(orderStruct.PlacedOn, planValidity)
+	boolValue, err := models.Orders{}.PostOrder(orderStruct, tx)
+
+	if !boolValue || err != nil {
+		log.Println(err)
+		tx.Rollback()
+		response.Status = "500"
+		response.Message = "Internal server error1, Any serious issues which cannot be recovered from."
+		Helper.RenderJsonResponse(w, r, response, 500)
+		return true
+	}
+	txError := tx.Commit()
+	if txError != nil {
+		tx.Rollback()
+		log.Println(err)
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		Helper.RenderJsonResponse(w, r, response, 500)
+		return true
+	} else {
+		response.Status = "200"
+		response.Message = "Order Update successfully."
+	}
+
+	Helper.RenderJsonResponse(w, r, response, 200)
+	return false
+}
+
+func ExpiryCalculate(placedOn int64, planValidityInDays int64) int64 {
+
+	planValiditySeconds := int64(3600 * 24 * planValidityInDays)
+
+	validityDuration := time.Duration(planValiditySeconds) * time.Second
+
+	placedOnTime := time.Unix(placedOn, 0)
+
+	expiryTime := placedOnTime.Add(validityDuration)
+
+	// Convert expiryTime back to Unix timestamp
+	expiry := expiryTime.Unix()
+
+	return expiry
+
+}
+
+func OrderValidationCheck(orderStruct models.Orders) bool {
+	switch {
+	case orderStruct.ProductId <= 0:
+		return true
+	case orderStruct.PlacedOn <= 0:
+		return true
+	case orderStruct.Price <= 0:
+		return true
+	case orderStruct.Buyer <= 0:
+		return true
+	case orderStruct.Status == "":
+		return true
+	default:
+		return false
+	}
+}
+
+func PutOrder(w http.ResponseWriter, r *http.Request) bool {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+	var orderStruct models.Orders
+	// var userPayload models.Users
+
+	isOk, userPayload := Helper.CheckTokenPayloadAndReturnUser(r)
+	if !isOk {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		Helper.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+
+	if userPayload.ID == 0 || userPayload.CompanyID == 0 {
+		response.Status = "403"
+		response.Message = "Unauthorized access, UserId or companyId doesn't match."
+		Helper.RenderJsonResponse(w, r, response, 403)
+		return true
+	}
+
+	err := Helper.StrictParseDataFromJson(r, &orderStruct)
+	if err != nil {
+		log.Println(err)
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		Helper.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+
+	//check validation.
+	boolType := OrderValidationCheck(orderStruct)
+	if boolType {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		Helper.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+	tx := utility.Db.MustBegin()
+	//get planValidity. Db.leagues.
+	planValidity, err := models.Orders{}.GetSingleProduct(orderStruct.ProductId, tx)
+	if err != nil {
+		log.Println(err)
+		tx.Rollback()
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		Helper.RenderJsonResponse(w, r, response, 500)
+		return true
+	}
+	//calculate Expiry.
+	orderStruct.Expiry = ExpiryCalculate(orderStruct.PlacedOn, planValidity)
+
+	//put data in table.
+	boolValue, err := models.Orders{}.PutOrder(orderStruct, tx)
+	if boolValue || err != nil {
+		log.Println(err)
+		tx.Rollback()
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		Helper.RenderJsonResponse(w, r, response, 500)
+		return true
+	}
+
+	txError := tx.Commit()
+	if txError != nil {
+		tx.Rollback()
+		log.Println(err)
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		Helper.RenderJsonResponse(w, r, response, 500)
+		return true
+	} else {
+		response.Status = "200"
+		response.Message = "Order added successfully."
+	}
+
+	Helper.RenderJsonResponse(w, r, response, 200)
+	return false
+}
+
+func OrderDelete(w http.ResponseWriter, r *http.Request) bool {
+	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
+
+	orderId := Helper.StrToInt(r.URL.Query().Get("id"))
+
+	if orderId <= 0 {
+		response.Status = "400"
+		response.Message = "Bad request, Incorrect payload or call."
+		Helper.RenderJsonResponse(w, r, response, 400)
+		return true
+	}
+
+	boolType, err := models.Orders{}.OrderDelete(orderId)
+	if !boolType || err != nil {
+		log.Println(err)
+		response.Status = "500"
+		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
+		if driverErr, ok := err.(*mysql.MySQLError); ok {
+			// MySQL error code 1451 indicates a foreign key constraint
+			if driverErr.Number == 1451 {
+				response.Message = Helper.GetSqlErrorString(err)
+			}
+		}
+		Helper.RenderJsonResponse(w, r, response, 500)
+		return true
+	}
+	response.Status = "200"
+	response.Message = "Order deleted successfully."
+	Helper.RenderJsonResponse(w, r, response, 200)
+	return false
 }

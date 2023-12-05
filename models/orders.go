@@ -1,6 +1,9 @@
 package models
 
 import (
+	"log"
+	"reakgo/utility"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -75,4 +78,53 @@ func (ord Orders) GetParamsForFilterOrderData(params OrderDataCondition) OrderDa
 		params.WhereCondition += " AND users.companyId= :companyId"
 	}
 	return params
+}
+
+// type Orders struct {
+// 	Id        int64  `json:"id" db:"id" `
+// 	ProductId int64  `json:"productId" db:"productId" `
+// 	PlacedOn  int64  `json:"placedOn" db:"placedOn" `
+// 	Expiry    int64  `json:"expiry" db:"expiry" `
+// 	Price     int64  `json:"price" db:"price" `
+// 	Buyer     int64  `json:"buyer" db:"buyer" `
+// 	Status    string `json:"status" db:"status" `
+// }
+
+func (Orders) PostOrder(order Orders, tx *sqlx.Tx) (bool, error) {
+	row, err := tx.NamedExec("UPDATE `orders` SET productId=:ProductId,placedOn=:PlacedOn,expiry=:Expiry,price=:Price,buyer=:Buyer,status=:Status WHERE id=:Id ", map[string]interface{}{"ProductId": order.ProductId, "PlacedOn": order.PlacedOn, "Expiry": order.Expiry, "Price": order.Price, "Buyer": order.Buyer, "Status": order.Status, "Id": order.Id})
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	rowUpdate, _ := row.RowsAffected()
+	return rowUpdate > 0, nil
+}
+
+func (Orders) GetSingleProduct(productId int64, tx *sqlx.Tx) (int64, error) {
+	var planValidity int64
+	err := tx.Get(&planValidity, "SELECT `plan_validity` FROM `products` WHERE  productId=?", productId)
+	return planValidity, err
+}
+
+func (Orders) PutOrder(data Orders, tx *sqlx.Tx) (bool, error) {
+	_, err := tx.NamedExec("INSERT INTO `orders` (productId,placedOn,expiry,price,buyer,status) VALUES (:ProductId,:PlacedOn,:Expiry,:Price,:Buyer,:Status)", map[string]interface{}{"ProductId": data.ProductId, "PlacedOn": data.PlacedOn, "Expiry": data.Expiry, "Price": data.Price, "Buyer": data.Buyer, "Status": data.Status})
+	if err != nil {
+		log.Println(err)
+		return true, err
+	}
+	return false, nil
+}
+
+func (Orders) OrderDelete(id int) (bool, error) {
+	row, err := utility.Db.Exec("DELETE FROM orders WHERE id = ?", id)
+	if err != nil {
+		log.Print(err)
+		return false, err
+	}
+	rowsDeleted, err := row.RowsAffected()
+	if err != nil {
+		log.Print(err)
+		return false, err
+	}
+	return rowsDeleted > 0, nil
 }
