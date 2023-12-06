@@ -161,8 +161,8 @@ func (m MockHelper) SaltPlainPassWord(passW string) (string, error) {
 }
 
 // SendEmail implements utility.Helper.
-func (MockHelper) SendEmail(to []string, template string, data map[string]interface{}) bool {
-	return true
+func (MockHelper) SendEmail(to []string, template string, data map[string]interface{}) (int, bool, error) {
+	return 0, true, nil
 }
 
 // SendEmailSMTP implements utility.Helper.

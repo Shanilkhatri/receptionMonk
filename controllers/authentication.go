@@ -162,10 +162,21 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 	data["currentTime"] = signupData.EpochCurrent
 
 	//if email success return true.
-	if Helper.SendEmail(userEmailId, "emailforotp", data) {
+	// count, isok, err := Helper.SendEmail(userEmailId, "emailforotp", data)
+	count, isok, _ := Helper.SendEmail(userEmailId, "emailforotp", data)
+	if isok {
 		return true
+	} else {
+		if count >= 5 {
+			// trigger crictical mail
+			log.Println("critical mail triggered! Email service down, immediate action required.")
+			// Helper.Logger(err)
+			// resetting value
+			utility.Count = 0
+			return false
+		}
+		return false
 	}
-	return false
 }
 
 // login by email.
@@ -208,18 +219,20 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	if boolValues {
-		boolType := EmailSend(otp, signupDetails)
-		if boolType {
-			response.Status = "200"
-			response.Message = "New OTP has been sent, Please check your inbox"
+		go EmailSend(otp, signupDetails)
+		// log.Println("Global faulty mail count: ", utility.Count)
+		if utility.Count >= 4 {
+			response.Status = "400"
+			response.Message = "Can't send OTP at the moment!"
 			response.Payload = signupDetails.EmailToken
-			Helper.RenderJsonResponse(w, r, response, 200)
+			Helper.RenderJsonResponse(w, r, response, 400)
 			return false
-		} else {
-			log.Println("Otp not sent!!")
-			response.Message = "OTP email couldn't be sent at the moment, Please try again."
-			Helper.RenderJsonResponse(w, r, response, 500)
 		}
+		response.Status = "200"
+		response.Message = "New OTP has been sent, Please check your inbox"
+		response.Payload = signupDetails.EmailToken
+		Helper.RenderJsonResponse(w, r, response, 200)
+		return false
 
 	}
 	return false

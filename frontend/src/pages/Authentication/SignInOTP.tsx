@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { setPageTitle } from '../../store/themeConfigSlice';
+import { useEffect, useState } from 'react';
+import { setPageTitle,setEmailVerToken } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
@@ -19,14 +19,79 @@ interface FormValues {
 const appUrl = import.meta.env.VITE_APPURL
 const SignInOTP = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    // otp timer code ----------
+    const [timer, setTimer] = useState(10); // Initial timer value in seconds
+    const [isTimerVisible, setIsTimerVisible] = useState(true);
+
+    const startTimer = () => {
+        setTimer(10);
+        setIsTimerVisible(true);
+    };
+
+    const handleResendClick = async () => {
+        // resend OTP 
+        // jsonObj to send email 
+        var jsonObj = {
+            "authEmailId": store.getState().themeConfig.email  // email at redux-store
+        }
+        // writing a request to hit the send email again endpoint
+        let response = await fetch(appUrl+"loginbyemail",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // adding header for email-verf-token
+                'emailVerfToken': store.getState().themeConfig.emailVerfToken
+            },
+            body: JSON.stringify(jsonObj),
+        })
+        // response > json
+        let data = await response.json()
+        
+        if (response.ok){
+            // For demonstration purposes, let's just reset the timer
+            startTimer();
+            dispatch(setEmailVerToken(data.Payload));
+            return
+        }
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: 'error', 
+            title: 'Maximum resend attempts reached. Re-directing!',
+            padding: '10px 20px',
+        });
+        setTimer(3)
+        navigate("auth/signin")
+    };
+    // otp timer code finish----------
+
     useEffect(() => {
         dispatch(setPageTitle('SignIn OTP Verification'));
         // if state doesn't have email we throw user back to login
         if (store.getState().themeConfig.email == "") {
             navigate("/auth/SignIn")
         }
-    });
-    const navigate = useNavigate();
+        // otp timer code -----------
+        let interval: any;
+
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        } else {
+            setIsTimerVisible(false);
+        }
+
+        return () => clearInterval(interval);
+        // otp timer code finish----------
+    }, [timer]);
+
+
 
     // submitting otp
     const submitForm = async (values: FormValues, { setSubmitting }: any) => {
@@ -37,13 +102,13 @@ const SignInOTP = () => {
             }
         }
 
-        
+
         var jsonObj = {
             "otp": otpToSend,
             "authEmailId": store.getState().themeConfig.email  // email at redux-store
         }
 
-        const response = await fetch(appUrl+"matchotp", {
+        const response = await fetch(appUrl + "matchotp", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,14 +119,14 @@ const SignInOTP = () => {
 
         });
         var responseData = await response.json() // wait for response > json
-        
+
         if (response.ok) {
-        // if (true) {
+            // if (true) {
 
             // otp is validated successfully
             // next we'll get a token from server which 
             // will be stored in cookies pointing to other info about the user
-            
+
             // Setting it into cookies with an expiry time of 6 months (in seconds)
             var expirationDate = new Date();
             expirationDate.setMonth(expirationDate.getMonth() + 6);
@@ -153,6 +218,13 @@ const SignInOTP = () => {
 
                                     ))}
                                 </div>
+                                    <div>
+                                    {isTimerVisible ? (
+                                        <p>Resend OTP in {timer} seconds</p>
+                                    ) : (
+                                        <button onClick={handleResendClick}>Resend OTP</button>
+                                    )}
+                                    </div>
                                 {submitCount >= 0 && hasAnyError(errors) && (
                                     <div className="text-danger mx-8">
                                         Please fill all the fields correctly with numbers.
