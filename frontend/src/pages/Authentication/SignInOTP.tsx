@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { setPageTitle } from '../../store/themeConfigSlice';
+import { setPageTitle,setEmailVerToken } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
@@ -48,10 +48,25 @@ const SignInOTP = () => {
         // response > json
         let data = await response.json()
         
-        console.log("on resend: ",data)
-
-        // For demonstration purposes, let's just reset the timer
-        startTimer();
+        if (response.ok){
+            // For demonstration purposes, let's just reset the timer
+            startTimer();
+            dispatch(setEmailVerToken(data.Payload));
+            return
+        }
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: 'error', 
+            title: 'Maximum resend attempts reached. Re-directing!',
+            padding: '10px 20px',
+        });
+        setTimer(3)
+        navigate("auth/signin")
     };
     // otp timer code finish----------
 

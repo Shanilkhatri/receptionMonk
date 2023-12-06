@@ -424,7 +424,7 @@ func (u *Utility) SendEmailSMTP(to []string, subject string, body string) bool {
 }
 
 // global internal faulty mails count
-var count = 0
+var Count int
 
 func (u *Utility) SendEmail(to []string, template string, data map[string]interface{}) (int, bool, error) {
 	buf := new(bytes.Buffer)
@@ -435,15 +435,15 @@ func (u *Utility) SendEmail(to []string, template string, data map[string]interf
 	err := View.ExecuteTemplate(buf, template, data)
 	if err != nil {
 		// increase faulty mails count
-		count++
+		Count++
 		// fmt.Println(err)
-		return count, false, err
+		return Count, false, err
 	}
 	if u.SendEmailSMTP(to, fmt.Sprintf("%v", data["subject"]), buf.String()) {
-		return count, true, nil
+		return Count, true, nil
 	}
-	count++
-	return count, false, nil
+	Count++
+	return Count, false, nil
 }
 
 /* Go: email sent of Critical Error Message*/
