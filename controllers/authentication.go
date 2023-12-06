@@ -199,7 +199,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
 	signupDetails.EmailToken = GenerateEmailToken(emailToken)
 	signupDetails.Otp = otp
-	boolValues, err := models.Authentication{}.GetUserByEmailIds(signupDetails)
+	boolValues, err := models.Authentication{}.PostOrPutUserByEmailIds(signupDetails)
 	if err != nil {
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
@@ -270,7 +270,7 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 			// -> mainAuthToken = bcryptOf(data.email + data.otp)
 			data.Token = GenerateEmailToken(data.Email + data.Otp)
 			// saving the token in db
-			_, err := models.Authentication{}.GetUserByEmailIds(data)
+			_, err := models.Authentication{}.PostOrPutUserByEmailIds(data)
 			if err != nil {
 				response.Status = "500"
 				response.Message = "Internal server error, Any serious issues which cannot be recovered from."

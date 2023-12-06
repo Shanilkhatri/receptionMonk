@@ -170,7 +170,7 @@ type SignupDetails struct {
 	Token        string `json:"token" db:"token"`
 }
 
-func (user Authentication) GetUserByEmailIds(data SignupDetails) (bool, error) {
+func (user Authentication) PostOrPutUserByEmailIds(data SignupDetails) (bool, error) {
 	log.Println("data", data)
 	log.Println("email exists: ", EmailExistOrNot(data.Email))
 	if EmailExistOrNot(data.Email) {
@@ -218,7 +218,7 @@ func (auth Authentication) GetUserDetailsByEmail(email string) (SignupDetails, e
 	return selectedRow, err
 }
 
-// func (user Authentication) GetUserByEmailIds(data SignupDetails) (Authentication, error) {
+// func (user Authentication) PostOrPutUserByEmailIds(data SignupDetails) (Authentication, error) {
 // 	var selectedRow Authentication
 // 	if EmailExistOrNot(data.Email) {
 // 		err := utility.Db.Get(&selectedRow, "SELECT * FROM authentication WHERE email = ?", data.Email)
