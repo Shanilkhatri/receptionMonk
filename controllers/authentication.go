@@ -162,10 +162,19 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 	data["currentTime"] = signupData.EpochCurrent
 
 	//if email success return true.
-	if Helper.SendEmail(userEmailId, "emailforotp", data) {
+	count, isok, err := Helper.SendEmail(userEmailId, "emailforotp", data)
+	if isok {
 		return true
+	} else {
+		if count >= 10 {
+			// trigger crictical mail
+			log.Println("critical mail triggered! Email service down, immediate action required.")
+			Helper.Logger(err)
+			// resetting value
+			count = 0
+		}
+		return false
 	}
-	return false
 }
 
 // login by email.

@@ -110,7 +110,7 @@ type Helper interface {
 	CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails)
 	StrToInt64(str string) (int64, error)
 	SendEmailSMTP(to []string, subject string, body string) bool
-	SendEmail(to []string, template string, data map[string]interface{}) bool
+	SendEmail(to []string, template string, data map[string]interface{}) (int, bool, error)
 	GetErrorMessage(currentFilePath string, lineNumbers int, errorMessage error) bool
 	OpenLogFile() *os.File
 	Logger(errObject error)
@@ -422,7 +422,11 @@ func (u *Utility) SendEmailSMTP(to []string, subject string, body string) bool {
 	}
 	return true
 }
-func (u *Utility) SendEmail(to []string, template string, data map[string]interface{}) bool {
+
+// global internal faulty mails count
+var count = 0
+
+func (u *Utility) SendEmail(to []string, template string, data map[string]interface{}) (int, bool, error) {
 	buf := new(bytes.Buffer)
 	//extra information on email
 	data["app_url"] = os.Getenv("APPURL")
@@ -430,10 +434,16 @@ func (u *Utility) SendEmail(to []string, template string, data map[string]interf
 	// Set up email information.
 	err := View.ExecuteTemplate(buf, template, data)
 	if err != nil {
-		fmt.Println(err)
-		return false
+		// increase faulty mails count
+		count++
+		// fmt.Println(err)
+		return count, false, err
 	}
-	return u.SendEmailSMTP(to, fmt.Sprintf("%v", data["subject"]), buf.String())
+	if u.SendEmailSMTP(to, fmt.Sprintf("%v", data["subject"]), buf.String()) {
+		return count, true, nil
+	}
+	count++
+	return count, false, nil
 }
 
 /* Go: email sent of Critical Error Message*/
@@ -445,7 +455,8 @@ func (u *Utility) GetErrorMessage(currentFilePath string, lineNumbers int, error
 	data["errorMessage"] = errorMessage
 	data["currentFilePath"] = currentFilePath
 	data["lineNumbers"] = lineNumbers
-	if !u.SendEmail(email, "errorMessage", data) {
+	_, isOk, _ := u.SendEmail(email, "errorMessage", data)
+	if !isOk {
 		fmt.Println("Error log Email couldn't be sent at the moment")
 	}
 	return false
