@@ -17,7 +17,7 @@ func PutTicket(w http.ResponseWriter, r *http.Request) {
 	log.Println("ticketStruct: ", ticketStruct)
 	if err != nil {
 		log.Println("Unable to decode json")
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -82,7 +82,7 @@ func PostTicket(w http.ResponseWriter, r *http.Request) {
 	log.Println("ticketStruct: ", ticketStruct)
 	if err != nil {
 		log.Println("Unable to decode json")
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		Helper.RenderJsonResponse(w, r, response, 400)

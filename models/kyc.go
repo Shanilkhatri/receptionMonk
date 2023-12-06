@@ -24,7 +24,7 @@ func (KycDetails) Putkyc(add KycDetails, tx *sqlx.Tx) bool {
 		//logger remove for duplicate entry that means duplicate error message not send at email.
 		istrue, _ := Helper.CheckSqlError(err, "Duplicate entry")
 		if !istrue {
-			Helper.Logger(err)
+			Helper.Logger(err, false)
 		}
 	} else {
 		return true
@@ -38,7 +38,7 @@ func (KycDetails) Postkyc(usr KycDetails, tx *sqlx.Tx) (bool, error) {
 	// Check error
 	if err != nil {
 		log.Println("error: ", err)
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 	} else {
 		Rowefffect, _ := userData.RowsAffected()
 		if Rowefffect == 0 {

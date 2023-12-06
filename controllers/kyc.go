@@ -20,7 +20,7 @@ func PutKycDetails(w http.ResponseWriter, r *http.Request) {
 	var user models.Authentication
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -102,7 +102,7 @@ func PostKycDetails(w http.ResponseWriter, r *http.Request) {
 	var userStruct models.KycDetails
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -199,7 +199,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // Max 10 MB file size
 	if err != nil {
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Message = "Failed to parse form"
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
@@ -209,7 +209,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the file from the form data
 	file, handler, err := r.FormFile("image")
 	if err != nil {
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Message = "Failed to retrieve image from form data"
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
@@ -238,7 +238,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		// randomFolderPath := filepath.Join("uploads", folderName)
 		// err = os.MkdirAll(randomFolderPath, os.ModePerm)
 		if err != nil {
-			// utility.Logger(err)
+			Helper.Logger(err, false)
 			response.Message = "Failed to save this image"
 			Helper.RenderJsonResponse(w, r, response, 400)
 			return
@@ -249,7 +249,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		if modulename == "item" {
 			filename, err := RandomNameForImage(handler)
 			if err != nil {
-				// utility.Logger(err)
+				Helper.Logger(err, false)
 				response.Message = "Failed to generate image name."
 				Helper.RenderJsonResponse(w, r, response, 400)
 				return
@@ -261,14 +261,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		err = os.MkdirAll("assets/images/item", os.ModePerm)
 	}
 	if err != nil {
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Message = "Failed to create uploads directory"
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	newFile, err := os.Create(savePath)
 	if err != nil {
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Message = "Failed to create file on server"
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
@@ -278,7 +278,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	// Copy the uploaded file to the new file on the server
 	_, err = io.Copy(newFile, file)
 	if err != nil {
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Message = "Failed to save file on server"
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
@@ -299,7 +299,7 @@ func RandomNameForImage(handler *multipart.FileHeader) (string, error) {
 	extension = Helper.GetImageTypeExtension(handler.Filename, ".", true)
 	randomString, err := Helper.GenerateRandomString(30)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, true)
 		// response.Message = "Failed to generate image name."
 		// utility.RenderJsonResponse(w, r, response, 400)
 		return "", err

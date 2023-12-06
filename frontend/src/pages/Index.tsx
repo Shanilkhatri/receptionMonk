@@ -535,7 +535,7 @@ const Index = () => {
             
             {/* {isModalOpen &&( */}
 
-            <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
+            {/* <Modal isOpen={isModalOpen} onClose={handleCloseModal} hasCloseBtn={false}>
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
                         <div className="modal-content">
@@ -562,20 +562,20 @@ const Index = () => {
                                         <option value="pendingVerification">pending Verification</option>
                                     </select>
                                     
-                                    {/* <select
+                                     <select
                                         aria-describedby="err-currtype" aria-label="currentytype"
                                         name="doc_name" id="currtype" required>
                                         <option disabled selected hidden value="">Select Type</option>
                                         <option value="aadhaar_card">Aadhaar Card</option>
                                         <option value="pan_card">PanCard</option>
                                     </select>
-                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" /> */}
+                                    <input type="file" id="fileInput" name="doc_pic_name" accept="image/*" /> 
                                     
-                                    {/* <input type="text" className="form-control" id="company-name" />
+                                    <input type="text" className="form-control" id="company-name" />
                                      <input type="text" className="form-control" id="company-gstin"/>
                                      <input type="email" className="form-control" id="company-email" value={store.getState().themeConfig.email} readOnly/>
                                      <input type="text" className="form-control" id="company-address"/>
-                                     <input type="text" className="form-control" id="company-contact"/> */}
+                                     <input type="text" className="form-control" id="company-contact"/> 
 
                                     <button type="submit" className="btn btn-primary" >
                                         Save
@@ -585,7 +585,7 @@ const Index = () => {
                         </div>
                     </div>
                 </div>
-            </Modal>
+            </Modal> */}
             {/* )} */}
         
             {

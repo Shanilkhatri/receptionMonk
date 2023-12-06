@@ -38,6 +38,7 @@ type Users struct {
 	EpochCurrent          int64  `db:"epochcurrent"`
 	EpochExpired          int64  `db:"epochexpired"`
 	IsWizardComplete      string `json:"iswizardcomplete" db:"iswizardcomplete"`
+	Avatar                string `json:"avatar" db:"avatar"`
 }
 
 type UserCondition struct {
@@ -59,14 +60,14 @@ type UserCondition struct {
 // insert data in authentication table
 func (user Users) PutUser(add Users, tx *sqlx.Tx) bool {
 
-	_, err := tx.NamedExec("INSERT INTO `authentication` (name,email,passwordHash,twoFactorKey,twoFactorRecoveryCode,dob,accountType,companyId,status,iswizardcomplete) VALUES ( :Name,:Email,:PasswordHash,:TwoFactorKey,:TwoFactorRecoveryCode,:DOB,:AccountType,:CompanyID,:Status,:Iswizardcomplete)", map[string]interface{}{"Name": add.Name, "Email": add.Email, "PasswordHash": add.PasswordHash, "TwoFactorKey": add.TwoFactorKey, "TwoFactorRecoveryCode": add.TwoFactorRecoveryCode, "DOB": add.DOB, "AccountType": add.AccountType, "CompanyID": add.CompanyID, "Status": add.Status, "Iswizardcomplete": add.IsWizardComplete})
+	_, err := tx.NamedExec("INSERT INTO `authentication` (name,email,passwordHash,twoFactorKey,twoFactorRecoveryCode,dob,accountType,companyId,status,iswizardcomplete,avatar) VALUES ( :Name,:Email,:PasswordHash,:TwoFactorKey,:TwoFactorRecoveryCode,:DOB,:AccountType,:CompanyID,:Status,:Iswizardcomplete,:Avatar)", map[string]interface{}{"Name": add.Name, "Email": add.Email, "PasswordHash": add.PasswordHash, "TwoFactorKey": add.TwoFactorKey, "TwoFactorRecoveryCode": add.TwoFactorRecoveryCode, "DOB": add.DOB, "AccountType": add.AccountType, "CompanyID": add.CompanyID, "Status": add.Status, "Iswizardcomplete": add.IsWizardComplete, "Avatar": add.Avatar})
 	// Check error
 	if err != nil {
 		log.Println(err)
 		//logger remove for duplicate entry that means duplicate error message not send at email.
 		istrue, _ := Helper.CheckSqlError(err, "Duplicate entry")
 		if !istrue {
-			Helper.Logger(err)
+			Helper.Logger(err, false)
 		}
 		return false
 	} else {
@@ -80,7 +81,7 @@ func (user Users) PostUser(usr Users) (bool, error) {
 	// Check error
 	if err != nil {
 		log.Println("error: ", err)
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 	} else {
 		Rowefffect, _ := userData.RowsAffected()
 		if Rowefffect == 0 {
@@ -99,7 +100,7 @@ func (user Users) GetUserById(userId int64) (Users, error) {
 
 func (Users) GetUser(filter UserCondition) ([]Users, error) {
 	var userData []Users
-	query := "SELECT id,name,email,dob,accountType,companyId,status from authentication Where 1=1" + filter.WhereCondition
+	query := "SELECT id,name,email,dob,accountType,companyId,status,avatar from authentication Where 1=1" + filter.WhereCondition
 	condition := map[string]interface{}{
 		"Id":        filter.ID,
 		"Dob":       filter.DOB,
@@ -163,7 +164,7 @@ func (Users) UpdateWizardStatus(usr Authentication, tx *sqlx.Tx) (bool, error) {
 	// Check error
 	if err != nil {
 		log.Println("error: ", err)
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 	} else {
 		Rowefffect, _ := userData.RowsAffected()
 		if Rowefffect == 0 {

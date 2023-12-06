@@ -14,7 +14,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 	err := Helper.StrictParseDataFromJson(r, &companyStruct)
 	log.Println("put companyStruct: ", companyStruct)
 	if err != nil {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -23,7 +23,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 	}
 	ok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !ok {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -35,7 +35,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		userType = "guest"
 	}
 	if userType != "owner" {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "You cannot register the company because you are not an owner."
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -50,7 +50,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		if isok {
 			log.Println(errString)
 		}
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		tx.Rollback()
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
@@ -63,7 +63,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		if isok {
 			log.Println(errString)
 		}
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		tx.Rollback()
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
@@ -72,7 +72,7 @@ func PutCompany(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 		if err != nil {
 			log.Println(err)
-			Helper.Logger(err)
+			Helper.Logger(err, false)
 			tx.Rollback()
 			response.Status = "400"
 			response.Message = "Unable to add company details at the moment! Please try again."
@@ -99,7 +99,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 	err := Helper.StrictParseDataFromJson(r, &companyStruct)
 	log.Println("companyStruct: ", companyStruct)
 	if err != nil {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -108,7 +108,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 	}
 	ok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !ok {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request."
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -119,7 +119,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 		userType = "guest"
 	}
 	if userType != "owner" {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "You cannot update the company details because you are not an owner."
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -134,7 +134,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 		if isok {
 			log.Println(errString)
 		}
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
@@ -142,7 +142,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 	err = tx.Commit()
 	if err != nil {
 		log.Println(err)
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		tx.Rollback()
 		response.Status = "400"
 		response.Message = "Unable to update company details at the moment! Please try again."
@@ -169,7 +169,7 @@ func PostCompany(w http.ResponseWriter, r *http.Request) {
 // 	if isok {
 // 		log.Println(errString)
 // 	}
-// 	utility.Logger(err)
+// 	Helper.Logger(err, false)
 // 	utility.RenderJsonResponse(w, r, response, 400)
 // 	return
 // }
@@ -183,7 +183,7 @@ func GetCompany(w http.ResponseWriter, r *http.Request) {
 	if CompanyID > 0 {
 		companyStruct, err := models.Company{}.GetCompanyById(CompanyID)
 		if err != nil {
-			Helper.Logger(err)
+			Helper.Logger(err, false)
 			response.Status = "400"
 			response.Message = "Unable to get company details at the moment! Please try again."
 			Helper.RenderJsonResponse(w, r, response, 400)

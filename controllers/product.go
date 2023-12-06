@@ -34,7 +34,7 @@ func PutProduct(w http.ResponseWriter, r *http.Request) {
 	var productStruct models.Products
 	err := Helper.StrictParseDataFromJson(r, &productStruct)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -48,14 +48,14 @@ func PutProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if userDetails.AccountType == "" {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "You cannot add the product because you are not an admin."
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	if !IsValidProductStruct(productStruct) {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Either required fields are empty or contain invalid data type"
@@ -80,7 +80,7 @@ func PostProduct(w http.ResponseWriter, r *http.Request) {
 	var productStruct models.Products
 	err := Helper.StrictParseDataFromJson(r, &productStruct)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -94,7 +94,7 @@ func PostProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if userDetails.AccountType == "" {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "You cannot update the product because you are not an admin."
 		Helper.RenderJsonResponse(w, r, response, 403)

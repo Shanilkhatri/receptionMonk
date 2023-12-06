@@ -26,7 +26,7 @@ func (Company) PutCompany(company Company, tx *sqlx.Tx) (int64, error) {
 		//logger remove for duplicate entry that means duplicate error message not send at email.
 		istrue, _ := Helper.CheckSqlError(err, "Duplicate entry")
 		if !istrue {
-			Helper.Logger(err)
+			Helper.Logger(err, false)
 		}
 		return insterid, err
 	}
@@ -38,7 +38,7 @@ func (Company) PostCompany(company Company, tx *sqlx.Tx) (bool, error) {
 	// Check error
 	if err != nil {
 		log.Println("error: ", err)
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 	} else {
 		Rowefffect, _ := userData.RowsAffected()
 		if Rowefffect == 0 {

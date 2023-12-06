@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"reakgo/models"
 	"reakgo/utility"
 	"strconv"
@@ -26,7 +27,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	var userStruct models.Users
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -36,14 +37,14 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 
 	// date format check
 	if !Helper.CheckDateFormat(userStruct.DOB) {
-		// Utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "Date is not in format `yyyy-mm-dd`"
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
 	if !Helper.CheckEmailFormat(userStruct.Email) {
-		// Utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "Please enter valid email address"
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -51,7 +52,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	}
 	ok, userDetails := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !ok && (userDetails.AccountType == "" && userStruct.AccountType != "owner") {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "403"
 		response.Message = "You cannot register the company because you are not an owner."
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -98,9 +99,12 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	if userStruct.IsWizardComplete == "" {
 		userStruct.IsWizardComplete = "personal"
 	}
+	if userStruct.Avatar == "" {
+		userStruct.Avatar = os.Getenv("DEFAULT_AVATAR")
+	}
 
 	if !IsValidUserStruct(userStruct) {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Either required fields are empty or contain invalid data type"
@@ -110,7 +114,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	// hashing password(plain text) #1
 	userStruct.PasswordHash, err = Helper.SaltPlainPassWord(userStruct.PasswordHash)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Unable to create a strong encryption for you password at the moment! Please try again."
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -128,7 +132,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 			log.Println(errString)
 
 		}
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
@@ -162,7 +166,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	var userStruct models.Users
 	err := Helper.StrictParseDataFromJson(r, &userStruct)
 	if err != nil {
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
@@ -170,14 +174,14 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	}
 	// date format check
 	if !Helper.CheckDateFormat(userStruct.DOB) {
-		// Utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Date is not in format `yyyy-mm-dd`"
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
 	if !Helper.CheckEmailFormat(userStruct.Email) {
-		// Utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please enter valid email address"
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -221,7 +225,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		// row, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
 			log.Println("error: ", err)
-			// Helper.Logger(err)
+			Helper.Logger(err, false)
 			response.Status = "400"
 			response.Message = "Unable to get user-record at the moment! Please try again."
 			Helper.RenderJsonResponse(w, r, response, 400)
@@ -239,7 +243,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		// hashing password(plain text) #1
 		userStruct.PasswordHash, err = Helper.SaltPlainPassWord(userStruct.PasswordHash)
 		if err != nil {
-			// Helper.Logger(err)
+			Helper.Logger(err, false)
 			response.Status = "400"
 			response.Message = "Unable to create a strong encryption for your password at the moment! Please try again."
 			Helper.RenderJsonResponse(w, r, response, 400)
@@ -261,7 +265,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	// flipping values from userDetails(from token) to userStruct(from req) which are empty in userStruct
 	flag = Helper.FillEmptyFieldsForPostUpdate(userDetails, &userStruct)
 	if !flag {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("error during flipping data at: FillEmptyFieldsForPostUser")
 		response.Status = "400"
 		response.Message = "Unable to process data at the moment! Please try again."
@@ -471,7 +475,7 @@ func PostUpdateWizardStatus(w http.ResponseWriter, r *http.Request) {
 	var user models.Authentication
 	err := Helper.StrictParseDataFromJson(r, &user)
 	if err != nil {
-		// Helper.Logger(err)
+		Helper.Logger(err, false)
 		log.Println("Unable to decode json")
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
