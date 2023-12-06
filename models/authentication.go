@@ -38,6 +38,7 @@ type Authentication struct {
 	EpochCurrent          int64  `db:"epochcurrent"`
 	EpochExpired          int64  `db:"epochexpired"`
 	IsWizardComplete      string `json:"iswizardcomplete" db:"iswizardcomplete"`
+	Avatar                string `json:"avatar" db:"avatar"`
 }
 
 type TwoFactor struct {

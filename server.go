@@ -32,6 +32,7 @@ func init() {
 	if err != nil {
 		log.Println(".env file wasn't found, looking at env variables")
 	}
+	var Helper utility.Helper = &utility.Utility{}
 	motd()
 	// Read Config
 	utility.Db, err = sqlx.Open("mysql", os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@/"+os.Getenv("DB_NAME"))
@@ -52,7 +53,7 @@ func init() {
 	utility.Db.SetMaxIdleConns(10)
 
 	gob.Register(utility.Flash{})
-
+	utility.LogFile = Helper.OpenLogFile() // open Logfile
 }
 
 func main() {

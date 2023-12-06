@@ -458,10 +458,10 @@ var ErrorLog *log.Logger
 func (u *Utility) OpenLogFile() *os.File {
 	loggedErrorPath := os.Getenv("PATH_OF_LOG_API")
 	if loggedErrorPath == "" {
-		loggedErrorPath = "APIdata/"
+		loggedErrorPath = "receptionmonk/"
 		fmt.Println("Error Log File: env variable not found")
 	}
-	logFileURI := loggedErrorPath + "loggederror/Errorlogged.txt"
+	logFileURI := loggedErrorPath + "Errorlogged.txt"
 	LogFile, err := os.OpenFile(logFileURI, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0777)
 	if err != nil {
 		fmt.Println("Error Log File: ", err)
@@ -482,7 +482,7 @@ func (u *Utility) Logger(errObject error, flag bool) {
 			fmt.Println("Error Log File: ", err)
 		}
 		ErrorLog.Output(2, errObject.Error())
-
+		log.Println("HERE3")
 		if os.Getenv("CI_ENVIRONMENT") == "production" && flag { // when development environment is set email not to be sent to developer because of this rise a error
 			go u.GetErrorMessage(currentFilePath, lineNumbers, errObject)
 		}
