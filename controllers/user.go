@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"reakgo/models"
 	"reakgo/utility"
 	"strconv"
@@ -97,6 +98,9 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 	}
 	if userStruct.IsWizardComplete == "" {
 		userStruct.IsWizardComplete = "personal"
+	}
+	if userStruct.Avatar == "" {
+		userStruct.Avatar = os.Getenv("DEFAULT_AVATAR")
 	}
 
 	if !IsValidUserStruct(userStruct) {
