@@ -66,7 +66,8 @@ const SignInOTP = () => {
             padding: '10px 20px',
         });
         setTimer(3)
-        navigate("auth/signin")
+        navigate("/auth/signin")
+        //add a exception for 10 times resending the otp.
     };
     // otp timer code finish----------
 

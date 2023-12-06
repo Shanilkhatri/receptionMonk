@@ -166,8 +166,8 @@ func (MockHelper) SendEmail(to []string, template string, data map[string]interf
 }
 
 // SendEmailSMTP implements utility.Helper.
-func (MockHelper) SendEmailSMTP(to []string, subject string, body string) bool {
-	return true
+func (MockHelper) SendEmailSMTP(to []string, subject string, body string) (bool, error) {
+	return true, nil
 }
 
 // StrToInt implements utility.Helper.

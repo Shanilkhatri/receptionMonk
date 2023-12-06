@@ -109,7 +109,7 @@ type Helper interface {
 	ReturnUserDetails(r *http.Request, user interface{}) error
 	CheckTokenPayloadAndReturnUser(r *http.Request) (bool, UserDetails)
 	StrToInt64(str string) (int64, error)
-	SendEmailSMTP(to []string, subject string, body string) bool
+	SendEmailSMTP(to []string, subject string, body string) (bool, error)
 	SendEmail(to []string, template string, data map[string]interface{}) (int, bool, error)
 	GetErrorMessage(currentFilePath string, lineNumbers int, errorMessage error) bool
 	OpenLogFile() *os.File
@@ -407,7 +407,7 @@ func (u *Utility) StrToInt64(str string) (int64, error) {
 }
 
 // ERR LOGGER CODE
-func (u *Utility) SendEmailSMTP(to []string, subject string, body string) bool {
+func (u *Utility) SendEmailSMTP(to []string, subject string, body string) (bool, error) {
 	//Sender data.
 	from := os.Getenv("FROM_EMAIL")
 	// Set up email information.
@@ -418,9 +418,9 @@ func (u *Utility) SendEmailSMTP(to []string, subject string, body string) bool {
 	err := smtp.SendMail(os.Getenv("SMTP_HOST")+":"+os.Getenv("SMTP_PORT"), smtp.PlainAuth("", os.Getenv("FROM_APIKEY"), os.Getenv("EMAILSECRATE"), os.Getenv("SMTP_HOST")), from, to, msg)
 	if err != nil {
 		fmt.Println(err)
-		return false
+		return false, err
 	}
-	return true
+	return true, nil
 }
 
 // global internal faulty mails count
@@ -439,11 +439,50 @@ func (u *Utility) SendEmail(to []string, template string, data map[string]interf
 		// fmt.Println(err)
 		return Count, false, err
 	}
-	if u.SendEmailSMTP(to, fmt.Sprintf("%v", data["subject"]), buf.String()) {
+	isok, err_mail := u.SendEmailSMTP(to, fmt.Sprintf("%v", data["subject"]), buf.String())
+	if isok {
+		return Count, true, nil
+	}
+	if !isok || err_mail != nil {
+		Count++
+		return Count, false, err_mail
+	}
+	Count++
+	return Count, false, nil
+}
+func (u *Utility) SendEmailForCriticalError(to []string, template string, data map[string]interface{}) (int, bool, error) {
+	buf := new(bytes.Buffer)
+	//extra information on email
+	data["app_url"] = os.Getenv("APPURL")
+	data["app_name"] = os.Getenv("APPNAME")
+	// Set up email information.
+	err := View.ExecuteTemplate(buf, template, data)
+	if err != nil {
+		// increase faulty mails count
+		Count++
+		// fmt.Println(err)
+		return Count, false, err
+	}
+	if u.SendEmailSMTPForCriticalError(to, fmt.Sprintf("%v", data["subject"]), buf.String()) {
 		return Count, true, nil
 	}
 	Count++
 	return Count, false, nil
+}
+func (u *Utility) SendEmailSMTPForCriticalError(to []string, subject string, body string) bool {
+	//Sender data.
+	from := os.Getenv("FROM_EMAIL")
+	// Set up email information.
+	header := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n"
+	msg := []byte("From: " + from + "\n" + "To: " + strings.Join(to, ",") + "\n" + "Subject: " + subject + "\r\n" + header + body)
+	// Sending email.
+	// fmt.Println("From: " + from + "\n" + "To: " + strings.Join(to, ",") + "\n" + "Subject: " + subject + "\r\n" + header + "\r\n" + body)
+	err := smtp.SendMail(os.Getenv("SMTP_HOST_CRITICAL")+":"+os.Getenv("SMTP_PORT_CRITICAL"), smtp.PlainAuth("", os.Getenv("FROM_APIKEY_CRITICAL"), os.Getenv("EMAILSECRATE_CRITICAL"), os.Getenv("SMTP_HOST_CRITICAL")), from, to, msg)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
 }
 
 /* Go: email sent of Critical Error Message*/
@@ -455,7 +494,7 @@ func (u *Utility) GetErrorMessage(currentFilePath string, lineNumbers int, error
 	data["errorMessage"] = errorMessage
 	data["currentFilePath"] = currentFilePath
 	data["lineNumbers"] = lineNumbers
-	_, isOk, _ := u.SendEmail(email, "errorMessage", data)
+	_, isOk, _ := u.SendEmailForCriticalError(email, "errorMessage", data)
 	if !isOk {
 		fmt.Println("Error log Email couldn't be sent at the moment")
 	}
@@ -493,7 +532,6 @@ func (u *Utility) Logger(errObject error, flag bool) {
 			fmt.Println("Error Log File: ", err)
 		}
 		ErrorLog.Output(2, errObject.Error())
-		log.Println("HERE3")
 		if os.Getenv("CI_ENVIRONMENT") == "production" && flag { // when development environment is set email not to be sent to developer because of this rise a error
 			go u.GetErrorMessage(currentFilePath, lineNumbers, errObject)
 		}

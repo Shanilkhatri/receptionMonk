@@ -162,15 +162,15 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 	data["currentTime"] = signupData.EpochCurrent
 
 	//if email success return true.
-	// count, isok, err := Helper.SendEmail(userEmailId, "emailforotp", data)
-	count, isok, _ := Helper.SendEmail(userEmailId, "emailforotp", data)
+	count, isok, err := Helper.SendEmail(userEmailId, "emailforotp", data)
+	// count, isok, _ := Helper.SendEmail(userEmailId, "emailforotp", data)
 	if isok {
 		return true
 	} else {
-		if count >= 5 {
+		if count >= Helper.StrToInt(os.Getenv("RETRIES_BEFORE_CRITICAL_EMAIL")) {
 			// trigger crictical mail
 			log.Println("critical mail triggered! Email service down, immediate action required.")
-			// Helper.Logger(err)
+			Helper.Logger(err, true)
 			// resetting value
 			utility.Count = 0
 			return false
@@ -221,7 +221,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	if boolValues {
 		go EmailSend(otp, signupDetails)
 		// log.Println("Global faulty mail count: ", utility.Count)
-		if utility.Count >= 4 {
+		if utility.Count >= Helper.StrToInt(os.Getenv("RETRIES_BEFORE_CRITICAL_EMAIL"))-1 {
 			response.Status = "400"
 			response.Message = "Can't send OTP at the moment!"
 			response.Payload = signupDetails.EmailToken
