@@ -119,7 +119,7 @@ func (m MockHelper) GetSqlErrorString(err error) string {
 }
 
 // Logger implements utility.Helper.
-func (MockHelper) Logger(errObject error) {
+func (MockHelper) Logger(errObject error, flag bool) {
 	panic("unimplemented")
 }
 
@@ -130,7 +130,7 @@ func (m MockHelper) NewPasswordHash(NewPassword string) (string, error) {
 	//modify NewPassword
 	NewPassword = string(newPasswordHash)
 	if err != nil || NewPassword == "" {
-		m.Logger(err)
+		m.Logger(err, true)
 	} else {
 		return NewPassword, err
 	}

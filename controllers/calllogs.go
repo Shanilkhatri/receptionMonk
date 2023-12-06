@@ -14,7 +14,7 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 	err := Helper.StrictParseDataFromJson(r, &callLogsStruct)
 	if err != nil {
 		log.Println("Unable to decode json: ", err)
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -41,7 +41,7 @@ func PutCallLogs(w http.ResponseWriter, r *http.Request) {
 			if isok {
 				log.Println(errString)
 			}
-			Helper.Logger(err)
+			Helper.Logger(err, false)
 			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}

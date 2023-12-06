@@ -16,7 +16,7 @@ func PutWallet(w http.ResponseWriter, r *http.Request) {
 	// directly unmarshalling the json data into the struct
 	err := Helper.StrictParseDataFromJson(r, &walletStruct)
 	if err != nil {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please fill all the fields correctly and try again"
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -65,7 +65,7 @@ func PostWallet(w http.ResponseWriter, r *http.Request) {
 	// directly unmarshalling the json data into the struct
 	err := Helper.StrictParseDataFromJson(r, &walletStruct)
 	if err != nil {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please fill all the fields correctly and try again"
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -105,7 +105,7 @@ func PostWallet(w http.ResponseWriter, r *http.Request) {
 	// now calling the model function to finally update the wallet data at DB
 	_, err = models.Wallet{}.PostWallet(walletStruct)
 	if err != nil {
-		Helper.Logger(err)
+		Helper.Logger(err, false)
 		sqlErr := Helper.GetSqlErrorString(err)
 		response.Status = "400"
 		response.Message = "Couldn't update wallet info at the moment! Please try again."

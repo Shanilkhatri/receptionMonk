@@ -113,7 +113,7 @@ type Helper interface {
 	SendEmail(to []string, template string, data map[string]interface{}) bool
 	GetErrorMessage(currentFilePath string, lineNumbers int, errorMessage error) bool
 	OpenLogFile() *os.File
-	Logger(errObject error)
+	Logger(errObject error, flag bool)
 	GetSqlErrorString(err error) string
 	CheckSqlError(err error, errString string) (bool, string)
 	NewPasswordHash(NewPassword string) (string, error)
@@ -473,7 +473,7 @@ func (u *Utility) OpenLogFile() *os.File {
 }
 
 /* Go: Log Critical Error Message on file if CI_ENVIRONMENT is production in env file then send email to EMAIL_FOR_CRITICAL_ERROR */
-func (u *Utility) Logger(errObject error) {
+func (u *Utility) Logger(errObject error, flag bool) {
 	if errObject != nil { // null checking because of stuck server when error is null
 		//using 1 indicate actually error
 		_, currentFilePath, lineNumbers, ok := runtime.Caller(1)
@@ -483,7 +483,7 @@ func (u *Utility) Logger(errObject error) {
 		}
 		ErrorLog.Output(2, errObject.Error())
 
-		if os.Getenv("CI_ENVIRONMENT") == "production" { // when development environment is set email not to be sent to developer because of this rise a error
+		if os.Getenv("CI_ENVIRONMENT") == "production" && flag { // when development environment is set email not to be sent to developer because of this rise a error
 			go u.GetErrorMessage(currentFilePath, lineNumbers, errObject)
 		}
 	}
@@ -509,7 +509,7 @@ func (u *Utility) NewPasswordHash(NewPassword string) (string, error) {
 	//modify NewPassword
 	NewPassword = string(newPasswordHash)
 	if err != nil || NewPassword == "" {
-		u.Logger(err)
+		u.Logger(err, true)
 	} else {
 		return NewPassword, err
 	}

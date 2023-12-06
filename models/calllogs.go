@@ -36,7 +36,7 @@ func (callLogs CallLogs) PutCallLogs(logs CallLogs, tx *sqlx.Tx) bool {
 		//logger remove for duplicate entry that means duplicate error message not send at email.
 		istrue, _ := Helper.CheckSqlError(err, " Duplicate entry")
 		if !istrue {
-			Helper.Logger(err)
+			Helper.Logger(err, false)
 		}
 		return false
 	} else {

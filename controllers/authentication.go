@@ -175,7 +175,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	err := Helper.StrictParseDataFromJson(r, &signupDetails)
 	if err != nil {
 		log.Println("error: ", err)
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		Helper.RenderJsonResponse(w, r, response, 400)
@@ -233,7 +233,7 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	var signupDetails models.SignupDetails
 	err := Helper.StrictParseDataFromJson(r, &signupDetails)
 	if err != nil {
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		Helper.RenderJsonResponse(w, r, response, 400)

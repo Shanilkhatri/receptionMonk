@@ -17,7 +17,7 @@ func PutResponse(w http.ResponseWriter, r *http.Request) {
 	log.Println("responseStruct: ", responseStruct)
 	if err != nil {
 		log.Println("Unable to decode json")
-		// utility.Logger(err)
+		Helper.Logger(err, false)
 		response.Status = "400"
 		response.Message = "Please check all fields correctly and try again."
 		Helper.RenderJsonResponse(w, r, response, 400)
