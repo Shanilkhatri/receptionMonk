@@ -172,20 +172,24 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		response.Message = "Please check all fields correctly and try again."
 		return
 	}
-	// date format check
-	if !Helper.CheckDateFormat(userStruct.DOB) {
-		Helper.Logger(err, false)
-		response.Status = "400"
-		response.Message = "Date is not in format `yyyy-mm-dd`"
-		Helper.RenderJsonResponse(w, r, response, 400)
-		return
+	if userStruct.DOB != "" {
+		// date format check
+		if !Helper.CheckDateFormat(userStruct.DOB) {
+			Helper.Logger(err, false)
+			response.Status = "400"
+			response.Message = "Date is not in format `yyyy-mm-dd`"
+			Helper.RenderJsonResponse(w, r, response, 400)
+			return
+		}
 	}
-	if !Helper.CheckEmailFormat(userStruct.Email) {
-		Helper.Logger(err, false)
-		response.Status = "400"
-		response.Message = "Please enter valid email address"
-		Helper.RenderJsonResponse(w, r, response, 400)
-		return
+	if userStruct.Email != "" {
+		if !Helper.CheckEmailFormat(userStruct.Email) {
+			Helper.Logger(err, false)
+			response.Status = "400"
+			response.Message = "Please enter valid email address"
+			Helper.RenderJsonResponse(w, r, response, 400)
+			return
+		}
 	}
 	var userDetails models.Users
 	// integrate token check and return if mismatch found with status 400
@@ -198,15 +202,8 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	}
 	flag := Helper.CopyFieldsBetweenDiffStructType(userDetailsType, &userDetails)
 	if !flag {
-		log.Println("error during copy data at: CopyFieldsBetweenDiffStructType")
 		response.Status = "400"
 		response.Message = "Unable to process data at the moment! Please try again."
-		Helper.RenderJsonResponse(w, r, response, 400)
-		return
-	}
-	if userStruct.Email == "" {
-		response.Status = "400"
-		response.Message = "Bad request! Cannot update data because of missing unique identifier"
 		Helper.RenderJsonResponse(w, r, response, 400)
 		return
 	}
@@ -262,7 +259,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			log.Println("error in generating random string for TwoFactorKey")
 		}
 	}
-	// flipping values from userDetails(from token) to userStruct(from req) which are empty in userStruct
+	// flipping values from already available userDetails for that id(from db) to userStruct(from req) which are empty in userStruct
 	flag = Helper.FillEmptyFieldsForPostUpdate(userDetails, &userStruct)
 	if !flag {
 		Helper.Logger(err, false)
@@ -349,6 +346,9 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 200)
 		return
 	}
+	response.Status = "400"
+	response.Message = "Unable to update this user details! Please contact admin."
+	Helper.RenderJsonResponse(w, r, response, 400)
 
 }
 
