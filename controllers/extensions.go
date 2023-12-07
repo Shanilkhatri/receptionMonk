@@ -98,6 +98,23 @@ func ValidationCheck(extensionStruct models.Extensions) bool {
 	}
 }
 
+type Payload struct {
+	CompanyID    string `json:"companyid"`
+	Type         string `json:"type"`
+	Secret       string `json:"secret"`
+	Name         string `json:"name"`
+	Extension    string `json:"extension"`
+	NewExtension string `json:"new_extension,omitempty"`
+	Host         string `json:"host,omitempty"`
+	Number       string `json:"number,omitempty"`
+}
+
+type Message struct {
+	Work    string  `json:"work"`
+	Method  string  `json:"method"`
+	Payload Payload `json:"payload"`
+}
+
 func PutExtension(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponce{Status: "500", Message: "Server is currently unavailable.", Payload: []interface{}{}}
 
@@ -166,6 +183,61 @@ func PutExtension(w http.ResponseWriter, r *http.Request) bool {
 
 	Helper.RenderJsonResponse(w, r, response, 200)
 	return false
+	// // Connect to RabbitMQ server
+	// conn, err := amqp.Dial("amqp://reak:reak@localhost:5672/")
+	// failOnError(err, "Failed to connect to RabbitMQ")
+	// defer conn.Close()
+
+	// // Create a channel
+	// ch, err := conn.Channel()
+	// failOnError(err, "Failed to open a channel")
+	// defer ch.Close()
+
+	// // Declare the queue
+	// queueName := "bestsellers_product"
+	// _, err = ch.QueueDeclare(
+	// 	queueName, // name
+	// 	true,      // durable
+	// 	false,     // delete when unused
+	// 	false,     // exclusive
+	// 	false,     // no-wait
+	// 	nil,       // arguments
+	// )
+	// failOnError(err, "Failed to declare a queue")
+	// message := Message{
+	// 	Work:   "extension", // or "sip_config"
+	// 	Method: "PUT",       // or "PUT" or "DELETE"
+	// 	Payload: Payload{
+	// 		CompanyID: "12",
+	// 		Type:      "owner",
+	// 		Secret:    "pratikpassword",
+	// 		Name:      "pra",
+	// 		Extension: "201",
+	// 		Host:      "cg.voip.ims.bsnl.in",
+	// 		Number:    "1234567890",
+	// 	},
+	// }
+	// // Publish a message to the queue
+
+	// body, _ := json.Marshal(message)
+	// err = ch.Publish(
+	// 	"",        // exchange
+	// 	queueName, // routing key (queue name)
+	// 	false,     // mandatory
+	// 	false,     // immediate
+	// 	amqp.Publishing{
+	// 		ContentType: "application/json",
+	// 		Body:        body,
+	// 	})
+	// failOnError(err, "Failed to publish a message")
+
+	// fmt.Printf(" [x] Sent '%s'\n", body)
+	// return true
+}
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
 }
 
 func DeleteExtension(w http.ResponseWriter, r *http.Request) bool {
