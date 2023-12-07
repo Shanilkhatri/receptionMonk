@@ -235,7 +235,6 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	// otpSession := fmt.Sprintf("%v", utility.SessionGet(r, "otp"))
 	emailToken := r.Header.Get("emailVerfToken")
-	log.Println("emailVerfToekn: ", emailToken)
 	var signupDetails models.SignupDetails
 	err := Helper.StrictParseDataFromJson(r, &signupDetails)
 	if err != nil {

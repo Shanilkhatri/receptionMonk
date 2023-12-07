@@ -146,8 +146,6 @@ const SignInOTP = () => {
 
         });
         var responseData = await response.json() // wait for response > json
-
-        console.log(responseData)
         if (response.ok) {
             // if (true) {
 
