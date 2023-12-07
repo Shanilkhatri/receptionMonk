@@ -5,7 +5,10 @@ import sortBy from 'lodash/sortBy';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
 import { setPageTitle } from '../../store/themeConfigSlice';
-
+import Utility from '../../utility/utility';
+// object of class utility
+const utility = new Utility()
+const appUrl = import.meta.env.VITE_APPURL
 const ViewUser = () => {
 
 const dispatch = useDispatch();
@@ -197,6 +200,30 @@ const dispatch = useDispatch();
         columnAccessor: 'firstName',
         direction: 'asc',
     });
+    const fetchData = async () => {
+        try {
+            var token = utility.getCookieValue("exampleToken")
+        var headers = new Headers();
+        headers.append("Content-Type", 'application/json');
+        headers.append("Authorization", "bearer " + token);
+            // Make API call or fetch data from wherever you need
+            const response = await fetch(appUrl+'users',{
+                method: 'GET',
+                headers: headers,
+
+            });
+            const data = await response.json();
+            console.log(data)
+            // Update the state with the fetched data
+            setItems(data.Payload);
+            setInitialRecords(data.Payload);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+    useEffect(() => {
+        fetchData(); // Call the fetchData function when the component mounts
+    }, []);
 
     useEffect(() => {
         setPage(1);
