@@ -169,7 +169,6 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 	} else {
 		if count >= Helper.StrToInt(os.Getenv("RETRIES_BEFORE_CRITICAL_EMAIL")) {
 			// trigger crictical mail
-			log.Println("critical mail triggered! Email service down, immediate action required.")
 			Helper.Logger(err, true)
 			// resetting value
 			utility.Count = 0
@@ -203,7 +202,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	// utility.SessionSet(w, r, utility.Session{Key: "otp", Value: otp})
 	// utility.SessionSet(w, r, utility.Session{Key: "email", Value: signupDetails.Email})
 	//otp generate.
-	boolValues, err, otp := HelpingPostUser(signupDetails)
+	boolValues, err, signupDetails := HelpingPostUser(signupDetails)
 	if err != nil {
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
@@ -212,7 +211,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	if boolValues {
-		go EmailSend(otp, signupDetails)
+		go EmailSend(signupDetails.Otp, signupDetails)
 		// log.Println("Global faulty mail count: ", utility.Count)
 		if utility.Count >= Helper.StrToInt(os.Getenv("RETRIES_BEFORE_CRITICAL_EMAIL"))-1 {
 			response.Status = "400"
@@ -236,6 +235,7 @@ func MatchOtp(w http.ResponseWriter, r *http.Request) bool {
 	response := utility.AjaxResponce{Status: "500", Message: "Internal server error, Any serious issues which cannot be recovered from.", Payload: []interface{}{}}
 	// otpSession := fmt.Sprintf("%v", utility.SessionGet(r, "otp"))
 	emailToken := r.Header.Get("emailVerfToken")
+	log.Println("emailVerfToekn: ", emailToken)
 	var signupDetails models.SignupDetails
 	err := Helper.StrictParseDataFromJson(r, &signupDetails)
 	if err != nil {
@@ -315,7 +315,7 @@ func GenerateEmailToken(userid string) string {
 func Add(w http.ResponseWriter, r *http.Request) {
 	Helper.RenderTemplate(w, r, "emailforotp", nil)
 }
-func HelpingPostUser(signupDetails models.SignupDetails) (bool, error, string) {
+func HelpingPostUser(signupDetails models.SignupDetails) (bool, error, models.SignupDetails) {
 	otp, expirationTime, currentTime := GenerateOTP()
 
 	signupDetails.EpochCurrent = currentTime
@@ -323,6 +323,7 @@ func HelpingPostUser(signupDetails models.SignupDetails) (bool, error, string) {
 	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
 	signupDetails.EmailToken = GenerateEmailToken(emailToken)
 	signupDetails.Otp = otp
+	signupDetails.Token = GenerateEmailToken(signupDetails.EmailToken + signupDetails.Otp)
 	boolValues, err := models.Authentication{}.PostOrPutUserByEmailIds(signupDetails)
-	return boolValues, err, otp
+	return boolValues, err, signupDetails
 }

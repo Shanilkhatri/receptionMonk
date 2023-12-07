@@ -171,10 +171,7 @@ type SignupDetails struct {
 }
 
 func (user Authentication) PostOrPutUserByEmailIds(data SignupDetails) (bool, error) {
-	log.Println("data", data)
-	log.Println("email exists: ", EmailExistOrNot(data.Email))
 	if EmailExistOrNot(data.Email) {
-		log.Println("hi update")
 		//update data
 		queryOfauth, err := utility.Db.NamedExec("UPDATE `authentication` SET `emailToken`=:EmailToken,`otp`=:Otp,`epochcurrent`=:EpochCurrent,`epochexpired`=:EpochExpired, `token`=:Token WHERE `email`=:Email ", map[string]interface{}{"EmailToken": data.EmailToken, "Otp": data.Otp, "EpochCurrent": data.EpochCurrent, "EpochExpired": data.EpochExpired, "Email": data.Email, "Token": data.Token})
 		// Check error
@@ -212,7 +209,6 @@ func EmailExistOrNot(email string) bool {
 func (auth Authentication) GetUserDetailsByEmail(email string) (SignupDetails, error) {
 	var selectedRow SignupDetails
 
-	log.Println("email: ", email)
 	err := utility.Db.Get(&selectedRow, "SELECT emailToken, otp,epochcurrent,epochexpired,email FROM `authentication` WHERE email = ?", email)
 	log.Println("selectedRow: ", selectedRow)
 	return selectedRow, err

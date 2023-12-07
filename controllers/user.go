@@ -216,10 +216,13 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		Helper.RenderJsonResponse(w, r, response, 403)
 		return
 	}
+	var token string
 	// this step is to get user incase a user with higher access rights tries to update other user
 	if (userDetails.AccountType == "owner" || userDetails.AccountType == "super-admin" && userStruct.AccountType != "admin" && userStruct.ID != userDetails.ID) || (userDetails.AccountType == "user" && userStruct.ID == userDetails.ID) {
 		// we need to get user details now
 		row, err := models.Users{}.GetUserById(userStruct.ID)
+		//for updating the new token
+		token = row.Token
 		//switch to email id not with the primary id
 		// row, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
@@ -348,6 +351,9 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		jsonData, _ := json.Marshal(userData)
+		if email != "" {
+			utility.Cache.Delete(token)
+		}
 		// rehydrating the cache after the a successful update
 		utility.Cache.Set(userData.Token, jsonData)
 		Helper.RenderJsonResponse(w, r, response, 200)

@@ -96,7 +96,6 @@ const SignInOTP = () => {
           elem.focus();
         }
       };
-      
     // otp autoTab end --------
     useEffect(() => {
         dispatch(setPageTitle('SignIn OTP Verification'));
@@ -148,6 +147,7 @@ const SignInOTP = () => {
         });
         var responseData = await response.json() // wait for response > json
 
+        console.log(responseData)
         if (response.ok) {
             // if (true) {
 
@@ -164,7 +164,6 @@ const SignInOTP = () => {
 
             // for production:
             // -> document.cookie = "myCookie=myValue; secure; HttpOnly; path=/; SameSite=Strict";
-
             // for development :
             document.cookie = `exampleToken=${responseData.Payload}; secure;  expires=${expirationDate.toUTCString()}; path=/`;
             // document.cookie = `exampleData=${dataString}; expires=${expirationDate.toUTCString()}; path=/`;
