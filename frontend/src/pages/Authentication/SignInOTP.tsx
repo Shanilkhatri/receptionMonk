@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { setPageTitle,setEmailVerToken } from '../../store/themeConfigSlice';
+import { setPageTitle,setEmailVerToken, setResendOtpCount } from '../../store/themeConfigSlice';
 import * as Yup from 'yup';
 import { Field, Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
@@ -31,6 +31,8 @@ const SignInOTP = () => {
 
     const handleResendClick = async () => {
         // resend OTP 
+        // incrementing count for resend button hit times
+        dispatch(setResendOtpCount())
         // jsonObj to send email 
         var jsonObj = {
             "authEmailId": store.getState().themeConfig.email  // email at redux-store
@@ -48,26 +50,31 @@ const SignInOTP = () => {
         // response > json
         let data = await response.json()
         
-        if (response.ok){
+        // storing resendCount in a variable 
+        let currResendCount = store.getState().themeConfig.resendOtpCount
+        let maxAllowedRetries = parseInt(import.meta.env.VITE_MAX_ALLOWED_RESENDS)
+        if (response.ok && currResendCount < maxAllowedRetries){
             // For demonstration purposes, let's just reset the timer
             startTimer();
             dispatch(setEmailVerToken(data.Payload));
             return
         }
-        const toast = Swal.mixin({
-            toast: true,
-            position: 'top',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        toast.fire({
-            icon: 'error', 
-            title: 'Maximum resend attempts reached. Re-directing!',
-            padding: '10px 20px',
-        });
-        setTimer(3)
-        navigate("/auth/signin")
-        //add a exception for 10 times resending the otp.
+        // when response is not ok || user has already made allowed number of attempts, So that he/she doesn't spam
+        if (!response.ok || currResendCount >= maxAllowedRetries){
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'error', 
+                title: 'Maximum resend attempts reached. Re-directing!',
+                padding: '10px 20px',
+            });
+            setTimer(3)
+            navigate("/auth/SignIn")
+        }
     };
     // otp timer code finish----------
 

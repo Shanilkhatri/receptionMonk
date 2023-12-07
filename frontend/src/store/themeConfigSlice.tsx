@@ -40,7 +40,7 @@ const initialState = {
     error: false,
     showElement: true,
     uploaded: null,
-    
+    resendOtpCount: 0,
     hydrateCookie: { "id": 0,"name": "", "email": "", "accountType": "", "dob": "", "iswizardcomplete": false, "companyId": 0 },
     dob:"",
     emailVerfToken: "",
@@ -174,10 +174,13 @@ const themeConfigSlice = createSlice({
             }else {
                 state.hydrateCookie = payload
             }
+        },
+        setResendOtpCount(state){
+            state.resendOtpCount += 1;
         }
     },
 });
 
-export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle, setEmail, setEmailVerToken,setDob,setHydrateCookie } = themeConfigSlice.actions;
+export const { toggleTheme, toggleMenu, toggleLayout, toggleRTL, toggleAnimation, toggleNavbar, toggleSemidark, toggleLocale, toggleSidebar, setPageTitle, setEmail, setEmailVerToken,setDob,setHydrateCookie,setResendOtpCount } = themeConfigSlice.actions;
 
 export default themeConfigSlice.reducer;
