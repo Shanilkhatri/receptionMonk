@@ -387,12 +387,17 @@ func GetUserData(w http.ResponseWriter, r *http.Request) bool {
 	para.ID = int64(Helper.StrToInt(r.URL.Query().Get("id")))               // take id for url
 	para.CompanyID = int64(Helper.StrToInt(r.URL.Query().Get("CompanyId"))) // take company_id for url
 	birthday := strings.ToLower(r.URL.Query().Get("birthday"))              // take birthday for url
+
+	if usr.AccountType == "owner" {
+		para.CompanyID = usr.CompanyID
+	}
 	if birthday == "today" {
 		para.DOB = strconv.Itoa(int(time.Now().Unix()))
 	}
-	if para.ID != 0 && para.AccountType == "user" {
+	if para.ID != usr.ID && usr.AccountType == "user" {
 		para.ID = usr.ID
 	}
+
 	parameters := models.Users{}.GetParaForFilterUser(para)
 	result, err := models.Users{}.GetUser(parameters)
 	if err != nil {
