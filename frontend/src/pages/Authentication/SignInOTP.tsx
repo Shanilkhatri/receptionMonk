@@ -77,7 +77,27 @@ const SignInOTP = () => {
         }
     };
     // otp timer code finish----------
-
+    // otp autoTab start-------
+    const autoTab = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const BACKSPACE_KEY = 8;
+        const DELETE_KEY = 46;
+      
+        let tabindex = Number(e.currentTarget.tabIndex);
+      
+        if (e.keyCode === BACKSPACE_KEY) {
+          tabindex -= 1;
+        } else if (e.keyCode !== DELETE_KEY) {
+          tabindex += 1;
+        }
+      
+        const elem = document.querySelector(`[tabindex="${tabindex}"]`) as HTMLInputElement;
+      
+        if (elem) {
+          elem.focus();
+        }
+      };
+      
+    // otp autoTab end --------
     useEffect(() => {
         dispatch(setPageTitle('SignIn OTP Verification'));
         // if state doesn't have email we throw user back to login
@@ -219,6 +239,7 @@ const SignInOTP = () => {
                                                 type="text"
                                                 className="form-input border border-gray-400 focus:border-orange-400 text-center"
                                                 tabIndex={i + 1}
+                                                onKeyUp={autoTab}
                                             // initialValue={undefined}
                                             />
 
