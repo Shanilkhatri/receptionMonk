@@ -114,7 +114,7 @@ func (Users) GetUser(filter UserCondition) ([]Users, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var singleRow Users
-		err := rows.Scan(&singleRow.ID, &singleRow.Name, &singleRow.Email, &singleRow.DOB, &singleRow.AccountType, &singleRow.CompanyID, &singleRow.Status)
+		err := rows.Scan(&singleRow.ID, &singleRow.Name, &singleRow.Email, &singleRow.DOB, &singleRow.AccountType, &singleRow.CompanyID, &singleRow.Status, &singleRow.Avatar)
 		if err != nil {
 			log.Println(err)
 			return userData, err
