@@ -77,7 +77,7 @@ func (user Users) PutUser(add Users, tx *sqlx.Tx) bool {
 
 // update user records by id
 func (user Users) PostUser(usr Users) (bool, error) {
-	userData, err := utility.Db.NamedExec("UPDATE `authentication` SET name=:Name,email=:Email,passwordHash=:PasswordHash,twoFactorKey=:TwoFactorKey,twoFactorRecoveryCode=:TwoFactorRecoveryCode,dob =:DOB,accountType=:AccountType,companyId=:CompanyID, status=:Status WHERE id=:ID ", map[string]interface{}{"Name": usr.Name, "Email": usr.Email, "PasswordHash": usr.PasswordHash, "TwoFactorKey": usr.TwoFactorKey, "TwoFactorRecoveryCode": usr.TwoFactorRecoveryCode, "DOB": usr.DOB, "AccountType": usr.AccountType, "CompanyID": usr.CompanyID, "Status": usr.Status, "ID": usr.ID})
+	userData, err := utility.Db.NamedExec("UPDATE `authentication` SET name=:Name,email=:Email,passwordHash=:PasswordHash,twoFactorKey=:TwoFactorKey,twoFactorRecoveryCode=:TwoFactorRecoveryCode,dob =:DOB,accountType=:AccountType,companyId=:CompanyID, status=:Status ,avatar=:Avatar WHERE id=:ID ", map[string]interface{}{"Name": usr.Name, "Email": usr.Email, "PasswordHash": usr.PasswordHash, "TwoFactorKey": usr.TwoFactorKey, "TwoFactorRecoveryCode": usr.TwoFactorRecoveryCode, "DOB": usr.DOB, "AccountType": usr.AccountType, "CompanyID": usr.CompanyID, "Status": usr.Status, "Avatar": usr.Avatar, "ID": usr.ID})
 	// Check error
 	if err != nil {
 		log.Println("error: ", err)
