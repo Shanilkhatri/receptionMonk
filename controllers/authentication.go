@@ -169,7 +169,6 @@ func EmailSend(otp string, signupData models.SignupDetails) bool {
 	} else {
 		if count >= Helper.StrToInt(os.Getenv("RETRIES_BEFORE_CRITICAL_EMAIL")) {
 			// trigger crictical mail
-			log.Println("critical mail triggered! Email service down, immediate action required.")
 			Helper.Logger(err, true)
 			// resetting value
 			utility.Count = 0
@@ -203,14 +202,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	// utility.SessionSet(w, r, utility.Session{Key: "otp", Value: otp})
 	// utility.SessionSet(w, r, utility.Session{Key: "email", Value: signupDetails.Email})
 	//otp generate.
-	otp, expirationTime, currentTime := GenerateOTP()
-
-	signupDetails.EpochCurrent = currentTime
-	signupDetails.EpochExpired = expirationTime
-	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
-	signupDetails.EmailToken = GenerateEmailToken(emailToken)
-	signupDetails.Otp = otp
-	boolValues, err := models.Authentication{}.PostOrPutUserByEmailIds(signupDetails)
+	boolValues, err, signupDetails := HelpingPostUser(signupDetails)
 	if err != nil {
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
@@ -219,7 +211,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	if boolValues {
-		go EmailSend(otp, signupDetails)
+		go EmailSend(signupDetails.Otp, signupDetails)
 		// log.Println("Global faulty mail count: ", utility.Count)
 		if utility.Count >= Helper.StrToInt(os.Getenv("RETRIES_BEFORE_CRITICAL_EMAIL"))-1 {
 			response.Status = "400"
@@ -321,4 +313,16 @@ func GenerateEmailToken(userid string) string {
 // only for test emailforotp template run.
 func Add(w http.ResponseWriter, r *http.Request) {
 	Helper.RenderTemplate(w, r, "emailforotp", nil)
+}
+func HelpingPostUser(signupDetails models.SignupDetails) (bool, error, models.SignupDetails) {
+	otp, expirationTime, currentTime := GenerateOTP()
+
+	signupDetails.EpochCurrent = currentTime
+	signupDetails.EpochExpired = expirationTime
+	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
+	signupDetails.EmailToken = GenerateEmailToken(emailToken)
+	signupDetails.Otp = otp
+	signupDetails.Token = GenerateEmailToken(signupDetails.EmailToken + signupDetails.Otp)
+	boolValues, err := models.Authentication{}.PostOrPutUserByEmailIds(signupDetails)
+	return boolValues, err, signupDetails
 }
