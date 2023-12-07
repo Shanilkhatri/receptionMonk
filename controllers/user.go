@@ -182,6 +182,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	var email string
 	if userStruct.Email != "" {
 		if !Helper.CheckEmailFormat(userStruct.Email) {
 			Helper.Logger(err, false)
@@ -190,6 +191,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 			Helper.RenderJsonResponse(w, r, response, 400)
 			return
 		}
+		email = userStruct.Email
 	}
 	var userDetails models.Users
 	// integrate token check and return if mismatch found with status 400
@@ -290,7 +292,12 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		response.Status = "200"
 		response.Message = "Record successfully updated"
 		response.Payload = []interface{}{userStruct}
-
+		//this is used to check the token updata
+		if email != "" {
+			var signupDetails models.SignupDetails
+			signupDetails.Email = email
+			HelpingPostUser(signupDetails)
+		}
 		userData, err := models.Authentication{}.GetUserByEmail(userStruct.Email)
 		if err != nil {
 			tx.Rollback()

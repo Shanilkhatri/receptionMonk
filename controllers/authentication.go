@@ -203,14 +203,7 @@ func LoginByEmail(w http.ResponseWriter, r *http.Request) bool {
 	// utility.SessionSet(w, r, utility.Session{Key: "otp", Value: otp})
 	// utility.SessionSet(w, r, utility.Session{Key: "email", Value: signupDetails.Email})
 	//otp generate.
-	otp, expirationTime, currentTime := GenerateOTP()
-
-	signupDetails.EpochCurrent = currentTime
-	signupDetails.EpochExpired = expirationTime
-	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
-	signupDetails.EmailToken = GenerateEmailToken(emailToken)
-	signupDetails.Otp = otp
-	boolValues, err := models.Authentication{}.PostOrPutUserByEmailIds(signupDetails)
+	boolValues, err, otp := HelpingPostUser(signupDetails)
 	if err != nil {
 		response.Status = "500"
 		response.Message = "Internal server error, Any serious issues which cannot be recovered from."
@@ -321,4 +314,15 @@ func GenerateEmailToken(userid string) string {
 // only for test emailforotp template run.
 func Add(w http.ResponseWriter, r *http.Request) {
 	Helper.RenderTemplate(w, r, "emailforotp", nil)
+}
+func HelpingPostUser(signupDetails models.SignupDetails) (bool, error, string) {
+	otp, expirationTime, currentTime := GenerateOTP()
+
+	signupDetails.EpochCurrent = currentTime
+	signupDetails.EpochExpired = expirationTime
+	emailToken := signupDetails.Email + otp + strconv.FormatInt(currentTime, 10)
+	signupDetails.EmailToken = GenerateEmailToken(emailToken)
+	signupDetails.Otp = otp
+	boolValues, err := models.Authentication{}.PostOrPutUserByEmailIds(signupDetails)
+	return boolValues, err, otp
 }
