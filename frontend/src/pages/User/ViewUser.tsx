@@ -127,6 +127,7 @@ const ViewUser = () => {
           accountType: "",
           status: "",
           avatar: "",
+          companyId:0 // company id to be set in row object
         };
         desiredDataSet["id"] = item.id;
         desiredDataSet["name"] = item.name;
@@ -135,6 +136,7 @@ const ViewUser = () => {
         desiredDataSet["accountType"] = item.accountType;
         desiredDataSet["status"] = item.status;
         desiredDataSet["avatar"] = item.avatar;
+        desiredDataSet["companyId"] = item.companyId;
         arrayOfDesiredSet.push(desiredDataSet);
       });
       // Update the state with the fetched data
@@ -201,6 +203,7 @@ const ViewUser = () => {
   ) => {
     // const rowId = instance.getDataAtRowProp(row, "id"); // Get the ID from the data
     const rowObject = instance.getDataAtRow(row);
+    console.log("rowObject:L ",rowObject)
     let desiredDataSet = {
       id: `${rowObject[0]}`,
       name: `${rowObject[1]}`,

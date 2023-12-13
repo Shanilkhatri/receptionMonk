@@ -245,6 +245,36 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		// Create a new file on the server
 		savePath = filepath.Join("uploads", folderName)
+	} else if modulename == "avatar" {
+		isok, userDetailsType := Helper.CheckTokenPayloadAndReturnUser(r)
+		if !isok {
+			response.Status = "403"
+			response.Message = "Unauthorized access! You are not allowed to make this request"
+			Helper.RenderJsonResponse(w, r, response, 403)
+			return
+		}
+		idString := strconv.FormatInt(userDetailsType.ID, 10)
+		name, _ := Helper.NewPasswordHash(idString + userDetailsType.Name)
+		if name == "" {
+			response.Message = "Failed to set the name for this image ."
+			Helper.RenderJsonResponse(w, r, response, 500)
+			return
+		}
+		extension := Helper.GetImageTypeExtension(handler.Filename, ".", true)
+		fileName := name + extension
+		folderName := strings.ReplaceAll(fileName, "/", "")
+		err = os.MkdirAll("avatars", os.ModePerm) // Create the "avatars" directory if it doesn't exist
+		// randomFolderPath := filepath.Join("avatars", folderName)
+		// err = os.MkdirAll(randomFolderPath, os.ModePerm)
+		if err != nil {
+			Helper.Logger(err, false)
+			response.Message = "Failed to save this image"
+			Helper.RenderJsonResponse(w, r, response, 400)
+			return
+		}
+		// Create a new file on the server
+		savePath = filepath.Join("avatars", folderName)
+
 	} else {
 		if modulename == "item" {
 			filename, err := RandomNameForImage(handler)

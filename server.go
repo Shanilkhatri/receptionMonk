@@ -76,8 +76,13 @@ func main() {
 
 	// Set up a file server to serve the uploads folder
 	uploadsURL := "/uploads/" // URL path to access the uploads folder
+	avatarsURL := "/avatars/" // URL path to access the uploads folder
 	mux.PathPrefix(uploadsURL).Handler(http.HandlerFunc(staticHandlerUpload))
+	mux.PathPrefix(avatarsURL).Handler(http.HandlerFunc(staticHandlerAvatar))
 	mux.PathPrefix("/").HandlerFunc(handler)
+	// Set up a file server to serve the uploads folder
+	// mux.PathPrefix(avatarsURL).Handler(http.HandlerFunc(staticHandlerAvatar))
+	// mux.PathPrefix("/").HandlerFunc(handler)
 
 	if os.Getenv("APP_IS") == "monolith" {
 		log.Fatal(http.ListenAndServe(":"+os.Getenv("WEB_PORT"), utility.CSRF(mux)))
@@ -130,6 +135,18 @@ func staticHandlerUpload(w http.ResponseWriter, r *http.Request) {
 
 	// Construct the actual file path within the /assets/ directory
 	filePath := filepath.Join("./uploads/", fileName)
+
+	// Serve the requested file
+	http.ServeFile(w, r, filePath)
+}
+
+// restrict the upload function to get access by the specific path only
+func staticHandlerAvatar(w http.ResponseWriter, r *http.Request) {
+	// Get the requested file name
+	fileName := filepath.Base(r.URL.Path)
+
+	// Construct the actual file path within the /assets/ directory
+	filePath := filepath.Join("./avatars/", fileName)
 
 	// Serve the requested file
 	http.ServeFile(w, r, filePath)

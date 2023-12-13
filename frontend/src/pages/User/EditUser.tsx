@@ -6,27 +6,35 @@ import * as Yup from "yup";
 import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import Swal from "sweetalert2";
-
+import Utility from "../../utility/utility";
+const utility = new Utility()
 const EditUser = () => {
   const [image, setImage] = useState<string | undefined>();
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle("Update User"));
-    console.log(
-      "update user: ",
-      import.meta.env.VITE_APPURL +
-        store.getState().themeConfig.currentUserDataForUpdate.avatar
-    );
     if (store.getState().themeConfig.currentUserDataForUpdate.email == "") {
       navigate("/ViewUser");
     }
+    console.log("update user: ", typeof store.getState().themeConfig.currentUserDataForUpdate.id)
+    setImage(import.meta.env.VITE_APPURL +
+      store.getState().themeConfig.currentUserDataForUpdate.avatar)
   });
 
   const navigate = useNavigate();
 
   function handleChange(e: any) {
+    e.preventDefault()
+    console.log("file: ",URL.createObjectURL(e.target.files[0]))
     setImage(URL.createObjectURL(e.target.files[0]));
+    // // setImage(document.getElementById("fileInput") as HTMLInputElement?.value)
+    // const file = document.getElementById("fileInput") as HTMLInputElement | null;
+    // console.log("here: ",file)
+    // if (file) {
+    //   // ensure that element exists
+    //   setImage(file.value)
+    // }
   }
 
   const submitForm = () => {
@@ -43,6 +51,40 @@ const EditUser = () => {
       padding: "10px 20px",
     });
   };
+  async function editUser(data: any) {
+    console.log("adding user");
+
+    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar","kycfileupload");
+    console.log("images", img);
+    let userId = store.getState().themeConfig.currentUserDataForUpdate.id
+    if (typeof(userId)== 'string') {
+      userId = parseInt(userId)
+    }
+    console.log("typeof", typeof userId);
+    const userData = {
+      id: userId,
+      name: data.userName,
+      email: data.userEmail,
+      dob: data.userDob,
+      status: data.userStatus,
+      accountType: data.userAccType,
+      avatar: img,
+      companyId: store.getState().themeConfig.hydrateCookie.companyId,
+      iswizardcomplete: "kyc",
+    };
+
+    console.log(userData);
+    const ok = await utility.sendRequestPutOrPost(userData, "users", "POST");
+    if (ok) {
+      //do what you want if successfully added the data
+      console.log("SuccessFully added");
+      // check Token & update cookies
+      // calling_token_check();
+    } 
+    // else {
+    //   navigate("/auth/SignIn");
+    // }
+  }
   const schema = Yup.object().shape(
     {
       userName: Yup.string().required("Please fill User Name"),
@@ -86,6 +128,7 @@ const EditUser = () => {
 
       <Formik
         initialValues={{
+          id: store.getState().themeConfig.currentUserDataForUpdate.id,
           userName: store.getState().themeConfig.currentUserDataForUpdate.name,
           userEmail:
             store.getState().themeConfig.currentUserDataForUpdate.email,
@@ -113,6 +156,7 @@ const EditUser = () => {
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
             console.log(values);
+            editUser(values)
             setSubmitting(false);
           }, 400);
         }}
@@ -199,6 +243,48 @@ const EditUser = () => {
                     </div>
                   </div>
                 </div>
+
+
+                <div className="grid lg:grid-cols-2 lg:space-x-12 lg:my-5">
+                  <div className="grid md:grid-cols-2 my-3 lg:my-0">
+                    <div className="">
+                      <label htmlFor="id" className="py-2">
+                        id <span className="text-red-600">*</span>
+                      </label>
+                    </div>
+                    <div
+                      className={
+                        submitCount
+                          ? errors.id
+                            ? "has-error"
+                            : "has-success"
+                          : ""
+                      }
+                    >
+                      <Field
+                        name="id"
+                        type="text"
+                        id="id"
+                        placeholder="Enter User Name"
+                        className="form-input border border-gray-400 focus:border-orange-400"
+                      />
+
+                      {submitCount ? (
+                        errors.id ? (
+                          <div className="text-danger mt-1">
+                            {errors.id}
+                          </div>
+                        ) : (
+                          <div className="text-success mt-1">It is fine!</div>
+                        )
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+                  </div>
+
+
 
                 <div className="grid lg:grid-cols-2 lg:space-x-12 lg:space-y-0 lg:my-5">
                   <div className="grid md:grid-cols-2 my-3 lg:my-0">
@@ -334,16 +420,15 @@ const EditUser = () => {
                       }
                     >
                       <input
-                        name="avatar"
                         type="file"
-                        id="avatar"
-                        // onChange={handleChange}
+                        id="fileInput"
+                        onChange={handleChange}
                       />
                       <img
                         src={image}
                         alt=""
                         className="mt-2 w-[50%] h-[50%]"
-                        id="avatar"
+                        // id="avatar"
                       />
                       <p className="text-green-400">size up to 5MB</p>
 

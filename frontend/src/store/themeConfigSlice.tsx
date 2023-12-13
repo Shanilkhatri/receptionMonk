@@ -58,6 +58,7 @@ const initialState = {
     dob: "",
     avatar: "",
     status: "",
+    companyId: 0,
   },
   dob: "",
   emailVerfToken: "",
