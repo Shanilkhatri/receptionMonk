@@ -24,7 +24,6 @@ const AddUser = () => {
 
   const submitForm = (e: any) => {
     // console.log("userData");
-    // navigate('/');
     const toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -36,6 +35,7 @@ const AddUser = () => {
       title: "User Added Successfully",
       padding: "10px 20px",
     });
+    // navigate("/viewuser");
   };
 
   async function addUser(data: any) {
@@ -455,11 +455,7 @@ const AddUser = () => {
                         submitForm(e);
                       } else if (touched.avatar && !errors.avatar) {
                         submitForm(e);
-                      }
-                      // else if (touched.userCompName && !errors.userCompName) {
-                      //     submitForm();
-                      // }
-                      else if (touched.userStatus && !errors.userStatus) {
+                      } else if (touched.userStatus && !errors.userStatus) {
                         submitForm(e);
                       }
                     }}

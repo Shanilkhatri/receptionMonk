@@ -1,19 +1,33 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { IRootState } from "../../store";
+import store, { IRootState } from "../../store";
 import { setPageTitle } from "../../store/themeConfigSlice";
 import * as Yup from "yup";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import Swal from "sweetalert2";
 
 const EditUser = () => {
+  const [image, setImage] = useState<string | undefined>();
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle("Update User"));
+    console.log(
+      "update user: ",
+      import.meta.env.VITE_APPURL +
+        store.getState().themeConfig.currentUserDataForUpdate.avatar
+    );
+    if (store.getState().themeConfig.currentUserDataForUpdate.email == "") {
+      navigate("/ViewUser");
+    }
   });
 
   const navigate = useNavigate();
+
+  function handleChange(e: any) {
+    setImage(URL.createObjectURL(e.target.files[0]));
+  }
 
   const submitForm = () => {
     // navigate('/');
@@ -29,19 +43,28 @@ const EditUser = () => {
       padding: "10px 20px",
     });
   };
+  const schema = Yup.object().shape(
+    {
+      userName: Yup.string().required("Please fill User Name"),
+      userEmail: Yup.string()
+        .email("Invalid Email Address")
+        .required("Please fill Email"),
+      userDob: Yup.date().required("Please enter a valid date."),
+      userAccType: Yup.string().required("Please select User Type"),
+      userStatus: Yup.string().required("Please select User Status"),
+      avatar: Yup.mixed().when("avatar", {
+        is: (value: any) => value?.length,
+        then: (schema) =>
+          schema.test("avatar", "image is required", (value) => {
+            return value != undefined && value[0] && value[0].avatar !== "";
+          }),
+        otherwise: (schema) => schema.nullable(),
+      }),
+    },
+    //cyclic dependencies
 
-  const SubmittedForm = Yup.object().shape({
-    userName: Yup.string().required("Please fill User Name"),
-    userEmail: Yup.string()
-      .email("Invalid Email Address")
-      .required("Please fill Email"),
-    userPassword: Yup.string().required("Please fill User Password"),
-    userPhone: Yup.string().required("Please fill User Phone Number"),
-    userDob: Yup.string().required("Please fill User DOB"),
-    userAccType: Yup.string().required("Please select User Type"),
-    userCompName: Yup.string().required("Please fill User Company Name"),
-    userStatus: Yup.string().required("Please select User Status"),
-  });
+    [["avatar", "avatar"]]
+  );
 
   const isRtl =
     useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl"
@@ -63,16 +86,30 @@ const EditUser = () => {
 
       <Formik
         initialValues={{
-          userName: "",
-          userEmail: "",
-          userPassword: "",
-          userPhone: "",
-          userDob: "",
-          userAccType: "",
-          userCompName: "",
-          userStatus: "",
+          userName: store.getState().themeConfig.currentUserDataForUpdate.name,
+          userEmail:
+            store.getState().themeConfig.currentUserDataForUpdate.email,
+          userDob: store.getState().themeConfig.currentUserDataForUpdate.dob,
+          userAccType:
+            store.getState().themeConfig.currentUserDataForUpdate.accountType,
+          userStatus:
+            store.getState().themeConfig.currentUserDataForUpdate.status,
+          avatar:
+            import.meta.env.VITE_APPURL +
+            store.getState().themeConfig.currentUserDataForUpdate.avatar,
         }}
-        validationSchema={SubmittedForm}
+        validationSchema={schema}
+        //    Yup.object().shape({
+        //   userName: Yup.string().required("Please fill User Name"),
+        //   userEmail: Yup.string()
+        //     .email("Invalid Email Address")
+        //     .required("Please fill Email"),
+        //   userDob: Yup.date().required("Please enter a valid date."),
+        //   userAccType: Yup.string().required("Please select User Type"),
+        //   userStatus: Yup.string().required("Please select User Status"),
+        //   avatar:Yup.mixed()
+        // })
+
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
             console.log(values);
@@ -166,82 +203,6 @@ const EditUser = () => {
                 <div className="grid lg:grid-cols-2 lg:space-x-12 lg:space-y-0 lg:my-5">
                   <div className="grid md:grid-cols-2 my-3 lg:my-0">
                     <div className="">
-                      <label htmlFor="userPassword" className="py-2">
-                        Password <span className="text-red-600">*</span>
-                      </label>
-                    </div>
-                    <div
-                      className={
-                        submitCount
-                          ? errors.userPassword
-                            ? "has-error"
-                            : "has-success"
-                          : ""
-                      }
-                    >
-                      <Field
-                        name="userPassword"
-                        type="password"
-                        id="userPassword"
-                        placeholder="Enter User Password"
-                        className="form-input border border-gray-400 focus:border-orange-400"
-                      />
-
-                      {submitCount ? (
-                        errors.userPassword ? (
-                          <div className="text-danger mt-1">
-                            {errors.userPassword}
-                          </div>
-                        ) : (
-                          <div className="text-success mt-1">It is fine!</div>
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid  md:grid-cols-2 my-3 lg:my-0">
-                    <div className="">
-                      <label htmlFor="userPhone" className="py-2">
-                        Phone Number <span className="text-red-600">*</span>
-                      </label>
-                    </div>
-                    <div
-                      className={
-                        submitCount
-                          ? errors.userPhone
-                            ? "has-error"
-                            : "has-success"
-                          : ""
-                      }
-                    >
-                      <Field
-                        name="userPhone"
-                        type="text"
-                        id="userPhone"
-                        placeholder="Enter User Phone Number"
-                        className="form-input border border-gray-400 focus:border-orange-400"
-                      />
-
-                      {submitCount ? (
-                        errors.userPhone ? (
-                          <div className="text-danger mt-1">
-                            {errors.userPhone}
-                          </div>
-                        ) : (
-                          <div className="text-success mt-1">It is fine!</div>
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid lg:grid-cols-2 lg:space-x-12 lg:space-y-0 lg:my-5">
-                  <div className="grid md:grid-cols-2 my-3 lg:my-0">
-                    <div className="">
                       <label htmlFor="userDob" className="py-2">
                         Date of Birth <span className="text-red-600">*</span>
                       </label>
@@ -298,8 +259,8 @@ const EditUser = () => {
                         className="form-select border border-gray-400 focus:border-orange-400 text-gray-600"
                       >
                         <option value="">Select</option>
-                        <option value="User">User</option>
-                        <option value="Owner">Owner</option>
+                        <option value="user">User</option>
+                        <option value="owner">Owner</option>
                       </Field>
                       {submitCount ? (
                         errors.userAccType ? (
@@ -317,43 +278,6 @@ const EditUser = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-2 lg:space-x-12 lg:space-y-0 lg:my-5">
-                  <div className="grid md:grid-cols-2 my-3 lg:my-0">
-                    <div className="">
-                      <label htmlFor="userCompName" className="py-2">
-                        Company Name <span className="text-red-600">*</span>
-                      </label>
-                    </div>
-                    <div
-                      className={
-                        submitCount
-                          ? errors.userCompName
-                            ? "has-error"
-                            : "has-success"
-                          : ""
-                      }
-                    >
-                      <Field
-                        name="userCompName"
-                        type="text"
-                        id="userCompName"
-                        placeholder="Enter Company Name"
-                        className="form-input border border-gray-400 focus:border-orange-400"
-                      />
-
-                      {submitCount ? (
-                        errors.userCompName ? (
-                          <div className="text-danger mt-1">
-                            {errors.userCompName}
-                          </div>
-                        ) : (
-                          <div className="text-success mt-1">It is fine!</div>
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-
                   <div className="grid  md:grid-cols-2 my-3 lg:my-0">
                     <div className="">
                       <label htmlFor="userStatus" className="py-2">
@@ -375,9 +299,9 @@ const EditUser = () => {
                         className="form-select border border-gray-400 focus:border-orange-400 text-gray-600"
                       >
                         <option value="">Select</option>
-                        <option value="United States">Active</option>
-                        <option value="United Kingdom">Pending</option>
-                        <option value="Canada">Deactive</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="deactive">Deactive</option>
                       </Field>
                       {submitCount ? (
                         errors.userStatus ? (
@@ -388,6 +312,51 @@ const EditUser = () => {
                           <div className="text-success mt-1">It is fine!</div>
                         )
                       ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+
+                  {/* avatar added */}
+                  <div className="grid md:grid-cols-2 my-3 lg:my-0">
+                    <div className="">
+                      <label htmlFor="user-avatar" className="py-2">
+                        Avatar <span className="text-red-600"></span>
+                      </label>
+                    </div>
+                    <div
+                      className={
+                        submitCount
+                          ? errors.avatar
+                            ? "has-error"
+                            : "has-success"
+                          : ""
+                      }
+                    >
+                      <input
+                        name="avatar"
+                        type="file"
+                        id="avatar"
+                        // onChange={handleChange}
+                      />
+                      <img
+                        src={image}
+                        alt=""
+                        className="mt-2 w-[50%] h-[50%]"
+                        id="avatar"
+                      />
+                      <p className="text-green-400">size up to 5MB</p>
+
+                      {submitCount ? (
+                        errors.avatar ? (
+                          <div className="text-danger mt-1">
+                            {errors.avatar}
+                          </div>
+                        ) : null
+                      ) : (
+                        // (
+                        //   <div className="text-success mt-1">It is fine!</div>
+                        // )
                         ""
                       )}
                     </div>
@@ -410,17 +379,13 @@ const EditUser = () => {
                         submitForm();
                       } else if (touched.userEmail && !errors.userEmail) {
                         submitForm();
-                      } else if (touched.userPassword && !errors.userPassword) {
-                        submitForm();
-                      } else if (touched.userPhone && !errors.userPhone) {
-                        submitForm();
                       } else if (touched.userDob && !errors.userDob) {
                         submitForm();
                       } else if (touched.userAccType && !errors.userAccType) {
                         submitForm();
-                      } else if (touched.userCompName && !errors.userCompName) {
-                        submitForm();
                       } else if (touched.userStatus && !errors.userStatus) {
+                        submitForm();
+                      } else if (touched.avatar && !errors.avatar) {
                         submitForm();
                       }
                     }}
