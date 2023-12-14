@@ -67,31 +67,6 @@ const ViewUser = () => {
       : false;
   const [items, setItems] = useState([]);
 
-  // const deleteRow = (id: any = null) => {
-  //   if (window.confirm("Are you sure want to delete selected row ?")) {
-  //     if (id) {
-  //       setRecords(items.filter((user) => user.id !== id));
-  //       setInitialRecords(items.filter((user) => user.id !== id));
-  //       setItems(items.filter((user) => user.id !== id));
-  //       setSearch("");
-  //       setSelectedRecords([]);
-  //     } else {
-  //       let selectedRows = selectedRecords || [];
-  //       const ids = selectedRows.map((d: any) => {
-  //         return d.id;
-  //       });
-  //       const result = items.filter((d) => !ids.includes(d.id as never));
-  //       setRecords(result);
-  //       setInitialRecords(result);
-  //       setItems(result);
-  //       setSearch("");
-  //       setSelectedRecords([]);
-
-  //       setPage(1);
-  //     }
-  //   }
-  // };
-
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
@@ -162,35 +137,6 @@ const ViewUser = () => {
     setRecords([...initialRecords.slice(from, to)]);
   }, [page, pageSize, initialRecords]);
 
-  //   useEffect(() => {
-  //     setInitialRecords(() => {
-  //       return items.filter((item) => {
-  //         return (
-  //           // item.invoice.toLowerCase().includes(search.toLowerCase()) || //to be removed
-  //           item.userName.toLowerCase().includes(search.toLowerCase()) ||
-  //           item.userEmail.toLowerCase().includes(search.toLowerCase()) ||
-  //           item.userDob.toLowerCase().includes(search.toLowerCase()) ||
-  //           //item.amount.toLowerCase().includes(search.toLowerCase()) ||
-  //           item.userAccType.toLowerCase().includes(search.toLowerCase()) ||
-  //           // item.cname.toLowerCase().includes(search.toLowerCase()) || //to be removed
-  //           item.userStatus.tooltip
-  //             .toLowerCase()
-  //             .includes(search.toLowerCase()) ||
-  //           item.avatar
-  //         );
-  //       });
-  //     });
-  //   }, [search]);
-
-  //   useEffect(() => {
-  //     const container = hotTableComponentRef.current;
-
-  //     //const hot = new Handsontable(container);
-
-  //     return () => {
-  //       hot.destroy();
-  //     };
-  //   }, []);
 
   const editButtonRenderer = (
     instance: any,
@@ -348,6 +294,7 @@ const ViewUser = () => {
                   title: "Company Id",
                   type: "numeric",
                   data: "companyId",
+                  hidden: true, 
                 },
                 {
                   title: "Action",
@@ -360,6 +307,10 @@ const ViewUser = () => {
               readOnly={true}
               colHeaders={true}
               stretchH="all"
+              hiddenColumns={{
+                columns: [7],
+                indicators: true,
+              }}
               //afterGetColHeader={(col, TH) => {}}
               // enable the column menu
               filters={true}

@@ -19,10 +19,9 @@ const EditUser = () => {
     if (store.getState().themeConfig.currentUserDataForUpdate.email == "") {
       navigate("/ViewUser");
     }
-
     setImage(import.meta.env.VITE_APPURL +
       store.getState().themeConfig.currentUserDataForUpdate.avatar)
-  });
+  },[]);
 
   const navigate = useNavigate();
 
