@@ -13,6 +13,8 @@ const EditUser = () => {
   const [image, setImage] = useState<string | undefined>();
   // const formik = useFormikContext();
 
+  const isImageSet = useSelector((state) => state.image.isImageSet); //checking for image set or not
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle("Update User"));
