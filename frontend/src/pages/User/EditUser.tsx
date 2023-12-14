@@ -4,12 +4,14 @@ import store, { IRootState } from "../../store";
 import { setPageTitle } from "../../store/themeConfigSlice";
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, useFormikContext } from "formik";
 import Swal from "sweetalert2";
 import Utility from "../../utility/utility";
-const utility = new Utility()
+const utility = new Utility();
+
 const EditUser = () => {
   const [image, setImage] = useState<string | undefined>();
+  // const formik = useFormikContext();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -17,17 +19,37 @@ const EditUser = () => {
     if (store.getState().themeConfig.currentUserDataForUpdate.email == "") {
       navigate("/ViewUser");
     }
-    console.log("update user: ", typeof store.getState().themeConfig.currentUserDataForUpdate.id)
-    setImage(import.meta.env.VITE_APPURL +
-      store.getState().themeConfig.currentUserDataForUpdate.avatar)
-  });
+    console.log(
+      "update user: ",
+      typeof store.getState().themeConfig.currentUserDataForUpdate.id
+    );
+    setImage(
+      import.meta.env.VITE_APPURL +
+        store.getState().themeConfig.currentUserDataForUpdate.avatar
+    );
+  }, []);
 
   const navigate = useNavigate();
 
   function handleChange(e: any) {
-    e.preventDefault()
-    console.log("file: ",URL.createObjectURL(e.target.files[0]))
+    e.preventDefault();
+    //const file = e.target.files[0];
+
+    // console.log("file: ", URL.createObjectURL(e.target.files[0]));
     setImage(URL.createObjectURL(e.target.files[0]));
+
+    // if (file) {
+    //   formik.setFieldValue("image", file); // Update form values
+    //   const reader = new FileReader();
+
+    //   reader.onload = (e) => {
+    //     // Set the preview image source
+    //     document.getElementById("image-preview").src = e.target.result;
+    //   };
+
+    //   reader.readAsDataURL(file);
+    // }
+
     // // setImage(document.getElementById("fileInput") as HTMLInputElement?.value)
     // const file = document.getElementById("fileInput") as HTMLInputElement | null;
     // console.log("here: ",file)
@@ -54,11 +76,15 @@ const EditUser = () => {
   async function editUser(data: any) {
     console.log("adding user");
 
-    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar","kycfileupload");
+    let img = await utility.uploadImageAndReturnUrl(
+      "fileInput",
+      "avatar",
+      "kycfileupload"
+    );
     console.log("images", img);
-    let userId = store.getState().themeConfig.currentUserDataForUpdate.id
-    if (typeof(userId)== 'string') {
-      userId = parseInt(userId)
+    let userId = store.getState().themeConfig.currentUserDataForUpdate.id;
+    if (typeof userId == "string") {
+      userId = parseInt(userId);
     }
     console.log("typeof", typeof userId);
     const userData = {
@@ -80,7 +106,7 @@ const EditUser = () => {
       console.log("SuccessFully added");
       // check Token & update cookies
       // calling_token_check();
-    } 
+    }
     // else {
     //   navigate("/auth/SignIn");
     // }
@@ -156,7 +182,7 @@ const EditUser = () => {
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
             console.log(values);
-            editUser(values)
+            editUser(values);
             setSubmitting(false);
           }, 400);
         }}
@@ -244,7 +270,6 @@ const EditUser = () => {
                   </div>
                 </div>
 
-
                 <div className="grid lg:grid-cols-2 lg:space-x-12 lg:my-5">
                   <div className="grid md:grid-cols-2 my-3 lg:my-0">
                     <div className="">
@@ -271,9 +296,7 @@ const EditUser = () => {
 
                       {submitCount ? (
                         errors.id ? (
-                          <div className="text-danger mt-1">
-                            {errors.id}
-                          </div>
+                          <div className="text-danger mt-1">{errors.id}</div>
                         ) : (
                           <div className="text-success mt-1">It is fine!</div>
                         )
@@ -282,9 +305,7 @@ const EditUser = () => {
                       )}
                     </div>
                   </div>
-                  </div>
-
-
+                </div>
 
                 <div className="grid lg:grid-cols-2 lg:space-x-12 lg:space-y-0 lg:my-5">
                   <div className="grid md:grid-cols-2 my-3 lg:my-0">
@@ -419,18 +440,21 @@ const EditUser = () => {
                           : ""
                       }
                     >
-                      <input
+                      <Field
                         type="file"
+                        name="image"
                         id="fileInput"
-                        onChange={handleChange}
+                        //id="image-preview"
+                        onChange={(e: any) => handleChange(e)}
                       />
                       <img
+                        id="image-preview"
                         src={image}
-                        alt=""
+                        alt="preview"
                         className="mt-2 w-[50%] h-[50%]"
                         // id="avatar"
                       />
-                      <p className="text-green-400">size up to 5MB</p>
+                      {/* <p className="text-green-400">size up to 5MB</p> */}
 
                       {submitCount ? (
                         errors.avatar ? (
@@ -449,12 +473,12 @@ const EditUser = () => {
                 </div>
 
                 <div className="flex justify-center py-6 mt-12">
-                  <button
+                  {/* <button
                     type="reset"
                     className="btn btn-outline-dark rounded-xl px-8 mx-3 font-bold"
                   >
                     RESET
-                  </button>
+                  </button> */}
 
                   <button
                     type="submit"

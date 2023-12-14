@@ -41,7 +41,11 @@ const AddUser = () => {
   async function addUser(data: any) {
     console.log("adding user");
 
-    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar","kycfileupload");
+    let img = await utility.uploadImageAndReturnUrl(
+      "fileInput",
+      "avatar",
+      "kycfileupload"
+    );
     console.log("images", img);
     const userData = {
       name: data.userName,
@@ -65,8 +69,6 @@ const AddUser = () => {
       navigate("/auth/SignIn");
     }
   }
-  
-  
 
   const isRtl =
     useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl"
@@ -364,12 +366,12 @@ const AddUser = () => {
                   </div>
                 </div>
                 <div className="flex justify-center py-6 mt-12">
-                  <button
+                  {/* <button
                     type="reset"
                     className="btn btn-outline-dark rounded-xl px-6 mx-3 font-bold"
                   >
                     RESET
-                  </button>
+                  </button> */}
 
                   <button
                     type="submit"
