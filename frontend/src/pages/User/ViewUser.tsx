@@ -305,8 +305,8 @@ const ViewUser = () => {
               colHeaders={true}
               stretchH="all"
               hiddenColumns={{
-                columns: [7],
-                indicators: true,
+                columns: [0,7],
+                // indicators: true,
               }}
               //afterGetColHeader={(col, TH) => {}}
               // enable the column menu
