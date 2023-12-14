@@ -22,26 +22,15 @@ const AddUser = () => {
 
   const navigate = useNavigate();
 
-  const submitForm = (e: any) => {
-    // console.log("userData");
-    const toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000,
-    });
-    toast.fire({
-      icon: "success",
-      title: "User Added Successfully",
-      padding: "10px 20px",
-    });
-    // navigate("/viewuser");
-  };
+  // const submitForm = (e: any) => {
+
+  //   // navigate("/viewuser");
+  // };
 
   async function addUser(data: any) {
     console.log("adding user");
 
-    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar","kycfileupload");
+    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar", "kycfileupload");
     console.log("images", img);
     const userData = {
       name: data.userName,
@@ -53,20 +42,29 @@ const AddUser = () => {
       companyId: store.getState().themeConfig.hydrateCookie.companyId,
       iswizardcomplete: "kyc",
     };
-
-    console.log(userData);
     const ok = await utility.sendRequestPutOrPost(userData, "users", "PUT");
     if (ok) {
       //do what you want if successfully added the data
-      console.log("SuccessFully added");
-      // check Token & update cookies
-      // calling_token_check();
+      // console.log("userData");
+      const toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      toast.fire({
+        icon: "success",
+        title: "User Added Successfully",
+        padding: "10px 20px",
+      });
+      navigate("/viewuser");
+      return
     } else {
       navigate("/auth/SignIn");
     }
   }
-  
-  
+
+
 
   const isRtl =
     useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl"
@@ -106,7 +104,11 @@ const AddUser = () => {
           userEmail: Yup.string()
             .email("Invalid Email Address")
             .required("Please fill Email"),
-          userDob: Yup.string().required("Please fill User DOB"),
+          // userDob: Yup.string().required("Please fill User DOB"),
+          userDob: Yup.date()
+            .required('Please enter a valid date.')
+            .min(new Date(new Date().setFullYear(new Date().getFullYear() - 70)), 'Must be at most 70 years old')
+            .max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)), 'Must be at least 18 years old'),
           userAccType: Yup.string().required("Please select User Type"),
           userStatus: Yup.string().required("Please select User Status"),
           avatar: Yup.string(), //mixed(),
@@ -374,21 +376,6 @@ const AddUser = () => {
                   <button
                     type="submit"
                     className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828] mx-3"
-                    onClick={(e) => {
-                      if (touched.userName && !errors.userName) {
-                        submitForm(e);
-                      } else if (touched.userEmail && !errors.userEmail) {
-                        submitForm(e);
-                      } else if (touched.userDob && !errors.userDob) {
-                        submitForm(e);
-                      } else if (touched.userAccType && !errors.userAccType) {
-                        submitForm(e);
-                      } else if (touched.avatar && !errors.avatar) {
-                        submitForm(e);
-                      } else if (touched.userStatus && !errors.userStatus) {
-                        submitForm(e);
-                      }
-                    }}
                   >
                     ADD
                   </button>
