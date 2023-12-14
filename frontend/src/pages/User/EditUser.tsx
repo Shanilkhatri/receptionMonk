@@ -4,12 +4,14 @@ import store, { IRootState } from "../../store";
 import { setPageTitle } from "../../store/themeConfigSlice";
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, useFormikContext } from "formik";
 import Swal from "sweetalert2";
 import Utility from "../../utility/utility";
-const utility = new Utility()
+const utility = new Utility();
+
 const EditUser = () => {
   const [image, setImage] = useState<string | undefined>();
+  // const formik = useFormikContext();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -25,8 +27,10 @@ const EditUser = () => {
   const navigate = useNavigate();
 
   function handleChange(e: any) {
-    e.preventDefault()
-    console.log("file: ",URL.createObjectURL(e.target.files[0]))
+    e.preventDefault();
+    //const file = e.target.files[0];
+
+    // console.log("file: ", URL.createObjectURL(e.target.files[0]));
     setImage(URL.createObjectURL(e.target.files[0]));
   }
 
@@ -161,7 +165,7 @@ const EditUser = () => {
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
             console.log(values);
-            editUser(values)
+            editUser(values);
             setSubmitting(false);
           }, 400);
         }}
@@ -249,7 +253,6 @@ const EditUser = () => {
                   </div>
                 </div>
 
-
                 <div className="grid lg:grid-cols-2 lg:space-x-12 lg:my-5">
                   <div className="grid md:grid-cols-2 my-3 lg:my-0">
                     <div className="">
@@ -276,9 +279,7 @@ const EditUser = () => {
 
                       {submitCount ? (
                         errors.id ? (
-                          <div className="text-danger mt-1">
-                            {errors.id}
-                          </div>
+                          <div className="text-danger mt-1">{errors.id}</div>
                         ) : (
                           <div className="text-success mt-1">It is fine!</div>
                         )
@@ -287,9 +288,7 @@ const EditUser = () => {
                       )}
                     </div>
                   </div>
-                  </div>
-
-
+                </div>
 
                 <div className="grid lg:grid-cols-2 lg:space-x-12 lg:space-y-0 lg:my-5">
                   <div className="grid md:grid-cols-2 my-3 lg:my-0">
@@ -424,18 +423,21 @@ const EditUser = () => {
                           : ""
                       }
                     >
-                      <input
+                      <Field
                         type="file"
+                        name="image"
                         id="fileInput"
-                        onChange={handleChange}
+                        //id="image-preview"
+                        onChange={(e: any) => handleChange(e)}
                       />
                       <img
+                        id="image-preview"
                         src={image}
-                        alt=""
+                        alt="preview"
                         className="mt-2 w-[50%] h-[50%]"
                         // id="avatar"
                       />
-                      <p className="text-green-400">size up to 5MB</p>
+                      {/* <p className="text-green-400">size up to 5MB</p> */}
 
                       {submitCount ? (
                         errors.avatar ? (
@@ -454,12 +456,12 @@ const EditUser = () => {
                 </div>
 
                 <div className="flex justify-center py-6 mt-12">
-                  <button
+                  {/* <button
                     type="reset"
                     className="btn btn-outline-dark rounded-xl px-8 mx-3 font-bold"
                   >
                     RESET
-                  </button>
+                  </button> */}
 
                   <button
                     type="submit"

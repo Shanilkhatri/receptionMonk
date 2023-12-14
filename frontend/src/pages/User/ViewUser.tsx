@@ -127,7 +127,7 @@ const ViewUser = () => {
           accountType: "",
           status: "",
           avatar: "",
-          companyId:0 // company id to be set in row object
+          companyId: 0, // company id to be set in row object
         };
         desiredDataSet["id"] = item.id;
         desiredDataSet["name"] = item.name;
@@ -230,6 +230,11 @@ const ViewUser = () => {
     // Add your logic here, such as opening a modal for editing
   };
 
+  const tableStyle = {
+    // maxWidth: "800px", // Adjust the width as needed
+    // margin: "0 auto", // Center the table horizontally
+  };
+
   useEffect(() => {
     const data2 = sortBy(initialRecords, sortStatus.columnAccessor);
     setRecords(sortStatus.direction === "desc" ? data2.reverse() : data2);
@@ -272,7 +277,7 @@ const ViewUser = () => {
             <div className="controlsQuickFilter mx-2 my-5">
               <input id="filterField" type="text" placeholder="Filter" />
             </div>
-
+            {/* <div className="overflow-x-auto max-w-screen-lg mx-auto"> */}
             <HotTable
               ref={hotTableComponentRef}
               data={items}
@@ -354,16 +359,14 @@ const ViewUser = () => {
               height="auto"
               readOnly={true}
               colHeaders={true}
+              stretchH="all"
+              //afterGetColHeader={(col, TH) => {}}
               // enable the column menu
               filters={true}
               className="exampleQuickFilter "
               licenseKey="non-commercial-and-evaluation" // for non-commercial use only
             />
-            <div className="flex gap-4 items-center w-max mx-auto">
-              <NavLink to="/edituser" className="flex hover:text-info">
-                <i className="bi bi-pen"></i>
-              </NavLink>
-            </div>
+            
           </div>
         </div>
       </div>
