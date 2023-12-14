@@ -28,14 +28,11 @@ const AddUser = () => {
   // };
 
   async function addUser(data: any) {
-    console.log("adding user");
-
     let img = await utility.uploadImageAndReturnUrl(
       "fileInput",
       "avatar",
       "kycfileupload"
     );
-    console.log("images", img);
     const userData = {
       name: data.userName,
       email: data.userEmail,
@@ -46,26 +43,12 @@ const AddUser = () => {
       companyId: store.getState().themeConfig.hydrateCookie.companyId,
       iswizardcomplete: "kyc",
     };
-    const ok = await utility.sendRequestPutOrPost(userData, "users", "PUT");
-    if (ok) {
-      //do what you want if successfully added the data
-      // console.log("userData");
-      const toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-      toast.fire({
-        icon: "success",
-        title: "User Added Successfully",
-        padding: "10px 20px",
-      });
+    const ok = await utility.sendRequest_Put_Post_Get(userData, "users", "PUT");
+    if (ok.Status == "200") {
       navigate("/viewuser");
       return;
-    } else {
-      navigate("/auth/SignIn");
-    }
+    } 
+      return
   }
 
   const isRtl =

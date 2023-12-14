@@ -67,7 +67,7 @@ const Index = () => {
     }
     async function updateWizard(userData:any):Promise<boolean> {
 
-        const ok = await utility.sendRequestPutOrPost(userData, "updateWizard", "POST")
+        const ok = await utility.sendRequest_Put_Post_Get(userData, "updateWizard", "POST")
         if (ok) {
             //do what you want if successfully added the data 
             console.log("SuccessFully added")
@@ -277,15 +277,13 @@ const Index = () => {
         }
   
         console.log(userData)
-        const ok = await utility.sendRequestPutOrPost(userData, "users", "PUT")
+        const ok = await utility.sendRequest_Put_Post_Get(userData, "users", "PUT")
         if (ok) {
-            //do what you want if successfully added the data 
-            console.log("SuccessFully added")
             // check Token & update cookies
             calling_token_check();
-        } else {
-            navigate("/auth/SignIn")
-        }
+            return
+        } 
+           return
     }
     
     async function saveUserDetails(e:FormEvent<HTMLFormElement>) {
@@ -304,7 +302,7 @@ const Index = () => {
             "companyId": store.getState().themeConfig.hydrateCookie.companyId
         };
 
-        const ok = await utility.sendRequestPutOrPost(userData, "users", "POST")
+        const ok = await utility.sendRequest_Put_Post_Get(userData, "users", "POST")
         if (ok) {
             //do what you want if successfully added the data 
             console.log("SuccessFully added")
@@ -329,7 +327,7 @@ const Index = () => {
             contactEmail,
         };
 
-        const ok = await utility.sendRequestPutOrPost(userData, "company", "PUT")
+        const ok = await utility.sendRequest_Put_Post_Get(userData, "company", "PUT")
         if (ok) {
             //do what you want if successfully added the data 
             console.log("SuccessFully added")

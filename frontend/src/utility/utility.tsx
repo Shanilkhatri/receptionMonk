@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 class Utility{
     appUrl: string;
 
@@ -23,25 +25,62 @@ getCookieValue(key:any) {
         // If the cookie with the given key is not found
         return null;
     }
-async sendRequestPutOrPost(userData:any,route:string,method:string) {
+  // One function for all the requests on "user route" 
+  // handles PUT POST GET
+  // Send data in for a JSON Object {} for PUT/POST
+  // Send an empty string in case of GET
+  // It returns the whole response from the server
+  // response structure has keys : 
+  // response = {
+  //   // "Status": // indicating status for the request
+  //   // "Message": // indicating message from the server against the request
+  //   // "Payload": [{}] // contains the main data against the query
+  // }
+async sendRequest_Put_Post_Get(userData:any,route:string,method:string) {
 
-    const response = await fetch(this.appUrl+route, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.getCookieValue("exampleToken")}`
-        },
-        body: JSON.stringify(userData),
+  const requestOptions: RequestInit & { body?: string } = {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getCookieValue("exampleToken")}`
+    },
+  };
+  // Check if the method is one that allows a request body
+  if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())) {
+    // Assuming userData is defined
+    requestOptions.body = JSON.stringify(userData);
+  }
+    const response = await fetch(this.appUrl+route, requestOptions);
+    
+    var responseData = await response.json() // wait for response > json
+   if (response.ok) {
+      const toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      toast.fire({
+        icon: "success",
+        title: responseData.Message,
+        padding: "10px 20px",
+      });
+      return responseData
+    }
+    const toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
     });
-    // var responseData = await response.json() // wait for response > json
-    if (!response.ok) {
-        // navigate("/auth/SignIn")
-        return false
-    } else if (response.ok) {
-        return true
+    toast.fire({
+      icon: "error",
+      title: responseData.Message,
+      padding: "10px 20px",
+    });
+    return responseData
     }
-    return false
-    }
+
     async uploadImageAndReturnUrl(
         imageElement: string,
         modulename: string,

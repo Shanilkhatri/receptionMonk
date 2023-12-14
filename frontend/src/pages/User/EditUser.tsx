@@ -64,39 +64,12 @@ const EditUser = () => {
       companyId: companyId,
       iswizardcomplete: "kyc",
     };
-    const ok = await utility.sendRequestPutOrPost(userData, "users", "POST");
-    if (ok) {
-      //do what you want if successfully added the data
-      console.log("SuccessFully added");
-      // check Token & update cookies
-      const toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-      toast.fire({
-        icon: "success",
-        title: "User Updated Successfully",
-        padding: "10px 20px",
-      });
+    const ok = await utility.sendRequest_Put_Post_Get(userData, "users", "POST");
+    if (ok.Status == "200") {
       navigate("/viewuser");
       return;
-    } else {
-      const toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-      toast.fire({
-        icon: "error",
-        title: "User Cannot be updated at the moment!",
-        padding: "10px 20px",
-      });
-      navigate("/viewuser");
+    } 
       return;
-    }
   }
   const schema = Yup.object().shape(
     {

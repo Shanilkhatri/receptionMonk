@@ -77,19 +77,19 @@ const ViewUser = () => {
     columnAccessor: "userName",
     direction: "asc",
   });
-  const fetchData = async () => {
+  const fetchDataForView = async () => {
     try {
-      var token = utility.getCookieValue("exampleToken");
-      var headers = new Headers();
-      headers.append("Content-Type", "application/json");
-      headers.append("Authorization", "bearer " + token);
-      // Make API call or fetch data from wherever you need
-      const response = await fetch(appUrl + "users", {
-        method: "GET",
-        headers: headers,
-      });
-      const data = await response.json();
-
+      // var token = utility.getCookieValue("exampleToken");
+      // var headers = new Headers();
+      // headers.append("Content-Type", "application/json");
+      // headers.append("Authorization", "bearer " + token);
+      // // Make API call or fetch data from wherever you need
+      // const response = await fetch(appUrl + "users", {
+      //   method: "GET",
+      //   headers: headers,
+      // });
+      // const data = await response.json();
+      let data = await utility.sendRequest_Put_Post_Get("__EMPTY_STRING__", "users", "GET")
       let arrayOfDesiredSet: any = [];
       data.Payload.forEach((item: any) => {
         let desiredDataSet = {
@@ -121,7 +121,7 @@ const ViewUser = () => {
     }
   };
   useEffect(() => {
-    fetchData(); // Call the fetchData function when the component mounts
+    fetchDataForView(); // Call the fetchData function when the component mounts
   }, []);
 
   useEffect(() => {
@@ -173,10 +173,6 @@ const ViewUser = () => {
     // Add your logic here, such as opening a modal for editing
   };
 
-  const tableStyle = {
-    // maxWidth: "800px", // Adjust the width as needed
-    // margin: "0 auto", // Center the table horizontally
-  };
 
   useEffect(() => {
     const data2 = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -305,7 +301,7 @@ const ViewUser = () => {
               colHeaders={true}
               stretchH="all"
               hiddenColumns={{
-                columns: [0,7],
+                columns: [0, 7],
                 // indicators: true,
               }}
               //afterGetColHeader={(col, TH) => {}}
