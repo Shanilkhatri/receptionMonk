@@ -198,7 +198,6 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	// integrate token check and return if mismatch found with status 400
 	isok, userDetailsType := Helper.CheckTokenPayloadAndReturnUser(r)
 	if !isok {
-		log.Println("here under token")
 		response.Status = "403"
 		response.Message = "Unauthorized access! You are not allowed to make this request"
 		Helper.RenderJsonResponse(w, r, response, 403)
@@ -212,7 +211,6 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// added a company id check too
-	log.Println("userDetails: ", userDetails)
 	if userDetails.ID != userStruct.ID && userDetails.AccountType == "user" || userDetails.CompanyID != userStruct.CompanyID && userDetails.AccountType != "super-admin" {
 		log.Println("here under condition")
 		response.Status = "403"

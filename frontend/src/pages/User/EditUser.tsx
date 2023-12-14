@@ -19,15 +19,10 @@ const EditUser = () => {
     if (store.getState().themeConfig.currentUserDataForUpdate.email == "") {
       navigate("/ViewUser");
     }
-    console.log(
-      "update user: ",
-      typeof store.getState().themeConfig.currentUserDataForUpdate.id
-    );
-    setImage(
-      import.meta.env.VITE_APPURL +
-        store.getState().themeConfig.currentUserDataForUpdate.avatar
-    );
-  }, []);
+
+    setImage(import.meta.env.VITE_APPURL +
+      store.getState().themeConfig.currentUserDataForUpdate.avatar)
+  });
 
   const navigate = useNavigate();
 
@@ -37,56 +32,19 @@ const EditUser = () => {
 
     // console.log("file: ", URL.createObjectURL(e.target.files[0]));
     setImage(URL.createObjectURL(e.target.files[0]));
-
-    // if (file) {
-    //   formik.setFieldValue("image", file); // Update form values
-    //   const reader = new FileReader();
-
-    //   reader.onload = (e) => {
-    //     // Set the preview image source
-    //     document.getElementById("image-preview").src = e.target.result;
-    //   };
-
-    //   reader.readAsDataURL(file);
-    // }
-
-    // // setImage(document.getElementById("fileInput") as HTMLInputElement?.value)
-    // const file = document.getElementById("fileInput") as HTMLInputElement | null;
-    // console.log("here: ",file)
-    // if (file) {
-    //   // ensure that element exists
-    //   setImage(file.value)
-    // }
   }
 
-  const submitForm = () => {
-    // navigate('/');
-    const toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000,
-    });
-    toast.fire({
-      icon: "success",
-      title: "User Updated Successfully",
-      padding: "10px 20px",
-    });
-  };
   async function editUser(data: any) {
-    console.log("adding user");
-
-    let img = await utility.uploadImageAndReturnUrl(
-      "fileInput",
-      "avatar",
-      "kycfileupload"
-    );
-    console.log("images", img);
-    let userId = store.getState().themeConfig.currentUserDataForUpdate.id;
-    if (typeof userId == "string") {
-      userId = parseInt(userId);
+    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar","kycfileupload");
+    let userId = store.getState().themeConfig.currentUserDataForUpdate.id
+    if (typeof(userId)== 'string') {
+      userId = parseInt(userId)
     }
-    console.log("typeof", typeof userId);
+    let companyId = store.getState().themeConfig.currentUserDataForUpdate.companyId
+    if (typeof(companyId)== 'string') {
+      companyId = parseInt(companyId)
+    }
+    
     const userData = {
       id: userId,
       name: data.userName,
@@ -95,21 +53,42 @@ const EditUser = () => {
       status: data.userStatus,
       accountType: data.userAccType,
       avatar: img,
-      companyId: store.getState().themeConfig.hydrateCookie.companyId,
+      companyId: companyId,
       iswizardcomplete: "kyc",
     };
-
-    console.log(userData);
     const ok = await utility.sendRequestPutOrPost(userData, "users", "POST");
     if (ok) {
       //do what you want if successfully added the data
       console.log("SuccessFully added");
       // check Token & update cookies
-      // calling_token_check();
+      const toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      toast.fire({
+        icon: "success",
+        title: "User Updated Successfully",
+        padding: "10px 20px",
+      });
+      navigate('/viewuser');
+      return
+    } else {
+      const toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      toast.fire({
+        icon: "error",
+        title: "User Cannot be updated at the moment!",
+        padding: "10px 20px",
+      });
+      navigate("/viewuser");
+      return
     }
-    // else {
-    //   navigate("/auth/SignIn");
-    // }
   }
   const schema = Yup.object().shape(
     {
@@ -117,7 +96,11 @@ const EditUser = () => {
       userEmail: Yup.string()
         .email("Invalid Email Address")
         .required("Please fill Email"),
-      userDob: Yup.date().required("Please enter a valid date."),
+      // userDob: Yup.date().required("Please enter a valid date."),
+      userDob: Yup.date()
+      .required('Please enter a valid date.')
+      .min(new Date(new Date().setFullYear(new Date().getFullYear() - 70)), 'Must be at most 70 years old')
+      .max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)), 'Must be at least 18 years old'),
       userAccType: Yup.string().required("Please select User Type"),
       userStatus: Yup.string().required("Please select User Status"),
       avatar: Yup.mixed().when("avatar", {
@@ -483,21 +466,6 @@ const EditUser = () => {
                   <button
                     type="submit"
                     className="btn bg-[#c8400d] rounded-xl text-white font-bold shadow-none px-8 hover:bg-[#282828] mx-3"
-                    onClick={() => {
-                      if (touched.userName && !errors.userName) {
-                        submitForm();
-                      } else if (touched.userEmail && !errors.userEmail) {
-                        submitForm();
-                      } else if (touched.userDob && !errors.userDob) {
-                        submitForm();
-                      } else if (touched.userAccType && !errors.userAccType) {
-                        submitForm();
-                      } else if (touched.userStatus && !errors.userStatus) {
-                        submitForm();
-                      } else if (touched.avatar && !errors.avatar) {
-                        submitForm();
-                      }
-                    }}
                   >
                     UPDATE
                   </button>

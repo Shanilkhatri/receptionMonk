@@ -16,6 +16,8 @@ import { textRenderer } from "handsontable/renderers/textRenderer";
 import Handsontable from "handsontable";
 
 import "handsontable/dist/handsontable.full.min.css";
+import ReactDOM from "react-dom";
+import App from "../../App";
 
 registerAllModules();
 
@@ -30,7 +32,7 @@ const ViewUser = () => {
   const hotTableComponentRef = useRef<any>(null);
 
   useEffect(() => {
-    if (hotTableComponentRef.current != null) {
+    // if (hotTableComponentRef.current != null) {
       const handsontableInstance = hotTableComponentRef.current.hotInstance;
       const filterField = document.querySelector(
         "#filterField"
@@ -42,16 +44,15 @@ const ViewUser = () => {
           "columns"
         ) as HTMLInputElement;
         const columnValue = columnSelector.value;
-
+          console.log("column value:", columnValue)
         filtersPlugin.removeConditions(columnValue);
         filtersPlugin.addCondition(columnValue, "contains", [
           event.target.value,
         ]);
         filtersPlugin.filter();
-
         handsontableInstance.render();
       });
-    }
+    // }
   }, []);
 
   let searchFieldKeyupCallback: any;
@@ -66,30 +67,30 @@ const ViewUser = () => {
       : false;
   const [items, setItems] = useState([]);
 
-  const deleteRow = (id: any = null) => {
-    if (window.confirm("Are you sure want to delete selected row ?")) {
-      if (id) {
-        setRecords(items.filter((user) => user.id !== id));
-        setInitialRecords(items.filter((user) => user.id !== id));
-        setItems(items.filter((user) => user.id !== id));
-        setSearch("");
-        setSelectedRecords([]);
-      } else {
-        let selectedRows = selectedRecords || [];
-        const ids = selectedRows.map((d: any) => {
-          return d.id;
-        });
-        const result = items.filter((d) => !ids.includes(d.id as never));
-        setRecords(result);
-        setInitialRecords(result);
-        setItems(result);
-        setSearch("");
-        setSelectedRecords([]);
+  // const deleteRow = (id: any = null) => {
+  //   if (window.confirm("Are you sure want to delete selected row ?")) {
+  //     if (id) {
+  //       setRecords(items.filter((user) => user.id !== id));
+  //       setInitialRecords(items.filter((user) => user.id !== id));
+  //       setItems(items.filter((user) => user.id !== id));
+  //       setSearch("");
+  //       setSelectedRecords([]);
+  //     } else {
+  //       let selectedRows = selectedRecords || [];
+  //       const ids = selectedRows.map((d: any) => {
+  //         return d.id;
+  //       });
+  //       const result = items.filter((d) => !ids.includes(d.id as never));
+  //       setRecords(result);
+  //       setInitialRecords(result);
+  //       setItems(result);
+  //       setSearch("");
+  //       setSelectedRecords([]);
 
-        setPage(1);
-      }
-    }
-  };
+  //       setPage(1);
+  //     }
+  //   }
+  // };
 
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -115,7 +116,6 @@ const ViewUser = () => {
         headers: headers,
       });
       const data = await response.json();
-      console.log(data);
 
       let arrayOfDesiredSet: any = [];
       data.Payload.forEach((item: any) => {
@@ -203,7 +203,7 @@ const ViewUser = () => {
   ) => {
     // const rowId = instance.getDataAtRowProp(row, "id"); // Get the ID from the data
     const rowObject = instance.getDataAtRow(row);
-    console.log("rowObject:L ", rowObject);
+   
     let desiredDataSet = {
       id: `${rowObject[0]}`,
       name: `${rowObject[1]}`,
@@ -212,17 +212,19 @@ const ViewUser = () => {
       status: `${rowObject[4]}`,
       accountType: `${rowObject[5]}`,
       avatar: `${rowObject[6]}`,
+      companyId: `${rowObject[7]}`,
     };
-    console.log("rowData: ", rowObject);
-    td.innerHTML = `<button class="bg-[#c8400e] p-2 rounded-md shadow-md hover:bg-orange-500 transform hover:scale-110"
-    onclick='editRow( ${JSON.stringify(desiredDataSet)} )'>Edit</button>`;
+   
+    td.innerHTML = `<button onclick='editRow( ${JSON.stringify(
+      desiredDataSet
+    )} )'>Edit</button>`;
     return td;
   };
   // Handle the edit action
-  window.editRow = (rowData: any) => {
+  window.editRow = (desiredDataSet: any) => {
     // Access the row data and perform the desired action
     // calling dispatcher to set uodate user in state
-    dispatch(setcurrentUserDataForUpdate(rowData));
+    dispatch(setcurrentUserDataForUpdate(desiredDataSet));
     navigate("/edituser");
 
     // Add your logic here, such as opening a modal for editing
@@ -343,15 +345,18 @@ const ViewUser = () => {
                   },
                 },
                 {
+                  title: "Company Id",
+                  type: "numeric",
+                  data: "companyId",
+                },
+                {
                   title: "Action",
                   data: "edit",
                   renderer: editButtonRenderer,
                   readOnly: true,
                 },
               ]}
-              //cw
-              style={tableStyle}
-              rowHeights={55}
+              height="auto"
               readOnly={true}
               colHeaders={true}
               stretchH="all"
@@ -361,12 +366,11 @@ const ViewUser = () => {
               className="exampleQuickFilter "
               licenseKey="non-commercial-and-evaluation" // for non-commercial use only
             />
-            {/* </div> */}
+            
           </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default ViewUser;
