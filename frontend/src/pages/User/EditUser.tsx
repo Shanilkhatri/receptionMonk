@@ -20,9 +20,11 @@ const EditUser = () => {
       navigate("/ViewUser");
     }
 
-    setImage(import.meta.env.VITE_APPURL +
-      store.getState().themeConfig.currentUserDataForUpdate.avatar)
-  });
+    setImage(
+      import.meta.env.VITE_APPURL +
+        store.getState().themeConfig.currentUserDataForUpdate.avatar
+    );
+  }, []);
 
   const navigate = useNavigate();
 
@@ -35,16 +37,21 @@ const EditUser = () => {
   }
 
   async function editUser(data: any) {
-    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar","kycfileupload");
-    let userId = store.getState().themeConfig.currentUserDataForUpdate.id
-    if (typeof(userId)== 'string') {
-      userId = parseInt(userId)
+    let img = await utility.uploadImageAndReturnUrl(
+      "fileInput",
+      "avatar",
+      "kycfileupload"
+    );
+    let userId = store.getState().themeConfig.currentUserDataForUpdate.id;
+    if (typeof userId == "string") {
+      userId = parseInt(userId);
     }
-    let companyId = store.getState().themeConfig.currentUserDataForUpdate.companyId
-    if (typeof(companyId)== 'string') {
-      companyId = parseInt(companyId)
+    let companyId =
+      store.getState().themeConfig.currentUserDataForUpdate.companyId;
+    if (typeof companyId == "string") {
+      companyId = parseInt(companyId);
     }
-    
+
     const userData = {
       id: userId,
       name: data.userName,
@@ -72,8 +79,8 @@ const EditUser = () => {
         title: "User Updated Successfully",
         padding: "10px 20px",
       });
-      navigate('/viewuser');
-      return
+      navigate("/viewuser");
+      return;
     } else {
       const toast = Swal.mixin({
         toast: true,
@@ -87,7 +94,7 @@ const EditUser = () => {
         padding: "10px 20px",
       });
       navigate("/viewuser");
-      return
+      return;
     }
   }
   const schema = Yup.object().shape(
@@ -98,9 +105,15 @@ const EditUser = () => {
         .required("Please fill Email"),
       // userDob: Yup.date().required("Please enter a valid date."),
       userDob: Yup.date()
-      .required('Please enter a valid date.')
-      .min(new Date(new Date().setFullYear(new Date().getFullYear() - 70)), 'Must be at most 70 years old')
-      .max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)), 'Must be at least 18 years old'),
+        .required("Please enter a valid date.")
+        .min(
+          new Date(new Date().setFullYear(new Date().getFullYear() - 70)),
+          "Must be at most 70 years old"
+        )
+        .max(
+          new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
+          "Must be at least 18 years old"
+        ),
       userAccType: Yup.string().required("Please select User Type"),
       userStatus: Yup.string().required("Please select User Status"),
       avatar: Yup.mixed().when("avatar", {

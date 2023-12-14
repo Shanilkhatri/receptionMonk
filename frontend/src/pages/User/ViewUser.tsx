@@ -33,25 +33,23 @@ const ViewUser = () => {
 
   useEffect(() => {
     // if (hotTableComponentRef.current != null) {
-      const handsontableInstance = hotTableComponentRef.current.hotInstance;
-      const filterField = document.querySelector(
-        "#filterField"
-      ) as HTMLInputElement;
+    const handsontableInstance = hotTableComponentRef.current.hotInstance;
+    const filterField = document.querySelector(
+      "#filterField"
+    ) as HTMLInputElement;
 
-      filterField.addEventListener("keyup", function (event: any) {
-        const filtersPlugin = handsontableInstance.getPlugin("filters");
-        const columnSelector = document.getElementById(
-          "columns"
-        ) as HTMLInputElement;
-        const columnValue = columnSelector.value;
-          console.log("column value:", columnValue)
-        filtersPlugin.removeConditions(columnValue);
-        filtersPlugin.addCondition(columnValue, "contains", [
-          event.target.value,
-        ]);
-        filtersPlugin.filter();
-        handsontableInstance.render();
-      });
+    filterField.addEventListener("keyup", function (event: any) {
+      const filtersPlugin = handsontableInstance.getPlugin("filters");
+      const columnSelector = document.getElementById(
+        "columns"
+      ) as HTMLInputElement;
+      const columnValue = columnSelector.value;
+      console.log("column value:", columnValue);
+      filtersPlugin.removeConditions(columnValue);
+      filtersPlugin.addCondition(columnValue, "contains", [event.target.value]);
+      filtersPlugin.filter();
+      handsontableInstance.render();
+    });
     // }
   }, []);
 
@@ -66,31 +64,6 @@ const ViewUser = () => {
       ? true
       : false;
   const [items, setItems] = useState([]);
-
-  // const deleteRow = (id: any = null) => {
-  //   if (window.confirm("Are you sure want to delete selected row ?")) {
-  //     if (id) {
-  //       setRecords(items.filter((user) => user.id !== id));
-  //       setInitialRecords(items.filter((user) => user.id !== id));
-  //       setItems(items.filter((user) => user.id !== id));
-  //       setSearch("");
-  //       setSelectedRecords([]);
-  //     } else {
-  //       let selectedRows = selectedRecords || [];
-  //       const ids = selectedRows.map((d: any) => {
-  //         return d.id;
-  //       });
-  //       const result = items.filter((d) => !ids.includes(d.id as never));
-  //       setRecords(result);
-  //       setInitialRecords(result);
-  //       setItems(result);
-  //       setSearch("");
-  //       setSelectedRecords([]);
-
-  //       setPage(1);
-  //     }
-  //   }
-  // };
 
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -182,16 +155,6 @@ const ViewUser = () => {
   //     });
   //   }, [search]);
 
-  //   useEffect(() => {
-  //     const container = hotTableComponentRef.current;
-
-  //     //const hot = new Handsontable(container);
-
-  //     return () => {
-  //       hot.destroy();
-  //     };
-  //   }, []);
-
   const editButtonRenderer = (
     instance: any,
     td: any,
@@ -203,7 +166,7 @@ const ViewUser = () => {
   ) => {
     // const rowId = instance.getDataAtRowProp(row, "id"); // Get the ID from the data
     const rowObject = instance.getDataAtRow(row);
-   
+
     let desiredDataSet = {
       id: `${rowObject[0]}`,
       name: `${rowObject[1]}`,
@@ -214,8 +177,8 @@ const ViewUser = () => {
       avatar: `${rowObject[6]}`,
       companyId: `${rowObject[7]}`,
     };
-   
-    td.innerHTML = `<button onclick='editRow( ${JSON.stringify(
+
+    td.innerHTML = `<button class="p-2 bg-[#c8400e] rounded-md hover:bg-orange-500 shadow-md transform hover:scale-110" onclick='editRow( ${JSON.stringify(
       desiredDataSet
     )} )'>Edit</button>`;
     return td;
@@ -366,7 +329,6 @@ const ViewUser = () => {
               className="exampleQuickFilter "
               licenseKey="non-commercial-and-evaluation" // for non-commercial use only
             />
-            
           </div>
         </div>
       </div>

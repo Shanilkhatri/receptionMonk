@@ -30,7 +30,11 @@ const AddUser = () => {
   async function addUser(data: any) {
     console.log("adding user");
 
-    let img = await utility.uploadImageAndReturnUrl("fileInput", "avatar", "kycfileupload");
+    let img = await utility.uploadImageAndReturnUrl(
+      "fileInput",
+      "avatar",
+      "kycfileupload"
+    );
     console.log("images", img);
     const userData = {
       name: data.userName,
@@ -58,13 +62,11 @@ const AddUser = () => {
         padding: "10px 20px",
       });
       navigate("/viewuser");
-      return
+      return;
     } else {
       navigate("/auth/SignIn");
     }
   }
-
-
 
   const isRtl =
     useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl"
@@ -100,15 +102,27 @@ const AddUser = () => {
           avatar: "",
         }}
         validationSchema={Yup.object().shape({
-          userName: Yup.string().required("Please fill User Name"),
+          userName: Yup.string()
+            .required("Please fill User Name")
+            .matches(
+              /^[a-zA-Z0-9]+$/,
+              "Username must not contain special characters"
+            ),
+
           userEmail: Yup.string()
             .email("Invalid Email Address")
             .required("Please fill Email"),
           // userDob: Yup.string().required("Please fill User DOB"),
           userDob: Yup.date()
-            .required('Please enter a valid date.')
-            .min(new Date(new Date().setFullYear(new Date().getFullYear() - 70)), 'Must be at most 70 years old')
-            .max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)), 'Must be at least 18 years old'),
+            .required("Please enter a valid date.")
+            .min(
+              new Date(new Date().setFullYear(new Date().getFullYear() - 70)),
+              "Must be at most 70 years old"
+            )
+            .max(
+              new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
+              "Must be at least 18 years old"
+            ),
           userAccType: Yup.string().required("Please select User Type"),
           userStatus: Yup.string().required("Please select User Status"),
           avatar: Yup.string(), //mixed(),
@@ -344,22 +358,35 @@ const AddUser = () => {
                         id="fileInput"
                         onChange={handleChange}
                       />
-                      <img
+                      {/* <img
                         src={image}
                         alt=""
                         className="mt-2 w-[50%] h-[50%]"
-                      />
-                      <p className="text-green-400">size up to 5MB,</p>
+                      /> */}
+
+                      {image && (
+                        <>
+                          <img
+                            src={image}
+                            alt=""
+                            className="mt-2 w-[50%] h-[50%]"
+                          />
+                          {/* <p className="text-green-400">size up to 5MB,</p> */}
+                        </>
+                      )}
+
+                      {/* <p className="text-green-400">size up to 5MB,</p> */}
 
                       {submitCount ? (
                         errors.avatar ? (
                           <div className="text-danger mt-1">
                             {errors.avatar}
                           </div>
-                        ) : (
-                          <div className="text-success mt-1">It is fine!</div>
-                        )
+                        ) : null
                       ) : (
+                        // (
+                        //   // <div className="text-success mt-1">It is fine!</div>
+                        // )
                         ""
                       )}
                     </div>
