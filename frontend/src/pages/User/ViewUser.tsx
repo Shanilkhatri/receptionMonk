@@ -135,26 +135,6 @@ const ViewUser = () => {
     setRecords([...initialRecords.slice(from, to)]);
   }, [page, pageSize, initialRecords]);
 
-  //   useEffect(() => {
-  //     setInitialRecords(() => {
-  //       return items.filter((item) => {
-  //         return (
-  //           // item.invoice.toLowerCase().includes(search.toLowerCase()) || //to be removed
-  //           item.userName.toLowerCase().includes(search.toLowerCase()) ||
-  //           item.userEmail.toLowerCase().includes(search.toLowerCase()) ||
-  //           item.userDob.toLowerCase().includes(search.toLowerCase()) ||
-  //           //item.amount.toLowerCase().includes(search.toLowerCase()) ||
-  //           item.userAccType.toLowerCase().includes(search.toLowerCase()) ||
-  //           // item.cname.toLowerCase().includes(search.toLowerCase()) || //to be removed
-  //           item.userStatus.tooltip
-  //             .toLowerCase()
-  //             .includes(search.toLowerCase()) ||
-  //           item.avatar
-  //         );
-  //       });
-  //     });
-  //   }, [search]);
-
   const editButtonRenderer = (
     instance: any,
     td: any,
@@ -311,6 +291,7 @@ const ViewUser = () => {
                   title: "Company Id",
                   type: "numeric",
                   data: "companyId",
+                  hidden: true,
                 },
                 {
                   title: "Action",
@@ -323,6 +304,10 @@ const ViewUser = () => {
               readOnly={true}
               colHeaders={true}
               stretchH="all"
+              hiddenColumns={{
+                columns: [7],
+                indicators: true,
+              }}
               //afterGetColHeader={(col, TH) => {}}
               // enable the column menu
               filters={true}
